@@ -1,0 +1,1094 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>SKILL 도출 워크샵 · 5단계</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+:root{
+  --sky-a:#7FC0E6; --sky-b:#AFDAEF; --sky-c:#E4F2F6; --sun:#FFF3CC;
+  --mt-a:#9FB6D2; --mt-b:#8AA4C2; --hill-a:#A7CE92; --hill-b:#81BA6E; --hill-c:#62A052;
+  --grass:#579448; --grass-d:#3C7439; --path:#E6CE9E; --path-d:#C9A974;
+  --paper:#FDF9F0; --paper-2:#F5EDDD; --paper-3:#EBE0C9; --line:#E0D3B8; --line-2:#F0E7D6;
+  --ink:#393024; --ink-2:#6E6050; --ink-3:#9C8D79;
+  --gold:#EDB245; --gold-h:#FFD37C; --gold-d:#CE9420; --gold-i:#8A5A12;
+  --ok:#2F9B72; --ok-bg:#E7F5EE; --warn:#D2803C; --warn-bg:#FCF1E4; --bad:#CE5B4C; --bad-bg:#FBEAE7;
+  --c1:#5289CE; --c2:#2F9B72; --c3:#D9A032; --c4:#9270C2; --c5:#D9705C; --c6:#3C9CA0;
+  --fd:"Jua","Noto Sans KR",sans-serif;
+  --fb:"Gowun Dodum","Noto Sans KR",system-ui,sans-serif;
+  --s1:0 1px 3px rgba(60,42,20,.09),0 4px 12px rgba(60,42,20,.07);
+  --s2:0 10px 34px rgba(50,34,14,.20);
+  --s3:0 28px 80px rgba(30,18,6,.42);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{background:#231708;color:var(--ink);font-family:var(--fb);overflow:hidden;font-size:15px;line-height:1.66;word-break:keep-all}
+#stage{position:fixed;inset:0;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 28%,#7A5530,#231708 76%)}
+#frame{position:relative;width:1280px;height:720px;transform-origin:center;border-radius:20px;overflow:hidden;box-shadow:var(--s3)}
+canvas{display:block;width:1280px;height:720px}
+
+/* ══ 상단 ══ */
+#top{position:absolute;inset:0 0 auto 0;padding:15px 18px;display:flex;gap:14px;align-items:flex-start;
+  justify-content:space-between;pointer-events:none;background:linear-gradient(180deg,rgba(26,16,6,.40),transparent)}
+.glass{background:rgba(253,249,240,.94);border-radius:16px;box-shadow:var(--s1);pointer-events:auto}
+#me{display:flex;align-items:center;gap:8px;padding:7px 9px 7px 15px;flex:none}
+#me b{font-family:var(--fd);font-size:13.5px;color:var(--ink-2);font-weight:400}
+#me input{width:100px;border:none;background:#F1E9D8;border-radius:10px;padding:6px 11px;font-family:var(--fb);font-size:13px;color:var(--ink);outline:none}
+#me input:focus{box-shadow:0 0 0 2px var(--gold)}
+#rail{display:flex;align-items:center;padding:9px 14px;gap:0}
+#rail .nd{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:0 3px;transition:.16s}
+#rail .nd:hover{transform:translateY(-2px)}
+#rail .dot{width:29px;height:29px;border-radius:11px;display:grid;place-items:center;font-family:var(--fd);
+  font-size:13.5px;color:#fff;background:#CBBCA2;transition:.2s;box-shadow:inset 0 -2px 0 rgba(0,0,0,.13)}
+#rail .nd.on .dot{background:linear-gradient(180deg,#43B189,var(--ok))}
+#rail .nd.cur .dot{transform:scale(1.2);box-shadow:0 0 0 4px rgba(237,178,69,.45),inset 0 -2px 0 rgba(0,0,0,.13)}
+#rail .nd small{font-family:var(--fd);font-size:10.5px;color:var(--ink-2);white-space:nowrap}
+#rail .nd.cur small{color:var(--gold-i)}
+#rail .lk{width:26px;height:3px;border-radius:2px;background:#E2D7C0;margin-bottom:15px}
+#rail .lk.on{background:#8FD3B8}
+#pct{font-family:var(--fd);font-size:13px;color:var(--gold-i);background:#FCEFD4;border-radius:10px;padding:5px 11px;margin-left:9px}
+
+/* ══ 하단 ══ */
+#hint{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);pointer-events:none;font-family:var(--fd);
+  font-size:14.5px;color:#FFF7E6;text-shadow:0 2px 8px rgba(26,14,2,.8);background:rgba(38,24,10,.36);
+  padding:8px 20px;border-radius:999px;backdrop-filter:blur(4px);transition:opacity .22s}
+#pad{position:absolute;right:16px;bottom:16px;display:flex;gap:9px}
+#pad button{width:56px;height:56px;border:none;border-radius:17px;cursor:pointer;font-family:var(--fd);font-size:19px;
+  color:var(--ink-2);background:rgba(253,249,240,.9);box-shadow:var(--s1)}
+#pad button:active{transform:translateY(2px)}
+#pad button.go{background:linear-gradient(180deg,var(--gold-h),var(--gold-d));color:#4A3008}
+#sv{position:absolute;left:18px;bottom:22px;font-family:var(--fd);font-size:12px;color:#FFF7E6;opacity:0;
+  transition:opacity .45s;background:rgba(38,24,10,.42);padding:5px 13px;border-radius:999px}
+#sv.on{opacity:1}
+
+/* ══ 대화창 ══ */
+#dlg{position:absolute;inset:0;display:grid;place-items:center;padding:20px;background:rgba(30,18,6,.55);
+  backdrop-filter:blur(5px);overflow:auto;animation:fi .2s ease}
+#dlg[hidden]{display:none}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+@keyframes up{from{opacity:0;transform:translateY(16px) scale(.99)}to{opacity:1;transform:none}}
+.card{width:100%;max-width:1010px;max-height:680px;display:flex;flex-direction:column;background:var(--paper);
+  border-radius:22px;box-shadow:var(--s2);overflow:hidden;animation:up .24s cubic-bezier(.2,.9,.3,1)}
+.ch{position:relative;display:flex;gap:14px;align-items:center;padding:16px 20px;color:#fff;flex:none;overflow:hidden}
+.ch::after{content:"";position:absolute;right:-40px;top:-70px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.09)}
+.ch .av{width:48px;height:48px;border-radius:15px;background:rgba(255,255,255,.22);flex:none;display:grid;
+  place-items:center;font-family:var(--fd);font-size:20px;box-shadow:inset 0 -2px 0 rgba(0,0,0,.1)}
+.ch h2{margin:0;font-family:var(--fd);font-size:22px;font-weight:400;letter-spacing:.3px}
+.ch p{margin:2px 0 0;font-size:12.5px;opacity:.88}
+.ch .rl{margin-left:auto;display:flex;gap:5px;align-items:center;z-index:1}
+.ch .rl i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.35)}
+.ch .rl i.on{background:#fff}
+.ch .rl i.me{width:22px;border-radius:5px;background:#fff}
+.ch .x{background:rgba(255,255,255,.2);border:none;color:#fff;cursor:pointer;width:34px;height:34px;
+  border-radius:11px;font-size:16px;flex:none;z-index:1;margin-left:10px}
+.ch .x:hover{background:rgba(255,255,255,.32)}
+.cb{padding:17px 22px 6px;overflow:auto;flex:1}
+.cf{padding:12px 20px 15px;display:flex;gap:9px;flex-wrap:wrap;align-items:center;border-top:1px solid var(--line);
+  background:linear-gradient(180deg,var(--paper-2),#F1E8D5);flex:none}
+.cf .sp{margin-left:auto;font-size:12px;color:var(--ink-3)}
+.say{background:#FFFDF6;border-left:4px solid var(--gold);border-radius:0 12px 12px 0;padding:12px 16px;
+  margin:0 0 16px;font-size:14.5px;color:var(--ink-2);box-shadow:var(--s1)}
+.say b{color:var(--ink)}
+
+/* ══ 폼 ══ */
+label.f{display:block;margin:0 0 4px}
+label.f>span{display:block;font-family:var(--fd);font-size:14.5px;color:#7A5A30;margin-bottom:5px}
+label.f>span em{font-style:normal;color:var(--ink-3);font-family:var(--fb);font-size:12px;margin-left:6px}
+.fg{margin:0 0 14px}
+.in{width:100%;padding:9px 12px;background:#fff;border:1.5px solid var(--line);border-radius:11px;
+  font-family:var(--fb);font-size:14.5px;color:var(--ink);outline:none;transition:.14s}
+.in::placeholder{color:#BEB19C}
+.in:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(237,178,69,.2)}
+textarea.in{min-height:84px;resize:vertical;line-height:1.72}
+select.in{cursor:pointer;-webkit-appearance:none;appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,var(--ink-3) 50%),linear-gradient(135deg,var(--ink-3) 50%,transparent 50%);
+  background-position:calc(100% - 15px) 17px,calc(100% - 10px) 17px;background-size:5px 5px;background-repeat:no-repeat}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.tip{font-size:13px;color:var(--ink-3);margin:-4px 0 13px;line-height:1.62}
+.sec{font-family:var(--fd);font-size:15px;color:#7A5A30;margin:20px 0 9px;padding-left:10px;border-left:4px solid var(--gold)}
+
+/* ══ 예시 칩 ══ */
+.ex{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin:5px 0 0;padding:6px 8px;
+  background:#FBF4E4;border-radius:10px;border:1px dashed #E4D6B6}
+.ex>span{font-family:var(--fd);font-size:11px;color:var(--gold-i);background:#F7E3B8;border-radius:6px;padding:2px 8px;flex:none}
+.ex button,.exb{font-family:var(--fb);font-size:12px;border:1px solid #E7D9BC;background:#fff;color:var(--ink-2);
+  border-radius:8px;padding:4px 10px;cursor:pointer;transition:.13s;text-align:left;line-height:1.4}
+.ex button:hover,.exb:hover{border-color:var(--gold);background:#FFF6E1;color:var(--ink)}
+.ex button:active{transform:translateY(1px)}
+
+.btn{font-family:var(--fd);font-size:15px;border:none;border-radius:12px;padding:10px 20px;cursor:pointer;
+  color:#4A3008;background:linear-gradient(180deg,var(--gold-h),var(--gold));box-shadow:0 3px 0 var(--gold-d);transition:.1s}
+.btn:active{transform:translateY(3px);box-shadow:0 0 0 var(--gold-d)}
+.btn.g{background:#fff;color:#7A5A30;box-shadow:0 3px 0 var(--line)}
+.btn.g:active{box-shadow:0 0 0 var(--line)}
+.btn.sm{font-size:13.5px;padding:7px 14px;box-shadow:0 2px 0 var(--gold-d)}
+.btn.g.sm{box-shadow:0 2px 0 var(--line)}
+.btn.dk{background:linear-gradient(180deg,#59B792,#2F9B72);color:#fff;box-shadow:0 3px 0 #217A59}
+.btn.rd{background:linear-gradient(180deg,#F0F0F0,#E4E4E4);color:#B3453A;box-shadow:0 3px 0 #CFCFCF}
+.btn.demo{background:linear-gradient(180deg,#F4EBFB,#E8DAF7);color:#6B4A98;box-shadow:0 2px 0 #D4BFEF;font-size:13px;padding:7px 14px}
+
+.tabs{display:flex;gap:6px;margin:0 0 15px;flex-wrap:wrap}
+.tabs button{font-family:var(--fd);font-size:13.5px;border:1.5px solid var(--line);background:#fff;color:var(--ink-2);
+  border-radius:999px;padding:7px 16px;cursor:pointer;transition:.15s}
+.tabs button.on{background:linear-gradient(180deg,#8A6236,#6E4C28);border-color:#6E4C28;color:#FFF7E6;box-shadow:var(--s1)}
+.tabs button i{font-style:normal;font-size:11px;background:var(--gold);color:#4A3008;border-radius:999px;padding:1px 6px;margin-left:5px}
+.tabs button.on i{background:rgba(255,255,255,.28);color:#fff}
+
+.rows{display:flex;flex-direction:column;gap:7px;margin:0 0 10px}
+.rw{display:grid;gap:7px;align-items:center;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:8px 9px}
+.rw.a{grid-template-columns:1.5fr 1.1fr 1.1fr 32px}
+.rw.b{grid-template-columns:1fr 1.2fr 32px}
+.del{border:none;background:var(--bad-bg);color:var(--bad);width:30px;height:30px;border-radius:9px;cursor:pointer;font-size:15px}
+.del:hover{background:#F6D8D2}
+.empty{text-align:center;color:var(--ink-3);font-size:13.5px;padding:20px;border:1.5px dashed var(--line);
+  border-radius:13px;background:#FFFDF6;margin-bottom:10px}
+
+.tw{overflow:auto;border:1.5px solid var(--line);border-radius:13px;background:#fff;margin:0 0 12px;max-height:250px}
+table.t{width:100%;border-collapse:collapse;font-size:13.5px;min-width:660px}
+table.t th{font-family:var(--fd);font-weight:400;font-size:12.5px;color:#7A5A30;background:var(--paper-2);
+  padding:9px;text-align:left;white-space:nowrap;position:sticky;top:0;z-index:2}
+table.t td{padding:5px 8px;border-top:1px solid var(--line-2);vertical-align:middle}
+table.t tr.sel td{background:#FFF7E3}
+table.t .in{padding:6px 8px;font-size:13.5px;border-width:1px}
+.num{text-align:right;font-family:var(--fd);color:var(--gold-i);white-space:nowrap}
+
+.quad{position:relative;height:238px;border-radius:15px;margin:0 0 13px;overflow:hidden;border:1.5px solid var(--line);
+  background:linear-gradient(135deg,#F2EFE4 0%,#F2EFE4 49%,#FCF3DE 51%,#F9E7C2 100%)}
+.quad .ax{position:absolute;background:#DFD2B6}
+.quad .lb{position:absolute;font-family:var(--fd);font-size:11px;color:var(--ink-3);padding:5px 9px}
+.quad .zn{position:absolute;font-family:var(--fd);font-size:11.5px;color:#AC9878;padding:8px 12px}
+.quad .pt{position:absolute;transform:translate(-50%,50%);cursor:pointer;transition:.2s}
+.quad .pt b{display:block;width:15px;height:15px;border-radius:50%;background:var(--c1);border:2.5px solid #fff;box-shadow:var(--s1)}
+.quad .pt.hot b{background:var(--bad)}
+.quad .pt.sel b{background:var(--gold);width:22px;height:22px;box-shadow:0 0 0 5px rgba(237,178,69,.32)}
+.quad .pt span{position:absolute;left:20px;top:-3px;font-size:11.5px;color:var(--ink-2);white-space:nowrap;
+  background:rgba(255,255,255,.86);border-radius:6px;padding:1px 6px}
+
+.step{background:#fff;border:1.5px solid var(--line);border-radius:14px;margin:0 0 9px;overflow:hidden;transition:.16s}
+.step.open{border-color:var(--gold);box-shadow:0 0 0 3px rgba(237,178,69,.16)}
+.sh{display:grid;grid-template-columns:30px 1fr 92px 130px 60px 30px;gap:7px;align-items:center;padding:8px 9px}
+.sh .no{width:27px;height:27px;border-radius:9px;display:grid;place-items:center;font-family:var(--fd);font-size:13px;color:#fff}
+.exp{border:none;background:var(--paper-2);border-radius:9px;width:28px;height:28px;cursor:pointer;color:var(--ink-2);font-size:12px}
+.exp:hover{background:var(--paper-3)}
+.sd{padding:4px 11px 12px;border-top:1px dashed var(--line);margin-top:3px}
+.sd .fg{margin-bottom:11px}
+.sd textarea.in{min-height:56px;font-size:13.5px}
+.bars{display:flex;height:28px;border-radius:9px;overflow:hidden;margin:0 0 5px;background:var(--paper-3);box-shadow:inset 0 1px 3px rgba(0,0,0,.08)}
+.bars div{display:grid;place-items:center;font-size:11px;color:#fff;font-family:var(--fd);overflow:hidden;white-space:nowrap;min-width:0}
+.lg{display:flex;gap:11px;flex-wrap:wrap;font-size:11.5px;color:var(--ink-3);margin:0 0 14px}
+.lg i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:4px}
+
+.al{border-radius:12px;padding:11px 15px;margin:0 0 13px;font-size:13.5px;line-height:1.66}
+.al.w{background:var(--warn-bg);border-left:4px solid var(--warn);color:#8A4E1E}
+.al.o{background:var(--ok-bg);border-left:4px solid var(--ok);color:#1E6B4E}
+.al.b{background:var(--bad-bg);border-left:4px solid var(--bad);color:#8A3226}
+.al ul{margin:6px 0 0;padding-left:18px}
+.al li{margin:3px 0}
+
+.gauge{display:flex;align-items:center;gap:16px;background:#fff;border:1.5px solid var(--line);border-radius:15px;padding:15px 17px;margin:0 0 13px}
+.ring{width:86px;height:86px;border-radius:50%;flex:none;display:grid;place-items:center;position:relative}
+.ring i{position:absolute;inset:10px;background:#fff;border-radius:50%}
+.ring b{position:relative;font-family:var(--fd);font-size:24px;color:var(--gold-i)}
+.chk{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:3px 18px;flex:1}
+.chk li{font-size:12.8px;color:var(--ink-3)}
+.chk li.y{color:var(--ok)}
+.chk li::before{content:"○ ";font-family:var(--fd)}
+.chk li.y::before{content:"● "}
+pre.md{background:#30251A;color:#F0DDB2;border-radius:14px;padding:16px 18px;font-size:12.5px;line-height:1.75;
+  overflow:auto;max-height:280px;white-space:pre-wrap;word-break:break-all;
+  font-family:ui-monospace,"SF Mono",Menlo,monospace;margin:0 0 13px;box-shadow:inset 0 2px 8px rgba(0,0,0,.25)}
+.toast{position:absolute;left:50%;top:80px;transform:translateX(-50%);z-index:30;background:rgba(38,24,10,.94);
+  color:#FFF7E6;font-family:var(--fd);font-size:14.5px;padding:11px 24px;border-radius:999px;box-shadow:var(--s2);animation:up .2s ease}
+@media(max-width:760px){.g2,.chk{grid-template-columns:1fr}
+  .sh{grid-template-columns:28px 1fr 30px}.sh select,.sh input[type=number]{grid-column:2/4}}
+</style>
+</head>
+<body>
+<div id="stage"><div id="frame">
+  <canvas id="cv" width="1280" height="720"></canvas>
+  <div id="top">
+    <div class="glass" id="me"><b>참가자</b><input id="nm" placeholder="이름" maxlength="12"></div>
+    <div class="glass" id="rail"></div>
+  </div>
+  <div id="hint"></div><div id="sv">저장됨</div>
+  <div id="pad">
+    <button data-k="ArrowLeft">←</button><button data-k="ArrowRight">→</button>
+    <button data-k=" ">↑</button><button class="go" data-k="Enter">입장</button>
+  </div>
+  <div id="dlg" hidden></div>
+</div></div>
+<script>
+"use strict";
+/*═════════ 저장 ═════════*/
+const KEY="skillforge:v3";
+const blank=()=>({who:"",tasks:[],sel:null,
+  def:{trigger:"",client:"",input:"",outName:"",outForm:"보고서 / 문서",sections:"",vol:""},
+  steps:[],branches:[],terms:[],rules:{must:"",never:"",tone:""},dod:"",ex:{good:"",bad:""},done:[]});
+let D=blank();
+try{const r=localStorage.getItem(KEY);if(r)D=Object.assign(blank(),JSON.parse(r));}catch(e){}
+let svt=null;
+function save(){try{localStorage.setItem(KEY,JSON.stringify(D));}catch(e){}
+  const s=document.getElementById("sv");s.classList.add("on");
+  clearTimeout(svt);svt=setTimeout(()=>s.classList.remove("on"),1100);}
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const att=s=>esc(s).replace(/\n/g,"&#10;");
+const lines=s=>String(s||"").split("\n").map(x=>x.trim()).filter(Boolean);
+const uid=()=>Math.random().toString(36).slice(2,9);
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+/*═════════ 예시 칩 ═════════*/
+function E(t,v,add){
+  const f=v.split("\n"),n=f.length;
+  let lab=f[0];if(lab.length>32)lab=lab.slice(0,32)+"…";
+  return `<button class="exb" data-t="${t}" data-v="${att(v)}"${add?' data-m="add"':""}>${esc(lab)}${n>1?` <span style="color:#B09A78">+${n-1}줄</span>`:""}</button>`;
+}
+const EX=(...b)=>`<div class="ex"><span>예시</span>${b.join("")}</div>`;
+function bindEx(el){
+  el.querySelectorAll("[data-t][data-v]").forEach(b=>b.onclick=()=>{
+    const p=b.dataset.t.split(":"),v=b.dataset.v,add=b.dataset.m==="add";
+    const put=(o,k)=>{o[k]=(add&&o[k]&&o[k].trim())?o[k].replace(/\s+$/,"")+"\n"+v:v;};
+    if(p[0]==="d")put(D.def,p[1]);
+    else if(p[0]==="r")put(D.rules,p[1]);
+    else if(p[0]==="e")put(D.ex,p[1]);
+    else if(p[0]==="dod")put(D,"dod");
+    else if(p[0]==="s"&&D.steps[+p[1]])put(D.steps[+p[1]],p[2]);
+    save();re();});
+}
+
+/*═════════ 데이터 ═════════*/
+const CYC=[
+ {k:"day",n:"매일",yr:230,hint:"아침에 컴퓨터를 켜고 <b>가장 먼저</b> 하는 일은? 하루에 두 번 이상 여는 파일·시스템은? 퇴근 전 꼭 확인하는 것은?"},
+ {k:"week",n:"매주",yr:48,hint:"월요일 아침 · 금요일 오후에 늘 하는 일은? 주간 회의 <b>전후로</b> 준비하고 정리하는 것은?"},
+ {k:"month",n:"매월",yr:12,hint:"월초 · 월말에 몰리는 일은? 매달 <b>같은 양식</b>으로 내는 문서는? 숫자만 바뀌는 보고는?"},
+ {k:"quar",n:"분기·연",yr:4,hint:"분기 · 반기 · 연 단위로 돌아오는 일은? <b>작년 이맘때</b> 했던 일을 떠올려 보세요."},
+ {k:"adhoc",n:"수시 요청",yr:24,hint:"누가 메일·메신저로 <b>요청하면</b> 시작되는 일은? 한 달에 두 번 이상 오는 요청은? '또 왔네' 싶은 것은?"}];
+const CYCN=k=>(CYC.find(c=>c.k===k)||CYC[0]).n;
+const CHIP={
+ day:["교육 문의 메일 회신","입과 신청 승인 처리","전일 수강 현황 확인","메일함 분류"],
+ week:["주간 교육 운영 현황 정리","주간 회의 자료 준비","강사 일정 조율","수료 현황 점검"],
+ month:["월간 교육 실적 보고서 작성","교육비 정산","교육 만족도 결과 요약","차월 과정 안내 공지"],
+ quar:["교육 수요조사 취합","연간 교육계획 수립","과정 개설 품의","승진자 이수 현황 확인"],
+ adhoc:["현업 교육 요청 검토","강사 섭외 메일 발송","교육 이수 증명 발급","교육 자료 수정 반영"]};
+const TYPES=[{k:"수집",c:"var(--c1)",r:"#5289CE"},{k:"가공",c:"var(--c2)",r:"#2F9B72"},{k:"판단",c:"var(--c3)",r:"#D9A032"},
+             {k:"작성",c:"var(--c4)",r:"#9270C2"},{k:"검증",c:"var(--c5)",r:"#D9705C"},{k:"전달",c:"var(--c6)",r:"#3C9CA0"}];
+const TC=k=>(TYPES.find(t=>t.k===k)||TYPES[0]).r;
+const ACT=["사람만 가능","AI 초안 → 사람 검토","AI 자동 처리"];
+const selT=()=>D.tasks.find(t=>t.id===D.sel)||null;
+const hrs=t=>((+(t&&t.yr)||0)*(+(t&&t.min)||0))/60;
+const scoreT=t=>hrs(t)*((+t.form||3)/5)*((+t.ai||3)/5);
+
+/*═════════ 정거장 5 ═════════*/
+const ST=[
+{id:"map",x:470,name:"업무 지도소",role:"측량가 한나",col:"#4E7FB8",roof:"#35598A",body:"#DFEAF6",
+ face:{skin:"#F3D0AC",hair:"#3A2A1C",cloth:"#4E7FB8"},
+ say:"어서 와요. <b>백지에 다 적어 보세요</b> 하면 아무도 못 적습니다. 그래서 서랍을 다섯 개 준비했어요.<br>주기별로 하나씩 열면서 옆 질문에 답하듯 꺼내세요. 문항마다 <b>예시</b>가 붙어 있으니 눌러서 시작해도 좋습니다."},
+{id:"sift",x:1170,name:"선별 언덕",role:"분석가 도윤",col:"#3F8F6F",roof:"#2B6A50",body:"#DDF1E7",
+ face:{skin:"#E9C29A",hair:"#241A12",cloth:"#3F8F6F"},
+ say:"꺼낸 걸 <b>체에 겁니다.</b> 중요한 일과 SKILL 로 만들 값어치가 있는 일은 달라요.<br>연간 몇 시간을 쓰는지 · 늘 같은 방식인지, 두 축으로 걸러 <b>오른쪽 위</b>에 남는 걸 고릅니다."},
+{id:"deal",x:1870,name:"설계 사무소",role:"서기 민서",col:"#8A6BB8",roof:"#65478D",body:"#E9E1F6",
+ face:{skin:"#F3D0AC",hair:"#4A2E1E",cloth:"#8A6BB8"},
+ say:"AI 는 <b>결과물의 모양</b>을 보고 일합니다. '잘 정리해 줘'로는 절대 같은 결과가 안 나와요.<br>언제 시작해 무엇을 받아 <b>어떤 칸을 가진 무엇</b>을 내놓는지 — 계약서처럼 못 박습니다."},
+{id:"anat",x:2570,name:"해부 공방",role:"목수 재현",col:"#C05A4A",roof:"#93372B",body:"#F8E0D9",
+ face:{skin:"#E9C29A",hair:"#2B1D14",cloth:"#C05A4A"},
+ say:"여기가 <b>제일 중요한 곳</b>입니다. 머릿속에서 자동으로 하던 일을 한 칸씩 꺼냅니다.<br>단계마다 <b>무엇을 보는지</b> · <b>신입이 자주 틀리는 것</b>, 그리고 <b>예외 상황</b>까지 — 그게 남이 못 쓰는 당신의 노하우입니다."},
+{id:"forge",x:3260,name:"SKILL 대장간",role:"대장장이 강수",col:"#6B4A8F",roof:"#4A3066",body:"#E7DFF3",
+ face:{skin:"#E1B58D",hair:"#1A1410",cloth:"#6B4A8F"},
+ say:"마지막입니다. 지킬 것 · 하지 말 것 · <b>다 됐다고 말할 수 있는 조건</b>을 정하면<br>두드려서 <b>SKILL.md</b> 한 장으로 뽑아 드립니다. 완성도 점수도 매겨 드려요."}];
+const WORLD=3620,CW=1280,CH=720,GY=500;
+const mark=id=>{if(!D.done.includes(id)){D.done.push(id);save();drawRail();}};
+
+/*═════════ 시연용 예시 ═════════*/
+const DT=[
+ {t:"교육 문의 메일 회신",cyc:"day",trg:"교육 문의 메일 수신",out:"회신 메일",yr:230,min:15,form:4,ai:5},
+ {t:"입과 신청 승인 처리",cyc:"day",trg:"신청 알림 도착",out:"승인 완료 내역",yr:230,min:10,form:5,ai:4},
+ {t:"주간 교육 운영 현황 정리",cyc:"week",trg:"금요일 오후",out:"주간 현황 표",yr:48,min:50,form:4,ai:4},
+ {t:"강사 일정 조율",cyc:"week",trg:"과정 개설 확정",out:"확정 일정표",yr:48,min:40,form:2,ai:2},
+ {t:"월간 교육 실적 보고서 작성",cyc:"month",trg:"매월 첫 영업일",out:"월간 실적 보고서",yr:12,min:180,form:5,ai:4},
+ {t:"교육 만족도 결과 요약",cyc:"month",trg:"설문 마감",out:"만족도 요약본",yr:12,min:120,form:4,ai:5},
+ {t:"교육비 정산",cyc:"month",trg:"월말 마감",out:"정산 내역서",yr:12,min:90,form:4,ai:3},
+ {t:"교육 수요조사 취합",cyc:"quar",trg:"조사 마감일",out:"수요 취합표",yr:2,min:480,form:3,ai:3},
+ {t:"현업 교육 요청 검토",cyc:"adhoc",trg:"요청 메일 수신",out:"검토 회신",yr:36,min:45,form:2,ai:3},
+ {t:"교육 이수 증명 발급",cyc:"adhoc",trg:"발급 요청 접수",out:"증명서 PDF",yr:60,min:12,form:5,ai:5}];
+const DEMO={
+ map(){DT.forEach(d=>{if(!D.tasks.some(t=>t.t===d.t))D.tasks.push(Object.assign({id:uid()},d));});},
+ sift(){if(!D.tasks.length)DEMO.map();
+   D.tasks.forEach(t=>{const d=DT.find(x=>x.t===t.t);if(d)Object.assign(t,{yr:d.yr,min:d.min,form:d.form,ai:d.ai});});
+   const best=[...D.tasks].sort((a,b)=>scoreT(b)-scoreT(a))[0];if(best)D.sel=best.id;},
+ deal(){D.def={trigger:"매월 첫 영업일 오전, 전월 교육 데이터가 마감되면",
+   client:"인사팀장 · 각 부서 교육 담당자",
+   input:"전월 과정별 운영 내역 (엑셀, 과정명·인원·일자·이수여부)\n만족도 설문 원본 (엑셀, 문항 12개)\n전월 보고서 (워드, 형식 참고용)",
+   outName:"월간 교육 실적 보고서",outForm:"보고서 / 문서",
+   sections:"1. 이달의 요약 — 3줄 이내, 핵심 수치 3개 포함\n2. 과정별 실적 표 — 과정명 · 대상인원 · 이수인원 · 이수율 · 만족도\n3. 전월 대비 변화와 그 원인\n4. 특이사항 및 미달 과정\n5. 다음 달 예정 과정",
+   vol:"A4 1~2장 · 표 포함 · 요약은 3줄 이내"};},
+ anat(){D.steps=[
+  {a:"전월 운영 내역과 설문 원본을 한 폴더에 모은다",type:"수집",actor:ACT[2],min:10,in:"LMS 다운로드 파일 2종",out:"정리된 원본 폴더",
+   watch:"파일명에 전월 연월이 맞는지 먼저 본다.\n과정 수가 전월과 크게 다르면 누락을 의심한다.",miss:"이번 달 파일 대신 지난달 파일을 그대로 받아 온다."},
+  {a:"중복·미응답을 걸러 데이터를 정제한다",type:"가공",actor:ACT[1],min:25,in:"원본 2종",out:"정제 데이터",
+   watch:"같은 사번이 두 번 있으면 뒤의 것만 남긴다.\n미응답 칸이 비어 있는지 0으로 들어왔는지 반드시 확인한다.",miss:"미응답을 0점으로 계산해 평균을 떨어뜨린다.\n중복 제출을 걸러내지 않는다."},
+  {a:"과정별 이수율과 만족도 평균을 계산한다",type:"가공",actor:ACT[2],min:20,in:"정제 데이터",out:"과정별 집계표",
+   watch:"이수율은 이수인원÷대상인원. 신청인원이 아니다.",miss:"분모를 신청인원으로 잡아 이수율이 부풀려진다."},
+  {a:"응답 수가 적은 과정을 판단해 표기 방식을 정한다",type:"판단",actor:ACT[0],min:15,in:"과정별 집계표",out:"표기 기준이 적용된 표",
+   watch:"응답이 20건 미만이면 평균을 쓰지 않고 '표본 부족'으로 적는다.\n부정 응답이 30%를 넘으면 자유응답 원문을 함께 붙인다.",miss:"응답 3건짜리 과정의 평균을 그대로 대표값처럼 쓴다."},
+  {a:"다섯 개 칸에 맞춰 보고서를 작성한다",type:"작성",actor:ACT[1],min:60,in:"표기 기준이 적용된 표",out:"보고서 초안",
+   watch:"요약 3줄에는 반드시 수치가 들어가야 한다.\n변화를 적을 때는 원인 추정을 한 문장 붙인다.",miss:"'전반적으로 양호하다' 같은 근거 없는 총평을 쓴다."},
+  {a:"표 합계와 원본 총계를 대조해 검증한다",type:"검증",actor:ACT[0],min:20,in:"보고서 초안",out:"검증 완료 보고서",
+   watch:"표의 인원 합계가 원본 총계와 일치하는지 숫자로 확인한다.\n본문 수치와 표 수치가 서로 어긋나지 않는지 본다.",miss:"표만 고치고 본문 문장의 옛 숫자를 그대로 둔다."},
+  {a:"팀장 검토 후 부서 담당자에게 공유한다",type:"전달",actor:ACT[0],min:10,in:"검증 완료 보고서",out:"공유 완료",
+   watch:"수신자에 신규 담당자가 반영됐는지 확인한다.",miss:""}];
+  D.branches=[
+   {cond:"운영 데이터가 마감일까지 안 올라왔을 때",act:"보고서를 미루지 않고, 해당 과정을 '집계 대기'로 표시한 채 나머지를 먼저 작성한다"},
+   {cond:"표 합계와 원본 총계가 어긋날 때",act:"추정해서 맞추지 않고 원본을 다시 받아 재집계한다. 그래도 안 맞으면 차이 건수를 특이사항에 적는다"},
+   {cond:"응답이 20건 미만인 과정일 때",act:"평균 점수 대신 '표본 부족'으로 적고 자유응답 원문을 3건까지 인용한다"},
+   {cond:"과정 분류 기준이 전년과 바뀌었을 때",act:"전월 대비 비교를 생략하고, 기준이 바뀐 사실을 특이사항 첫 줄에 명시한다"}];
+  D.rules.tone="숫자와 설명이 어긋나면 항상 원본 숫자를 따른다\n애매하면 추측해서 쓰지 말고 '확인 필요'로 남긴다\n원인을 단정할 수 없으면 '~로 보인다'가 아니라 '원인 미확인'으로 적는다";},
+ forge(){D.rules.must="모든 수치는 원본 파일에서만 가져온다\n주장에는 반드시 근거 숫자를 함께 적는다\n존댓말 · 평서형 · 개조식으로 쓴다\n표의 항목 순서와 이름을 임의로 바꾸지 않는다";
+  D.rules.never="없는 수치를 지어내거나 추정치를 확정처럼 쓰지 않는다\n응답자 실명·사번을 그대로 노출하지 않는다\n'전반적으로', '지속적인 개선이 필요' 같은 근거 없는 총평을 쓰지 않는다\n원본에 없는 과정을 임의로 합치거나 나누지 않는다";
+  D.terms=[{k:"입과",v:"교육 과정에 등록해 수강을 시작하는 것"},
+    {k:"이수율",v:"이수인원 ÷ 대상인원 × 100. 신청인원이 아니라 대상인원이 분모다"},
+    {k:"집합교육",v:"오프라인 강의장에서 진행하는 교육. 온라인 과정과 별도로 집계한다"}];
+  D.dod="다섯 개 칸이 모두 채워져 있다\nA4 2장을 넘지 않는다\n표의 인원 합계가 원본 총계와 일치한다\n요약 3줄에 수치가 최소 3개 들어 있다\n모든 개선 제안에 근거 수치가 붙어 있다\n응답 20건 미만 과정에 평균값이 쓰이지 않았다";
+  D.ex.good="이달 만족도는 4.3점으로 전월(4.0) 대비 0.3점 올랐다. 신규 실습형 과정 2건(응답 88건, 평균 4.6)이 반영된 결과로 보인다.";
+  D.ex.bad="전반적으로 만족도가 양호한 것으로 보이며, 향후 지속적인 개선이 필요할 것으로 판단된다.";}};
+
+/*═════════ 1. 업무 지도소 ═════════*/
+let tab1="day";
+function r_map(){
+  const cnt=k=>D.tasks.filter(t=>t.cyc===k&&t.t.trim()).length;
+  const c=CYC.find(x=>x.k===tab1),ls=D.tasks.filter(t=>t.cyc===tab1);
+  return `
+  <div class="tabs">${CYC.map(x=>`<button data-tab="${x.k}" class="${x.k===tab1?"on":""}">${x.n}${cnt(x.k)?`<i>${cnt(x.k)}</i>`:""}</button>`).join("")}</div>
+  <div class="say" style="border-color:var(--c1)">${c.hint}</div>
+  <p class="tip"><b>시작 신호</b>는 '무엇이 오면 이 일이 시작되는가'입니다 — 나중에 SKILL 의 실행 조건이 됩니다. 아래 예시를 눌러 바로 담으세요.</p>
+  ${EX(...(CHIP[tab1]||[]).map(n=>`<button data-chip="${esc(n)}">+ ${esc(n)}</button>`))}
+  <div class="rows" style="margin-top:12px">
+    ${ls.length?ls.map(t=>`<div class="rw a">
+      <input class="in" data-id="${t.id}" data-k="t" value="${esc(t.t)}" placeholder="업무 이름 — 동사로 끝내기">
+      <input class="in" data-id="${t.id}" data-k="trg" value="${esc(t.trg)}" placeholder="시작 신호">
+      <input class="in" data-id="${t.id}" data-k="out" value="${esc(t.out)}" placeholder="나오는 결과물">
+      <button class="del" data-del="${t.id}">×</button></div>`).join("")
+     :`<div class="empty">아직 비어 있어요 — 위 예시를 누르거나 「직접 추가」로 시작하세요</div>`}
+  </div>
+  <button class="btn g sm" id="add">+ 직접 추가</button>
+  <p class="tip" style="margin-top:15px">전체 <b>${D.tasks.filter(t=>t.t.trim()).length}</b>건 · 서랍을 <b>세 개 이상</b> 열어 보세요. 한 서랍만 보면 진짜 반복 업무를 놓칩니다.</p>`;
+}
+function b_map(el){
+  el.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{tab1=b.dataset.tab;re();});
+  el.querySelectorAll("[data-chip]").forEach(b=>b.onclick=()=>{
+    const n=b.dataset.chip;if(D.tasks.some(t=>t.t===n))return toast("이미 담겨 있어요");
+    const d=DT.find(x=>x.t===n)||{};
+    D.tasks.push({id:uid(),t:n,cyc:tab1,trg:d.trg||"",out:d.out||"",yr:d.yr||CYC.find(c=>c.k===tab1).yr,min:d.min||30,form:d.form||3,ai:d.ai||3});
+    save();re();});
+  el.querySelectorAll("[data-k]").forEach(i=>i.oninput=e=>{
+    const t=D.tasks.find(x=>x.id===e.target.dataset.id);if(t){t[e.target.dataset.k]=e.target.value;save();}});
+  el.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{
+    D.tasks=D.tasks.filter(t=>t.id!==b.dataset.del);if(D.sel&&!D.tasks.some(t=>t.id===D.sel))D.sel=null;save();re();});
+  el.querySelector("#add").onclick=()=>{
+    D.tasks.push({id:uid(),t:"",cyc:tab1,trg:"",out:"",yr:CYC.find(c=>c.k===tab1).yr,min:30,form:3,ai:3});save();re();
+    setTimeout(()=>{const a=el.querySelectorAll('[data-k="t"]');a.length&&a[a.length-1].focus();},30);};
+}
+function ok_map(){
+  if(D.tasks.filter(t=>t.t.trim()).length<5)return toast("다섯 건은 채워 주세요 — 적을수록 고를 게 없어집니다");
+  if(new Set(D.tasks.filter(t=>t.t.trim()).map(t=>t.cyc)).size<2)return toast("서랍을 두 개 이상 열어 보세요");
+  mark("map");toast("지도를 그렸어요 — 다음은 선별 언덕");shut();}
+
+/*═════════ 2. 선별 언덕 ═════════*/
+function r_sift(){
+  const ts=D.tasks.filter(t=>t.t.trim());
+  if(!ts.length)return `<div class="al b">아직 꺼낸 업무가 없어요. <b>업무 지도소</b>에 먼저 들르세요. 아래 <b>예시로 채우기</b>를 눌러도 됩니다.</div>`;
+  const mx=Math.max(1,...ts.map(hrs)),sorted=[...ts].sort((a,b)=>scoreT(b)-scoreT(a));
+  const t=selT();
+  return `
+  <p class="tip"><b>연 횟수</b>는 주기에 맞춰 넣어 뒀어요 — 실제와 다르면 고치세요. <b>정형성</b>은 늘 같은 순서·양식으로 하는 정도, <b>AI 적합</b>은 자료가 디지털이고 판단이 단순한 정도입니다.</p>
+  <div class="tw"><table class="t"><thead><tr>
+   <th style="width:28%">업무</th><th>주기</th><th>연 횟수</th><th>1회 분</th><th>정형성</th><th>AI 적합</th><th class="num">연 시간</th><th style="width:34px">묶기</th></tr></thead>
+  <tbody>${ts.map(t=>`<tr class="${t.id===D.sel?"sel":""}">
+   <td><input class="in" data-id="${t.id}" data-k="t" value="${esc(t.t)}"></td>
+   <td style="font-size:12.5px;color:var(--ink-3)">${CYCN(t.cyc)}</td>
+   <td><input class="in" style="width:64px" type="number" min="0" data-id="${t.id}" data-k="yr" value="${esc(t.yr)}"></td>
+   <td><input class="in" style="width:64px" type="number" min="0" data-id="${t.id}" data-k="min" value="${esc(t.min)}"></td>
+   <td><select class="in" data-id="${t.id}" data-k="form">${[1,2,3,4,5].map(v=>`<option value="${v}"${+t.form===v?" selected":""}>${["매번 다름","들쭉날쭉","보통","대체로 같음","항상 같음"][v-1]}</option>`).join("")}</select></td>
+   <td><select class="in" data-id="${t.id}" data-k="ai">${[1,2,3,4,5].map(v=>`<option value="${v}"${+t.ai===v?" selected":""}>${["어려움","낮음","보통","높음","아주 높음"][v-1]}</option>`).join("")}</select></td>
+   <td class="num">${hrs(t).toFixed(0)}h</td>
+   <td style="text-align:center"><input type="checkbox" data-mg="${t.id}"></td></tr>`).join("")}</tbody></table></div>
+  <div style="display:flex;gap:9px;margin:0 0 16px;flex-wrap:wrap;align-items:center">
+   <button class="btn g sm" id="merge">선택한 일 묶기</button>
+   <span class="tip" style="margin:0">이름만 다르고 사실상 같은 일이면 묶으세요 — 묶으면 연간 시간이 확 올라갑니다.</span></div>
+  <div class="quad">
+   <div class="ax" style="left:50%;top:0;bottom:0;width:1.5px"></div>
+   <div class="ax" style="top:50%;left:0;right:0;height:1.5px"></div>
+   <div class="zn" style="right:0;top:0;color:#B08A3A">1순위 — 지금 만들 것</div>
+   <div class="zn" style="left:0;top:0">짬날 때 만들 것</div>
+   <div class="zn" style="left:0;bottom:0">그냥 두기</div>
+   <div class="zn" style="right:0;bottom:0">사람이 판단할 일</div>
+   <div class="lb" style="right:6px;bottom:-2px">연간 투입시간 →</div>
+   <div class="lb" style="left:4px;top:0;writing-mode:vertical-rl">정형성 ↑</div>
+   ${ts.map(t=>{const x=clamp(Math.sqrt(hrs(t)/mx)*84+8,5,95),y=clamp(((+t.form||3)-1)/4*80+10,5,93);
+    return `<div class="pt ${t.id===D.sel?"sel":""} ${hrs(t)/mx>.5&&+t.form>=4?"hot":""}" data-pt="${t.id}" style="left:${x}%;bottom:${y}%"><b></b><span>${esc(t.t.slice(0,16))}</span></div>`;}).join("")}
+  </div>
+  <div class="fg"><label class="f"><span>오늘 만들 SKILL 하나 <em>점수 순으로 정렬해 뒀습니다</em></span>
+   <select class="in" id="pk"><option value="">— 고르세요 —</option>
+   ${sorted.map(x=>`<option value="${x.id}"${x.id===D.sel?" selected":""}>${esc(x.t)} — 연 ${hrs(x).toFixed(0)}시간 · 점수 ${scoreT(x).toFixed(0)}</option>`).join("")}</select></label></div>
+  ${t?`<div class="al o">고른 일 — <b>${esc(t.t)}</b> · 연간 <b>${hrs(t).toFixed(0)}시간</b>을 쓰고 있습니다. SKILL 로 절반만 줄여도 연 <b>${(hrs(t)/2).toFixed(0)}시간</b>이 돌아옵니다.</div>`:""}`;
+}
+function b_sift(el){
+  if(!el.querySelector("#pk"))return;
+  el.querySelectorAll('input[data-k="t"]').forEach(i=>i.oninput=e=>{
+    const t=D.tasks.find(x=>x.id===e.target.dataset.id);if(t){t.t=e.target.value;save();}});
+  el.querySelectorAll('input[type=number][data-k],select[data-k]').forEach(i=>i.onchange=e=>{
+    const t=D.tasks.find(x=>x.id===e.target.dataset.id);if(!t)return;t[e.target.dataset.k]=e.target.value;save();re();});
+  el.querySelectorAll("[data-pt]").forEach(p=>p.onclick=()=>{D.sel=p.dataset.pt;save();re();});
+  el.querySelector("#pk").onchange=e=>{D.sel=e.target.value||null;save();re();};
+  el.querySelector("#merge").onclick=()=>{
+    const ids=[...el.querySelectorAll("[data-mg]:checked")].map(c=>c.dataset.mg);
+    if(ids.length<2)return toast("두 개 이상 골라 주세요");
+    const ms=D.tasks.filter(t=>ids.includes(t.id)),nm=prompt("묶은 뒤 부를 이름",ms[0].t);
+    if(!nm)return;const k=ms[0];
+    k.t=nm;k.yr=ms.reduce((s,t)=>s+(+t.yr||0),0);
+    k.min=Math.round(ms.reduce((s,t)=>s+(+t.min||0),0)/ms.length);
+    k.trg=[...new Set(ms.map(t=>t.trg).filter(Boolean))].join(" · ");
+    k.out=[...new Set(ms.map(t=>t.out).filter(Boolean))].join(" · ");
+    D.tasks=D.tasks.filter(t=>t.id===k.id||!ids.includes(t.id));D.sel=k.id;save();re();toast("묶었어요");};
+}
+function ok_sift(){
+  if(!D.sel)return toast("오늘 만들 일을 하나 고르세요");
+  const t=selT();
+  if(!D.def.outName&&t.out)D.def.outName=t.out;
+  if(!D.def.trigger&&t.trg)D.def.trigger=t.trg;
+  save();mark("sift");toast("정했어요 — 다음은 설계 사무소");shut();}
+
+/*═════════ 3. 설계 사무소 ═════════*/
+function r_deal(){
+  const t=selT();
+  if(!t)return `<div class="al b">먼저 <b>선별 언덕</b>에서 오늘 만들 일을 고르고 오세요.</div>`;
+  const F=D.def,n=lines(F.sections).length;
+  return `
+  <div class="al o" style="margin-bottom:16px">오늘의 대상 — <b>${esc(t.t)}</b></div>
+  <div class="fg"><label class="f"><span>① 언제 시작하나 <em>사람이 아니라 '신호'로 적으세요</em></span>
+   <input class="in" data-d="trigger" value="${esc(F.trigger)}" placeholder="예: 매월 첫 영업일 오전, 전월 데이터가 마감되면"></label>
+   ${EX(E("d:trigger","매월 첫 영업일 오전, 전월 교육 데이터가 마감되면"),E("d:trigger","교육 종료 후 설문 마감 메일을 받으면"),E("d:trigger","현업에서 교육 요청 메일이 도착하면"),E("d:trigger","매주 금요일 오후 4시"))}</div>
+  <div class="fg"><label class="f"><span>② 누가 받아 보나 <em>읽는 사람이 달라지면 문체가 달라집니다</em></span>
+   <input class="in" data-d="client" value="${esc(F.client)}" placeholder="예: 인사팀장 · 각 부서 교육 담당자"></label>
+   ${EX(E("d:client","인사팀장 · 각 부서 교육 담당자"),E("d:client","경영진 (월례 보고용)"),E("d:client","교육 신청자 본인"),E("d:client","외부 강사"))}</div>
+  <div class="fg"><label class="f"><span>③ 무엇을 받아서 시작하나 <em>파일 이름과 형식까지 · 한 줄에 하나</em></span>
+   <textarea class="in" data-d="input" placeholder="전월 과정별 운영 내역 (엑셀)&#10;만족도 설문 원본 (엑셀, 문항 12개)">${esc(F.input)}</textarea></label>
+   ${EX(E("d:input","전월 과정별 운영 내역 (엑셀, 과정명·인원·일자·이수여부)",1),E("d:input","만족도 설문 원본 (엑셀, 문항 12개)",1),E("d:input","전월 보고서 (워드, 형식 참고용)",1),E("d:input","요청자 메일 원문",1))}</div>
+  <div class="g2">
+   <div class="fg"><label class="f"><span>④ 산출물 이름</span>
+    <input class="in" data-d="outName" value="${esc(F.outName)}" placeholder="예: 월간 교육 실적 보고서"></label>
+    ${EX(E("d:outName","월간 교육 실적 보고서"),E("d:outName","교육 만족도 요약본"),E("d:outName","교육 요청 검토 회신 메일"))}</div>
+   <div class="fg"><label class="f"><span>형식</span>
+    <select class="in" data-d="outForm">${["보고서 / 문서","메일 본문","표 / 스프레드시트","슬라이드","메신저 공지","요약 메모"].map(o=>`<option${F.outForm===o?" selected":""}>${o}</option>`).join("")}</select></label></div></div>
+  <div class="fg"><label class="f"><span>⑤ 산출물의 칸 구성 <em>여기가 핵심 — 결과물에 들어갈 항목을 한 줄에 하나씩</em></span>
+   <textarea class="in" data-d="sections" style="min-height:118px" placeholder="1. 이달의 요약 (3줄)&#10;2. 과정별 실적 표">${esc(F.sections)}</textarea></label>
+   ${EX(E("d:sections","1. 이달의 요약 — 3줄 이내, 핵심 수치 3개 포함",1),
+        E("d:sections","2. 과정별 실적 표 — 과정명 · 대상인원 · 이수인원 · 이수율 · 만족도",1),
+        E("d:sections","3. 전월 대비 변화와 그 원인",1),
+        E("d:sections","4. 특이사항 및 미달 과정",1),
+        E("d:sections","5. 다음 달 예정 과정",1))}</div>
+  <div class="fg"><label class="f"><span>⑥ 분량 기준</span>
+   <input class="in" data-d="vol" value="${esc(F.vol)}" placeholder="예: A4 1~2장 · 표 포함 · 요약은 3줄 이내"></label>
+   ${EX(E("d:vol","A4 1~2장 · 표 포함 · 요약은 3줄 이내"),E("d:vol","메일 본문 15줄 이내 · 첨부 없이"),E("d:vol","슬라이드 5장 이내"))}</div>
+  <div class="al ${F.trigger&&F.outName&&n>=3?"o":"w"}" style="margin-top:14px">한 줄 계약 — <b>${esc(F.trigger||"[언제]")}</b>, <b>${esc(F.client||"[누구]")}</b>에게 줄 <b>${esc(F.outName||"[산출물]")}</b>(${esc(F.outForm)})을 <b>${n}개 칸</b>으로 만든다.${n<3?" — 칸을 <b>세 개 이상</b> 적어야 AI 가 같은 모양을 반복해 냅니다.":""}</div>`;
+}
+function b_deal(el){
+  el.querySelectorAll("[data-d]").forEach(i=>{
+    i.oninput=e=>{D.def[e.target.dataset.d]=e.target.value;save();};
+    if(i.tagName==="SELECT")i.onchange=e=>{D.def[e.target.dataset.d]=e.target.value;save();};});
+  const tx=el.querySelector('[data-d="sections"]');if(tx)tx.onblur=()=>re();
+}
+function ok_deal(){
+  if(!D.def.trigger||!D.def.outName)return toast("시작 신호와 산출물 이름은 꼭 적어 주세요");
+  if(lines(D.def.sections).length<3)return toast("산출물의 칸을 세 개 이상 적어 주세요 — 여기가 정확도를 가릅니다");
+  mark("deal");toast("설계 완료 — 다음은 해부 공방");shut();}
+
+/*═════════ 4. 해부 공방 ═════════*/
+let openStep=-1;
+function r_anat(){
+  if(!selT())return `<div class="al b">먼저 <b>선별 언덕</b>에서 대상 업무를 고르고 오세요.</div>`;
+  if(!D.steps.length)D.steps=[{a:"",in:"",out:"",type:"수집",actor:ACT[1],min:10,watch:"",miss:""}];
+  if(!D.branches.length)D.branches=[{cond:"",act:""},{cond:"",act:""}];
+  const tot=D.steps.reduce((s,x)=>s+(+x.min||0),0)||1;
+  const f=D.steps.filter(s=>s.a.trim()),w=[];
+  if(f.length<4)w.push("단계가 <b>4개 미만</b>입니다. 뭉뚱그린 단계는 AI 가 건너뜁니다 — 더 잘게 쪼개세요.");
+  if(!D.steps.some(s=>s.type==="판단"&&s.a.trim()))w.push("<b>판단</b> 단계가 없습니다. 반복 업무에도 '어느 쪽으로 갈지 정하는' 자리가 반드시 있습니다. 없으면 SKILL 이 아니라 매크로입니다.");
+  if(!D.steps.some(s=>s.type==="검증"&&s.a.trim()))w.push("<b>검증</b> 단계가 없습니다. AI 결과를 무엇으로 확인하는지 넣어야 실전에서 씁니다.");
+  const no=f.filter(s=>!s.out.trim()).length;if(no)w.push(`<b>${no}개 단계</b>에 '나오는 것'이 비었습니다. 단계마다 산출물이 있어야 중간에 끊고 확인할 수 있습니다.`);
+  const nd=f.filter(s=>!s.watch.trim()&&!s.miss.trim()).length;if(nd)w.push(`<b>${nd}개 단계</b>의 속이 비었습니다. ⌄ 를 눌러 <b>무엇을 보는지</b>와 <b>흔한 실수</b>를 적으세요 — 이게 SKILL 의 값어치입니다.`);
+  if(D.branches.filter(b=>b.cond.trim()&&b.act.trim()).length<2)w.push("<b>갈림길</b>이 2개 미만입니다. SKILL 이 실전에서 무너지는 이유는 거의 예외 처리 누락입니다.");
+  return `
+  <p class="tip">한 칸 = 한 동작. <b>"~를 확인한다 / 대조한다 / 고른다 / 적는다"</b>처럼 동사로 끝내세요. ⌄ 를 누르면 속을 채웁니다.</p>
+  <div class="bars">${D.steps.map(s=>`<div style="flex:${Math.max(1,+s.min||1)};background:${TC(s.type)}" title="${esc(s.a)}">${(+s.min||0)>=Math.max(7,tot*.07)?(+s.min||0)+"분":""}</div>`).join("")}</div>
+  <div class="lg">${TYPES.map(t=>`<span><i style="background:${t.r}"></i>${t.k}</span>`).join("")}<span style="margin-left:auto">합계 <b>${tot}분</b></span></div>
+  ${D.steps.map((s,i)=>`<div class="step ${openStep===i?"open":""}">
+   <div class="sh"><div class="no" style="background:${TC(s.type)}">${i+1}</div>
+    <input class="in" data-i="${i}" data-k="a" value="${esc(s.a)}" placeholder="이 단계에서 하는 일">
+    <select class="in sel-r" data-i="${i}" data-k="type">${TYPES.map(t=>`<option${s.type===t.k?" selected":""}>${t.k}</option>`).join("")}</select>
+    <select class="in" data-i="${i}" data-k="actor">${ACT.map(a=>`<option${s.actor===a?" selected":""}>${a}</option>`).join("")}</select>
+    <input class="in num-r" type="number" min="0" data-i="${i}" data-k="min" value="${esc(s.min)}" title="분">
+    <button class="exp" data-ex="${i}">${openStep===i?"⌃":"⌄"}</button></div>
+   ${openStep===i?`<div class="sd">
+    <div class="g2">
+     <div class="fg"><label class="f"><span>필요한 것 (입력)</span><input class="in" data-i="${i}" data-k="in" value="${esc(s.in)}" placeholder="예: 설문 원본 엑셀"></label></div>
+     <div class="fg"><label class="f"><span>나오는 것 (출력)</span><input class="in" data-i="${i}" data-k="out" value="${esc(s.out)}" placeholder="예: 문항별 평균표"></label></div></div>
+    <div class="fg"><label class="f"><span>이때 실제로 무엇을 보나 <em>눈이 어디로 가는지, 어떤 칸을 먼저 확인하는지</em></span>
+     <textarea class="in" data-i="${i}" data-k="watch" placeholder="예: 응답 수부터 본다. 20건 아래면 평균을 내지 않는다.">${esc(s.watch)}</textarea></label>
+     ${EX(E(`s:${i}:watch`,"응답 수부터 본다. 20건 아래면 평균을 내지 않는다.",1),
+          E(`s:${i}:watch`,"이수율은 이수인원 ÷ 대상인원. 신청인원이 아니다.",1),
+          E(`s:${i}:watch`,"표 합계와 원본 총계가 일치하는지 숫자로 대조한다.",1),
+          E(`s:${i}:watch`,"자유응답은 부정 의견부터 훑는다.",1))}</div>
+    <div class="fg"><label class="f"><span>신입이 자주 틀리는 것 <em>이 줄이 그대로 SKILL 의 금지 사항이 됩니다</em></span>
+     <textarea class="in" data-i="${i}" data-k="miss" placeholder="예: 미응답을 0점으로 계산해 버린다.">${esc(s.miss)}</textarea></label>
+     ${EX(E(`s:${i}:miss`,"미응답을 0점으로 계산해 평균을 떨어뜨린다.",1),
+          E(`s:${i}:miss`,"중복 제출을 걸러내지 않는다.",1),
+          E(`s:${i}:miss`,"표만 고치고 본문 문장의 옛 숫자를 그대로 둔다.",1),
+          E(`s:${i}:miss`,"근거 없는 총평을 덧붙인다.",1))}</div>
+    <div style="display:flex;gap:7px">
+     <button class="btn g sm" data-up="${i}">↑ 위로</button><button class="btn g sm" data-dn="${i}">↓ 아래로</button>
+     <button class="btn g sm" data-rm="${i}" style="margin-left:auto;color:var(--bad)">이 단계 지우기</button></div>
+   </div>`:""}</div>`).join("")}
+  <div style="display:flex;gap:8px;margin:2px 0 6px;flex-wrap:wrap">
+   <button class="btn g sm" id="add">+ 단계 추가</button>
+   <button class="btn g sm" id="ip">막히면 — AI 인터뷰 프롬프트 복사</button></div>
+
+  <div class="sec">갈림길과 예외 — "보통은 이렇게, 그런데 이런 경우엔"</div>
+  <p class="tip">평소 말로만 하던 예외를 글로 옮기는 자리입니다. 이 표가 있어야 AI 가 헤매지 않습니다.</p>
+  ${EX(...["자료가 늦게 올 때","숫자가 안 맞을 때","응답·건수가 너무 적을 때","기준이 바뀌었을 때","급하게 요청받았을 때"].map(c=>`<button data-bc="${esc(c)}">+ ${esc(c)}</button>`))}
+  <div class="rows" style="margin-top:11px">${D.branches.map((b,i)=>`<div class="rw b">
+   <input class="in" data-bi="${i}" data-bk="cond" value="${esc(b.cond)}" placeholder="이런 경우엔 —">
+   <input class="in" data-bi="${i}" data-bk="act" value="${esc(b.act)}" placeholder="이렇게 한다">
+   <button class="del" data-brm="${i}">×</button></div>`).join("")}</div>
+  <button class="btn g sm" id="badd">+ 갈림길 추가</button>
+  ${EX(E("r:tone","자료가 마감일까지 안 오면 해당 과정을 '집계 대기'로 표시하고 나머지를 먼저 작성한다"))}
+
+  <div class="sec">헷갈릴 때의 일반 판단 기준</div>
+  <div class="fg"><textarea class="in" id="tone" placeholder="예: 숫자와 설명이 어긋나면 항상 원본 숫자를 따른다">${esc(D.rules.tone)}</textarea>
+   ${EX(E("r:tone","숫자와 설명이 어긋나면 항상 원본 숫자를 따른다",1),
+        E("r:tone","애매하면 추측해서 쓰지 말고 '확인 필요'로 남긴다",1),
+        E("r:tone","원인을 단정할 수 없으면 '원인 미확인'으로 적는다",1))}</div>
+  ${w.length?`<div class="al w"><b>다듬을 곳</b><ul>${w.map(x=>`<li>${x}</li>`).join("")}</ul></div>`
+   :`<div class="al o">잘 해부됐습니다. 단계 · 판단 · 검증 · 세부 · 갈림길이 모두 들어 있어요.</div>`}`;
+}
+function b_anat(el){
+  if(!el.querySelector("#add"))return;
+  el.querySelectorAll('input[type=text],input:not([type]),textarea').forEach(i=>{
+    if(i.dataset.i!==undefined&&i.dataset.k)i.oninput=e=>{
+      const s=D.steps[+e.target.dataset.i];if(s){s[e.target.dataset.k]=e.target.value;save();}};});
+  el.querySelectorAll("select[data-k]").forEach(i=>i.onchange=e=>{
+    const s=D.steps[+e.target.dataset.i];if(!s)return;s[e.target.dataset.k]=e.target.value;save();
+    if(e.target.dataset.k==="type")re();});
+  el.querySelectorAll('input[type=number][data-k]').forEach(i=>i.onchange=e=>{
+    const s=D.steps[+e.target.dataset.i];if(s){s.min=e.target.value;save();re();}});
+  el.querySelectorAll("[data-ex]").forEach(b=>b.onclick=()=>{openStep=openStep===+b.dataset.ex?-1:+b.dataset.ex;re();});
+  el.querySelectorAll("[data-up]").forEach(b=>b.onclick=()=>{const i=+b.dataset.up;
+    if(i>0){[D.steps[i-1],D.steps[i]]=[D.steps[i],D.steps[i-1]];openStep=i-1;save();re();}});
+  el.querySelectorAll("[data-dn]").forEach(b=>b.onclick=()=>{const i=+b.dataset.dn;
+    if(i<D.steps.length-1){[D.steps[i+1],D.steps[i]]=[D.steps[i],D.steps[i+1]];openStep=i+1;save();re();}});
+  el.querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{D.steps.splice(+b.dataset.rm,1);openStep=-1;save();re();});
+  el.querySelector("#add").onclick=()=>{D.steps.push({a:"",in:"",out:"",type:"가공",actor:ACT[1],min:10,watch:"",miss:""});
+    openStep=D.steps.length-1;save();re();};
+  el.querySelectorAll("[data-bk]").forEach(i=>i.oninput=e=>{D.branches[+e.target.dataset.bi][e.target.dataset.bk]=e.target.value;save();});
+  el.querySelectorAll("[data-brm]").forEach(b=>b.onclick=()=>{D.branches.splice(+b.dataset.brm,1);save();re();});
+  el.querySelectorAll("[data-bc]").forEach(b=>b.onclick=()=>{D.branches.push({cond:b.dataset.bc,act:""});save();re();});
+  el.querySelector("#badd").onclick=()=>{D.branches.push({cond:"",act:""});save();re();};
+  el.querySelector("#tone").oninput=e=>{D.rules.tone=e.target.value;save();};
+  el.querySelector("#ip").onclick=()=>cp(`나는 "${selT()?selT().t:"어떤 반복 업무"}"를 정기적으로 하는 담당자입니다.
+이 업무를 남이 그대로 따라 할 수 있는 절차서로 만들려고 합니다.
+
+당신은 업무 분석 인터뷰어입니다. 아래 규칙으로 나를 인터뷰해 주세요.
+1. 한 번에 질문은 하나만. 짧게.
+2. 내가 "정리한다", "확인한다"처럼 뭉뚱그려 답하면 "구체적으로 무엇을 보고, 무엇을 기준으로 정하나요?"라고 반드시 되물을 것.
+3. 단계마다 (입력 / 동작 / 출력 / 판단 기준 / 흔한 실수)가 채워질 때까지 파고들 것.
+4. 예외 상황을 최소 세 가지 캐낼 것 — "이런 경우엔 어떻게 하나요?"
+5. 질문이 10개를 넘으면 지금까지 나온 내용을 단계 표로 정리해 보여 주고 빠진 칸을 짚어 줄 것.
+
+첫 질문부터 시작해 주세요.`);
+}
+function ok_anat(){
+  if(D.steps.filter(s=>s.a.trim()).length<4)return toast("단계를 네 개 이상 채워 주세요");
+  if(!D.steps.some(s=>s.a.trim()&&(s.watch.trim()||s.miss.trim())))return toast("단계 하나라도 속을 채워 주세요 — 거기에 노하우가 들어갑니다");
+  if(D.branches.filter(b=>b.cond.trim()&&b.act.trim()).length<2)return toast("갈림길을 두 개 이상 채워 주세요 — 예외 없는 업무는 없습니다");
+  mark("anat");toast("해부 완료 — 마지막은 SKILL 대장간");shut();}
+
+/*═════════ 5. 대장간 ═════════*/
+let tab5="rule";
+function slug(s){return String(s||"skill").trim().replace(/\s+/g,"-").replace(/[^\w가-힣-]/g,"").slice(0,44)||"skill";}
+function quality(){
+  const t=selT()||{},F=D.def,R=D.rules,f=D.steps.filter(s=>s.a.trim());
+  const c=[["대상 업무를 골랐다",!!t.t,7],["시작 신호가 구체적이다",(F.trigger||"").length>=6,8],
+   ["산출물 칸이 3개 이상이다",lines(F.sections).length>=3,13],["입력물을 적었다",lines(F.input).length>=1,6],
+   ["절차가 4단계 이상이다",f.length>=4,11],["판단 단계가 있다",D.steps.some(s=>s.type==="판단"&&s.a.trim()),9],
+   ["검증 단계가 있다",D.steps.some(s=>s.type==="검증"&&s.a.trim()),8],
+   ["단계마다 출력이 있다",f.length>0&&f.every(s=>s.out.trim()),7],
+   ["노하우를 2개 이상 적었다",f.filter(s=>s.watch.trim()||s.miss.trim()).length>=2,10],
+   ["갈림길이 2개 이상이다",D.branches.filter(b=>b.cond.trim()&&b.act.trim()).length>=2,9],
+   ["금지 사항이 2줄 이상이다",lines(R.never).length>=2,6],["완료 기준이 3줄 이상이다",lines(D.dod).length>=3,9],
+   ["좋은 예를 적었다",!!D.ex.good.trim(),4],["사내 용어를 풀었다",D.terms.some(x=>x.k.trim()&&x.v.trim()),3]];
+  const tot=c.reduce((s,x)=>s+x[2],0),got=c.reduce((s,x)=>s+(x[1]?x[2]:0),0);
+  return {c,pct:Math.round(got/tot*100)};
+}
+function buildMD(){
+  const t=selT()||{},F=D.def,R=D.rules,L=[];
+  const li=s=>lines(s).length?lines(s).map(x=>"- "+x).join("\n"):"- (적지 않음)";
+  const title=F.outName||t.t||"이름 없는 SKILL";
+  L.push("---","name: "+slug(t.t||title),
+   "description: "+(F.trigger?F.trigger+" 시점에 ":"")+(t.t||title)+" 하여 "+(F.outName||"산출물")+"을(를) 만든다."+(F.client?" 수신: "+F.client+".":""),
+   "---","","# "+title,"",
+   "## 1. 언제 실행하나",F.trigger||"(적지 않음)","");
+  if(F.client)L.push("**받아 보는 사람** — "+F.client,"");
+  L.push("## 2. 무엇을 받아서 시작하나",li(F.input),"",
+   "## 3. 무엇을 내놓아야 하나","**"+(F.outName||"산출물")+"** ("+F.outForm+")"+(F.vol?" · "+F.vol:""),"",
+   "아래 칸을 모두 채운다. 칸의 순서와 이름을 바꾸지 않는다.","",li(F.sections),"","## 4. 절차","");
+  const f=D.steps.filter(s=>s.a.trim());
+  if(!f.length)L.push("(적지 않음)","");
+  f.forEach((s,i)=>{
+    L.push("### "+(i+1)+". "+s.a.trim()+"  `"+s.type+"` `"+s.actor+"`"+(s.min?" `"+s.min+"분`":""));
+    if(s.in.trim())L.push("- 입력 — "+s.in.trim());
+    if(s.out.trim())L.push("- 출력 — "+s.out.trim());
+    lines(s.watch).forEach(x=>L.push("- 확인할 것 — "+x));
+    lines(s.miss).forEach(x=>L.push("- 주의(흔한 실수) — "+x));
+    L.push("");});
+  const br=D.branches.filter(b=>b.cond.trim());
+  L.push("## 5. 갈림길과 예외","");
+  if(br.length){L.push("| 이런 경우엔 | 이렇게 한다 |","|---|---|");
+    br.forEach(b=>L.push("| "+b.cond.trim()+" | "+(b.act.trim()||"(적지 않음)")+" |"));L.push("");}
+  else L.push("(적지 않음)","");
+  L.push("## 6. 판단 기준",li(R.tone),"","## 7. 반드시 지킬 것",li(R.must),"","## 8. 절대 하지 말 것",li(R.never));
+  const am=D.steps.map(s=>lines(s.miss)).flat();am.forEach(x=>L.push("- "+x));L.push("");
+  const tm=D.terms.filter(x=>x.k.trim()&&x.v.trim());
+  if(tm.length){L.push("## 9. 용어","");tm.forEach(x=>L.push("- **"+x.k.trim()+"** — "+x.v.trim()));L.push("");}
+  L.push("## 10. 완료 기준","","아래를 모두 만족해야 끝난 것이다. 하나라도 어긋나면 그 부분을 다시 처리한다.","",
+   lines(D.dod).map(x=>"- [ ] "+x).join("\n")||"- [ ] (적지 않음)","");
+  if(D.ex.good.trim()||D.ex.bad.trim()){L.push("## 11. 예시","");
+   if(D.ex.good.trim())L.push("**이렇게 쓴다**","","> "+D.ex.good.trim().split("\n").join("\n> "),"");
+   if(D.ex.bad.trim())L.push("**이렇게 쓰지 않는다**","","> "+D.ex.bad.trim().split("\n").join("\n> "),"");}
+  L.push("---","","만든 사람: "+(D.who||"-")+" · "+new Date().toLocaleDateString("ko-KR")+
+   (t.t?" · 현재 연간 투입 약 "+hrs(t).toFixed(0)+"시간":""));
+  return L.join("\n");
+}
+function r_forge(){
+  if(!D.terms.length)D.terms=[{k:"",v:""}];
+  const R=D.rules,q=quality();
+  const head=`<div class="tabs">
+   <button data-t5="rule" class="${tab5==="rule"?"on":""}">① 규칙과 기준</button>
+   <button data-t5="out" class="${tab5==="out"?"on":""}">② SKILL 뽑기 <i>${q.pct}</i></button></div>`;
+  if(tab5==="rule")return head+`
+  <div class="g2">
+   <div class="fg"><label class="f"><span>반드시 지킬 것 <em>한 줄에 하나</em></span>
+    <textarea class="in" data-r="must" style="min-height:100px" placeholder="수치는 원본 파일에서만 가져온다">${esc(R.must)}</textarea></label>
+    ${EX(E("r:must","모든 수치는 원본 파일에서만 가져온다",1),E("r:must","주장에는 반드시 근거 숫자를 함께 적는다",1),E("r:must","존댓말 · 평서형 · 개조식으로 쓴다",1),E("r:must","표의 항목 순서와 이름을 임의로 바꾸지 않는다",1))}</div>
+   <div class="fg"><label class="f"><span>절대 하지 말 것 <em>한 줄에 하나</em></span>
+    <textarea class="in" data-r="never" style="min-height:100px" placeholder="없는 수치를 지어내지 않는다">${esc(R.never)}</textarea></label>
+    ${EX(E("r:never","없는 수치를 지어내거나 추정치를 확정처럼 쓰지 않는다",1),E("r:never","응답자 실명·사번을 그대로 노출하지 않는다",1),E("r:never","'전반적으로 양호' 같은 근거 없는 총평을 쓰지 않는다",1))}</div></div>
+  <div class="sec">우리 회사에서만 쓰는 말</div>
+  <p class="tip">AI 는 사내 용어를 모릅니다. 세 개만 풀어 줘도 오역이 눈에 띄게 줄어듭니다.</p>
+  <div class="rows">${D.terms.map((t,i)=>`<div class="rw b">
+   <input class="in" data-ti="${i}" data-tk="k" value="${esc(t.k)}" placeholder="용어 (예: 입과)">
+   <input class="in" data-ti="${i}" data-tk="v" value="${esc(t.v)}" placeholder="뜻 (예: 교육 과정에 등록해 수강을 시작하는 것)">
+   <button class="del" data-trm="${i}">×</button></div>`).join("")}</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+   <button class="btn g sm" id="addt">+ 용어 추가</button>
+   <button class="btn g sm" id="ext">예시 용어 3개 넣기</button></div>
+  <div class="sec">다 됐다고 말할 수 있는 조건</div>
+  <div class="fg"><label class="f"><span><em>체크리스트가 됩니다 · 한 줄에 하나 · 숫자를 넣으면 더 좋습니다</em></span>
+   <textarea class="in" id="dod" style="min-height:100px" placeholder="다섯 개 칸이 모두 채워져 있다">${esc(D.dod)}</textarea></label>
+   ${EX(E("dod","다섯 개 칸이 모두 채워져 있다",1),E("dod","A4 2장을 넘지 않는다",1),E("dod","표의 인원 합계가 원본 총계와 일치한다",1),E("dod","요약 3줄에 수치가 최소 3개 들어 있다",1),E("dod","모든 개선 제안에 근거 수치가 붙어 있다",1))}</div>
+  <div class="g2">
+   <div class="fg"><label class="f"><span>좋은 예 <em>실제 문장 한두 줄</em></span>
+    <textarea class="in" data-e="good" style="min-height:74px">${esc(D.ex.good)}</textarea></label>
+    ${EX(E("e:good","이달 만족도는 4.3점으로 전월(4.0) 대비 0.3점 올랐다. 신규 실습형 과정 2건(응답 88건, 평균 4.6)이 반영된 결과로 보인다."))}</div>
+   <div class="fg"><label class="f"><span>나쁜 예 <em>흔히 나오는 실패 문장</em></span>
+    <textarea class="in" data-e="bad" style="min-height:74px">${esc(D.ex.bad)}</textarea></label>
+    ${EX(E("e:bad","전반적으로 만족도가 양호한 것으로 보이며, 향후 지속적인 개선이 필요할 것으로 판단된다."))}</div></div>`;
+  const md=buildMD(),miss=q.c.filter(x=>!x[1]);
+  const col=q.pct>=85?"#2F9B72":q.pct>=60?"#EDB245":"#CE5B4C";
+  return head+`
+  <div class="gauge"><div class="ring" style="background:conic-gradient(${col} ${q.pct*3.6}deg,#EBE0C9 0)"><i></i><b>${q.pct}</b></div>
+   <ul class="chk">${q.c.map(x=>`<li class="${x[1]?"y":""}">${x[0]}</li>`).join("")}</ul></div>
+  ${q.pct>=85?`<div class="al o">바로 쓸 수 있는 수준입니다. 내려받아 실제 업무 한 건에 돌려 보세요.</div>`
+   :`<div class="al w"><b>채우면 확 좋아지는 곳</b><ul>${miss.slice(0,4).map(x=>`<li>${x[0]}</li>`).join("")}</ul></div>`}
+  <pre class="md">${esc(md)}</pre>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+   <button class="btn" id="dl">SKILL.md 내려받기</button>
+   <button class="btn rd" id="rs">초기화 · 처음부터</button>
+   <button class="btn g sm" id="cpb">전체 복사</button>
+   <button class="btn dk sm" id="ab">A / B 시험 프롬프트</button>
+   <button class="btn g sm" id="bk">작업 백업</button>
+   <button class="btn g sm" id="im">불러오기</button>
+   <input type="file" id="fi" accept=".json" hidden></div>
+  <div class="al w" style="margin-top:15px"><b>마지막 과제</b> — 실제 자료 한 건으로 ①이 SKILL 을 주고 한 번, ②아무것도 안 주고 한 번 돌려 나란히 보세요.
+  차이가 안 나면 「산출물의 칸」과 「완료 기준」이 아직 두루뭉술한 겁니다. 그땐 <b>설계 사무소</b>로 되돌아가세요.</div>`;
+}
+function b_forge(el){
+  el.querySelectorAll("[data-t5]").forEach(b=>b.onclick=()=>{tab5=b.dataset.t5;re();});
+  if(tab5==="rule"){
+    el.querySelectorAll("[data-r]").forEach(i=>i.oninput=e=>{D.rules[e.target.dataset.r]=e.target.value;save();});
+    el.querySelectorAll("[data-e]").forEach(i=>i.oninput=e=>{D.ex[e.target.dataset.e]=e.target.value;save();});
+    el.querySelectorAll("[data-tk]").forEach(i=>i.oninput=e=>{D.terms[+e.target.dataset.ti][e.target.dataset.tk]=e.target.value;save();});
+    el.querySelectorAll("[data-trm]").forEach(b=>b.onclick=()=>{D.terms.splice(+b.dataset.trm,1);save();re();});
+    el.querySelector("#addt").onclick=()=>{D.terms.push({k:"",v:""});save();re();};
+    el.querySelector("#ext").onclick=()=>{
+      [["입과","교육 과정에 등록해 수강을 시작하는 것"],["이수율","이수인원 ÷ 대상인원 × 100. 신청인원이 아니라 대상인원이 분모다"],
+       ["집합교육","오프라인 강의장에서 진행하는 교육. 온라인 과정과 별도로 집계한다"]]
+       .forEach(([k,v])=>{if(!D.terms.some(t=>t.k===k))D.terms.push({k,v});});
+      D.terms=D.terms.filter(t=>t.k.trim()||t.v.trim());save();re();};
+    const dd=el.querySelector("#dod");if(dd)dd.oninput=e=>{D.dod=e.target.value;save();};
+    return;
+  }
+  const md=buildMD();
+  el.querySelector("#dl").onclick=()=>{
+    const b=new Blob(["\ufeff"+md],{type:"text/markdown;charset=utf-8"});
+    const a=document.createElement("a");a.href=URL.createObjectURL(b);
+    a.download=slug((selT()||{}).t||"skill")+".md";
+    document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+    mark("forge");toast("내려받았어요");};
+  el.querySelector("#rs").onclick=()=>{
+    if(!confirm("지금까지 적은 내용을 모두 지우고 처음부터 시작할까요?\n\n되돌릴 수 없습니다. 필요하면 먼저 「작업 백업」을 눌러 저장하세요."))return;
+    D=blank();try{localStorage.removeItem(KEY);}catch(e){}
+    openStep=-1;tab1="day";tab5="rule";$("#nm").value="";
+    P.x=ST[0].x-180;cam=clamp(P.x-CW/2,0,WORLD-CW);
+    drawRail();shut();toast("처음으로 되돌렸어요 — 다시 시작하세요");};
+  el.querySelector("#cpb").onclick=()=>cp(md);
+  el.querySelector("#ab").onclick=()=>cp(`아래 SKILL 문서를 업무 지시서로 삼아 입력을 처리해 주세요.
+문서의 절차 · 갈림길 · 금지 사항 · 완료 기준을 그대로 따릅니다. 완료 기준은 마지막에 하나씩 체크해 보여 주세요.
+
+그다음 같은 입력을 SKILL 문서 없이 평소 하던 대로 한 번 더 처리해서, 두 결과를 나란히 보여 주세요.
+마지막에 아래 셋을 각각 세 줄 이내로 적어 주세요.
+1) SKILL 로 나아진 점
+2) 여전히 틀리거나 빠진 점
+3) 이 SKILL 문서에서 고쳐야 할 문장 — 어느 항목의 어떤 표현이 모호한지
+
+SKILL 문서:
+"""
+${md}
+"""
+
+입력:
+"""
+<여기에 실제 자료 한 건을 붙여 넣으세요>
+"""`);
+  el.querySelector("#bk").onclick=()=>{
+    const b=new Blob([JSON.stringify(D,null,2)],{type:"application/json"});
+    const a=document.createElement("a");a.href=URL.createObjectURL(b);
+    a.download="skill-workshop-"+(D.who||"me")+".json";
+    document.body.appendChild(a);a.click();a.remove();toast("백업했어요");};
+  el.querySelector("#im").onclick=()=>el.querySelector("#fi").click();
+  el.querySelector("#fi").onchange=e=>{
+    const f=e.target.files[0];if(!f)return;const r=new FileReader();
+    r.onload=()=>{try{D=Object.assign(blank(),JSON.parse(r.result));save();re();drawRail();
+      $("#nm").value=D.who;toast("불러왔어요");}catch(x){toast("파일을 읽지 못했어요");}};
+    r.readAsText(f);};
+}
+
+/*═════════ 대화창 ═════════*/
+const CARD={map:[r_map,b_map,ok_map,"담아 두기","map"],sift:[r_sift,b_sift,ok_sift,"이걸로 정하기","sift"],
+ deal:[r_deal,b_deal,ok_deal,"설계 확정","deal"],anat:[r_anat,b_anat,ok_anat,"해부 마치기","anat"],
+ forge:[r_forge,b_forge,null,"","forge"]};
+let cur=null;
+function talk(s){cur=s;re();$("#dlg").hidden=false;}
+function re(){
+  if(!cur)return;
+  const i=ST.indexOf(cur),[rf,bf,okf,okn,dk]=CARD[cur.id];
+  $("#dlg").innerHTML=`<div class="card">
+   <div class="ch" style="background:linear-gradient(135deg,${cur.col},${cur.roof})">
+    <div class="av">${i+1}</div><div><h2>${esc(cur.name)}</h2><p>${esc(cur.role)}</p></div>
+    <div class="rl">${ST.map((s,j)=>`<i class="${j===i?"me":(D.done.includes(s.id)?"on":"")}"></i>`).join("")}</div>
+    <button class="x" id="X">✕</button></div>
+   <div class="cb"><div class="say">${cur.say}</div>${rf()}</div>
+   <div class="cf">${okf?`<button class="btn" id="OK">${okn}</button>`:""}
+    <button class="btn demo" id="DEMO">예시로 한 번에 채우기</button>
+    <button class="btn g" id="CL">닫기</button>
+    <span class="sp">적는 즉시 저장됩니다 · Esc 로 닫기</span></div></div>`;
+  const el=$("#dlg");
+  bf(el);bindEx(el);
+  el.querySelector("#X").onclick=shut;el.querySelector("#CL").onclick=shut;
+  const ok=el.querySelector("#OK");if(ok)ok.onclick=okf;
+  el.querySelector("#DEMO").onclick=()=>{
+    if(!confirm("이 단계를 예시 내용으로 채웁니다.\n(교육 시연용 — 이미 적은 내용은 덮어쓸 수 있어요)\n\n계속할까요?"))return;
+    DEMO[dk]&&DEMO[dk]();save();re();toast("예시로 채웠어요");};
+}
+function shut(){$("#dlg").hidden=true;cur=null;}
+function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;
+  $("#frame").appendChild(t);setTimeout(()=>t.remove(),2400);}
+async function cp(t){try{await navigator.clipboard.writeText(t);toast("복사했어요");}
+  catch(e){const a=document.createElement("textarea");a.value=t;a.style.cssText="position:fixed;opacity:0";
+   document.body.appendChild(a);a.select();
+   try{document.execCommand("copy");toast("복사했어요");}catch(x){toast("복사가 막혀 있어요 — 직접 선택해 주세요");}a.remove();}}
+
+/*═════════ 진행 레일 ═════════*/
+const RN=["꺼내기","고르기","설계","해부","완성"];
+function drawRail(){
+  const m=$("#rail");
+  m.innerHTML=ST.map((s,i)=>{const on=D.done.includes(s.id);
+   return (i?`<div class="lk ${on?"on":""}"></div>`:"")+
+   `<div class="nd ${on?"on":""} ${P.near===s?"cur":""}" data-go="${i}"><div class="dot">${on?"✓":i+1}</div><small>${RN[i]}</small></div>`;
+  }).join("")+`<div id="pct">${Math.round(D.done.length/ST.length*100)}%</div>`;
+  m.querySelectorAll("[data-go]").forEach(n=>n.onclick=()=>{
+    P.x=ST[+n.dataset.go].x-150;P.h=0;P.vh=0;cam=clamp(P.x-CW/2,0,WORLD-CW);});
+}
+
+/*═════════ 그림 ═════════*/
+const cv=$("#cv"),g=cv.getContext("2d");
+function dpr(){const d=Math.min(2,devicePixelRatio||1);cv.width=CW*d;cv.height=CH*d;g.setTransform(d,0,0,d,0,0);}
+dpr();
+const OL="rgba(58,40,22,.42)";
+function rp(x,y,w,h,r){const k=Math.min(r,Math.abs(w)/2,Math.abs(h)/2);g.beginPath();
+  g.moveTo(x+k,y);g.arcTo(x+w,y,x+w,y+h,k);g.arcTo(x+w,y+h,x,y+h,k);g.arcTo(x,y+h,x,y,k);g.arcTo(x,y,x+w,y,k);g.closePath();}
+function RR(x,y,w,h,r,c,o,lw){g.fillStyle=c;rp(x,y,w,h,r);g.fill();if(o){g.strokeStyle=o;g.lineWidth=lw||2;g.stroke();}}
+function EL(x,y,rx,ry,c,o,lw){g.fillStyle=c;g.beginPath();g.ellipse(x,y,rx,ry,0,0,7);g.fill();
+  if(o){g.strokeStyle=o;g.lineWidth=lw||2;g.stroke();}}
+function sh(hex,d){const n=parseInt(hex.slice(1),16);
+  return "rgb("+[clamp((n>>16)+d,0,255)|0,clamp(((n>>8)&255)+d,0,255)|0,clamp((n&255)+d,0,255)|0].join(",")+")";}
+const V=k=>getComputedStyle(document.documentElement).getPropertyValue("--"+k).trim();
+const C={};["sky-a","sky-b","sky-c","mt-a","mt-b","hill-a","hill-b","hill-c","grass","grass-d","path","path-d","paper"].forEach(k=>C[k]=V(k));
+
+function sky(){
+  const gr=g.createLinearGradient(0,0,0,GY+30);
+  gr.addColorStop(0,C["sky-a"]);gr.addColorStop(.5,C["sky-b"]);gr.addColorStop(1,C["sky-c"]);
+  g.fillStyle=gr;g.fillRect(0,0,CW,GY+30);
+  const sx=1010,sy=110;
+  const rg=g.createRadialGradient(sx,sy,8,sx,sy,190);
+  rg.addColorStop(0,"rgba(255,246,214,.98)");rg.addColorStop(.28,"rgba(255,242,200,.36)");rg.addColorStop(1,"rgba(255,242,200,0)");
+  g.fillStyle=rg;g.beginPath();g.arc(sx,sy,190,0,7);g.fill();
+  EL(sx,sy,40,40,"#FFF8DC");
+  g.save();g.globalAlpha=.055;g.fillStyle="#FFF6D0";
+  [[-140,520],[110,400]].forEach(([o,w])=>{g.beginPath();g.moveTo(sx+o,sy);g.lineTo(sx+o-w*.5,CH);g.lineTo(sx+o+w*.5,CH);g.closePath();g.fill();});
+  g.restore();
+}
+function cloud(x,y,s,a){g.save();g.globalAlpha=a;
+  [[0,6,36,.6],[32,10,26,.6],[-32,10,24,.6],[14,-10,26,.7],[-14,-6,22,.7]].forEach(p=>{
+    EL(x+p[0]*s,y+p[1]*s,p[2]*s,p[2]*s*p[3],"#fff");});
+  g.globalAlpha=a*.5;EL(x-6*s,y+14*s,42*s,10*s,"#E8F1F6");g.restore();}
+function ridge(off,base,amp,wl,col,alpha){
+  g.save();if(alpha)g.globalAlpha=alpha;
+  g.fillStyle=col;g.beginPath();g.moveTo(-10,GY+60);
+  for(let i=-10;i<=CW+10;i+=5){const wx=i+off;
+    g.lineTo(i,base-Math.sin(wx/wl)*amp-Math.sin(wx/(wl*.36))*amp*.36-Math.sin(wx/(wl*.13))*amp*.11);}
+  g.lineTo(CW+10,GY+60);g.closePath();g.fill();g.restore();}
+function tree(x,y,s,tone){
+  g.save();g.translate(x,y);g.scale(s,s);
+  EL(0,3,24,7,"rgba(44,32,14,.15)");
+  RR(-5.5,-44,11,46,5,tone>0?"#7A5230":"#5E4025");
+  const p=tone>0?["#4C8C44","#5FA351","#77BE63"]:["#3B7440","#47854A","#529155"];
+  [[0,-92,37],[-27,-68,30],[27,-68,30],[-13,-108,26],[15,-106,24],[0,-78,32]].forEach((q,i)=>EL(q[0],q[1],q[2],q[2]*.9,p[i%3]));
+  g.globalAlpha=.32;EL(-15,-102,16,12,"#9BDC7C");g.globalAlpha=1;
+  g.restore();}
+function bush(x,y,s,c,hl){g.save();g.translate(x,y);g.scale(s,s);
+  EL(0,0,32,21,c);EL(-24,5,21,15,c);EL(24,5,21,15,c);
+  if(hl){g.globalAlpha=.28;EL(-9,-9,14,8,hl);g.globalAlpha=1;}g.restore();}
+function flower(x,y,c){EL(x,y,2.6,2.6,c);EL(x-3.4,y,2.4,2.4,c);EL(x+3.4,y,2.4,2.4,c);EL(x,y-3.4,2.4,2.4,c);EL(x,y+3.4,2.4,2.4,c);
+  EL(x,y,1.4,1.4,"#FFE9A8");}
+function lamp(x,gy,lit,t){
+  RR(x-3,gy-54,6,54,3,"#6E5436",OL,1.5);
+  RR(x-9,gy-72,18,20,6,lit?"#FFE6A8":"#DCD6C6",OL,1.8);
+  RR(x-11,gy-76,22,6,3,"#5E4630",OL,1.5);
+  if(lit){g.save();g.globalAlpha=.20+Math.sin(t/22)*.05;
+    const r=g.createRadialGradient(x,gy-62,2,x,gy-62,44);
+    r.addColorStop(0,"#FFE08A");r.addColorStop(1,"rgba(255,224,138,0)");
+    g.fillStyle=r;g.beginPath();g.arc(x,gy-62,44,0,7);g.fill();g.restore();}}
+function smoke(x,y,t,seed){
+  for(let i=0;i<4;i++){const p=((t*.55+i*34+seed)%136)/136;
+    g.save();g.globalAlpha=(1-p)*.34;
+    EL(x+Math.sin(p*5+seed)*11,y-p*66,7+p*13,6+p*11,"#FFFFFF");g.restore();}}
+function shop(x,gy,s,done,t,idx){
+  const W=196,H=132,bx=x-W/2,by=gy-H;
+  EL(x,gy+5,W*.55,14,"rgba(48,32,12,.17)");
+  const bg=g.createLinearGradient(0,by,0,gy);
+  bg.addColorStop(0,"#fff");bg.addColorStop(.18,s.body);bg.addColorStop(1,sh(s.body,-22));
+  RR(bx,by,W,H,11,bg,OL,2.2);
+  // 지붕
+  g.fillStyle=s.roof;g.beginPath();g.moveTo(bx-22,by+9);g.lineTo(x,by-54);g.lineTo(bx+W+22,by+9);g.closePath();g.fill();
+  g.fillStyle=sh(s.roof,18);g.beginPath();g.moveTo(bx-22,by+9);g.lineTo(x,by-54);g.lineTo(x,by+9);g.closePath();g.fill();
+  g.strokeStyle=OL;g.lineWidth=2.2;g.beginPath();g.moveTo(bx-22,by+9);g.lineTo(x,by-54);g.lineTo(bx+W+22,by+9);g.stroke();
+  g.save();g.globalAlpha=.16;g.strokeStyle="#000";g.lineWidth=1.4;
+  for(let i=1;i<5;i++){const p=i/5;g.beginPath();
+    g.moveTo(bx-22+(x-(bx-22))*p,by+9-(63)*p);g.lineTo(bx+W+22-((bx+W+22)-x)*p,by+9-63*p);g.stroke();}
+  g.restore();
+  RR(bx-27,by+6,W+54,13,6,sh(s.roof,-26),OL,1.8);
+  RR(bx+W-56,by-44,21,34,4,sh(s.roof,-34),OL,1.8);
+  if(done)smoke(bx+W-45,by-48,t,idx*23);
+  // 차양
+  for(let i=0;i<8;i++){g.fillStyle=i%2?"#FFF8E8":sh(s.col,14);g.fillRect(bx+13+i*21.4,by+H-64,21.4,16);}
+  RR(bx+13,by+H-64,171,16,0,"rgba(0,0,0,0)",OL,1.6);
+  g.fillStyle="rgba(70,48,22,.18)";g.fillRect(bx+13,by+H-50,171,4);
+  // 문
+  RR(x-27,gy-60,54,60,8,sh(s.col,-24),OL,2);
+  RR(x-21,gy-54,42,54,6,done?"#FFE9B6":"#E5DAC4");
+  if(done){g.save();g.globalAlpha=.30+Math.sin(t/26)*.06;
+    const r=g.createRadialGradient(x,gy-28,4,x,gy-28,58);
+    r.addColorStop(0,"#FFD98A");r.addColorStop(1,"rgba(255,217,138,0)");
+    g.fillStyle=r;g.fillRect(x-58,gy-86,116,86);g.restore();}
+  EL(x+14,gy-28,3.2,3.2,sh(s.col,-50));
+  // 창
+  [[bx+27,by+32],[bx+W-63,by+32]].forEach(p=>{
+    RR(p[0],p[1],36,32,7,sh(s.col,-12),OL,1.8);
+    RR(p[0]+4,p[1]+4,28,24,4,done?"#FFECC0":"#DEE8EE");
+    g.fillStyle="rgba(255,255,255,.5)";g.fillRect(p[0]+4,p[1]+4,28,9);
+    g.strokeStyle="rgba(70,48,22,.3)";g.lineWidth=1.4;
+    g.beginPath();g.moveTo(p[0]+18,p[1]+4);g.lineTo(p[0]+18,p[1]+28);g.stroke();});
+  // 간판
+  const sy=by-96,sw=178;
+  g.strokeStyle="#6E5436";g.lineWidth=2.4;
+  g.beginPath();g.moveTo(x-sw/2+18,sy+4);g.lineTo(x-34,by-56);g.moveTo(x+sw/2-18,sy+4);g.lineTo(x+34,by-56);g.stroke();
+  RR(x-sw/2,sy,sw,38,11,C["paper"],sh(s.roof,-14),2.4);
+  g.font='18px "Jua","Noto Sans KR",sans-serif';g.textAlign="center";g.textBaseline="middle";
+  g.fillStyle=sh(s.roof,-28);g.fillText(s.name,x,sy+20);
+  RR(x-sw/2-16,sy+8,16,16,5,done?"#43B189":"#CBBCA2",OL,1.6);
+  g.font='11px "Jua","Noto Sans KR",sans-serif';g.fillStyle="#fff";g.fillText(done?"✓":String(idx+1),x-sw/2-8,sy+17);
+}
+function flag(x,y,t,c){g.save();g.translate(x,y);
+  g.strokeStyle="#7A5C3A";g.lineWidth=3.2;g.beginPath();g.moveTo(0,0);g.lineTo(0,-52);g.stroke();
+  EL(0,-54,4,4,"#D9A032");
+  g.fillStyle=c;g.beginPath();g.moveTo(0,-50);
+  for(let i=0;i<=32;i+=4)g.lineTo(i,-50+Math.sin(t/12+i/8)*3.4);
+  for(let i=32;i>=0;i-=4)g.lineTo(i,-33+Math.sin(t/12+i/8)*3.4);
+  g.closePath();g.fill();g.strokeStyle=OL;g.lineWidth=1.4;g.stroke();g.restore();}
+function person(x,gy,f,dir,walk,sc,bob){
+  g.save();g.translate(x,gy);g.scale(sc,sc);
+  EL(0,3,21,6.5,"rgba(48,32,12,.22)");
+  g.translate(0,bob);if(dir<0)g.scale(-1,1);
+  const sw=walk?Math.sin(walk*.23)*.6:0;
+  [[-6.5,sw],[6.5,-sw]].forEach(([ox,a])=>{g.save();g.translate(ox,-37);g.rotate(a);
+    RR(-5,0,10,31,5,"#4B4138",OL,1.6);RR(-6.5,27,14,9,4.5,"#332C25",OL,1.6);g.restore();});
+  const bd=g.createLinearGradient(0,-72,0,-30);
+  bd.addColorStop(0,sh(f.cloth,26));bd.addColorStop(1,sh(f.cloth,-22));
+  RR(-16.5,-72,33,42,14,bd,OL,2);
+  RR(-16.5,-45,33,15,7,sh(f.cloth,-30));
+  g.strokeStyle="rgba(255,255,255,.22)";g.lineWidth=1.6;
+  g.beginPath();g.moveTo(-7,-70);g.lineTo(0,-58);g.lineTo(7,-70);g.stroke();
+  [[-17.5,-sw*.78],[17.5,sw*.78]].forEach(([ox,a])=>{g.save();g.translate(ox,-67);g.rotate(a);
+    RR(-4.8,0,9.6,29,4.8,sh(f.cloth,10),OL,1.6);EL(0,30,5.2,5.2,f.skin,OL,1.4);g.restore();});
+  RR(-5,-80,10,11,4,sh(f.skin,-26));
+  EL(0,-94,17.5,18.5,f.skin,OL,2);
+  g.fillStyle=f.hair;g.beginPath();g.ellipse(0,-100,18.5,16.5,0,Math.PI*1.03,Math.PI*2.03);g.fill();
+  RR(-18.5,-102,9,16,5,f.hair);RR(11,-102,8,13,5,f.hair);
+  EL(6,-93,2.2,2.8,"#3A2E20");EL(-2.2,-93,2.2,2.8,"#3A2E20");
+  g.fillStyle="rgba(255,255,255,.75)";EL(6.7,-94,.8,.9,"rgba(255,255,255,.8)");
+  EL(10.5,-87,4.6,3,"rgba(230,138,118,.4)");EL(-6.5,-87,4.6,3,"rgba(230,138,118,.28)");
+  g.strokeStyle="rgba(80,55,35,.7)";g.lineWidth=1.4;g.beginPath();g.arc(2,-89,3.4,.2,Math.PI-.5);g.stroke();
+  g.restore();}
+function bub(x,y,txt,c,t){const w=36,h=36,fy=y+Math.sin(t/18)*5;
+  g.save();g.shadowColor="rgba(40,26,10,.2)";g.shadowBlur=10;g.shadowOffsetY=3;
+  g.fillStyle="rgba(255,255,255,.97)";rp(x-w/2,fy-h,w,h,13);g.fill();
+  g.beginPath();g.moveTo(x-7,fy-1);g.lineTo(x,fy+10);g.lineTo(x+7,fy-1);g.closePath();g.fill();
+  g.restore();
+  g.font='20px "Jua","Noto Sans KR",sans-serif';g.textAlign="center";g.textBaseline="middle";
+  g.fillStyle=c;g.fillText(txt,x,fy-h/2+1);}
+function plate(x,y,txt){
+  g.font='13px "Jua","Noto Sans KR",sans-serif';g.textAlign="center";g.textBaseline="middle";
+  const w=g.measureText(txt).width+24;
+  g.fillStyle="rgba(52,36,16,.6)";rp(x-w/2,y-12,w,24,12);g.fill();
+  g.fillStyle="#FFF7E6";g.fillText(txt,x,y+1);}
+function bird(x,y,s,t){g.save();g.strokeStyle="rgba(70,80,95,.55)";g.lineWidth=1.8*s;
+  const f=Math.sin(t/9)*4*s;
+  g.beginPath();g.moveTo(x-7*s,y+f);g.quadraticCurveTo(x-3*s,y-3*s,x,y);
+  g.quadraticCurveTo(x+3*s,y-3*s,x+7*s,y+f);g.stroke();g.restore();}
+
+const motes=Array.from({length:30},()=>({x:Math.random()*WORLD,y:Math.random()*430+50,s:Math.random()*.7+.4,p:Math.random()*7,v:Math.random()*.25+.1}));
+const lvs=Array.from({length:14},()=>({x:Math.random()*WORLD,y:Math.random()*330+70,s:Math.random()*.6+.6,p:Math.random()*7,v:Math.random()*.4+.25}));
+const P={x:250,vx:0,dir:1,h:0,vh:0,ground:true,walk:0,near:null};
+let cam=0,T=0;const K={};
+function frame(){
+  T++;
+  if(!cur){
+    const sp=(K.ArrowLeft||K.a?-1:0)+(K.ArrowRight||K.d?1:0);
+    P.vx=sp*4.5;if(sp)P.dir=sp;
+    P.x=clamp(P.x+P.vx,60,WORLD-60);
+    P.walk=sp&&P.ground?P.walk+1:0;
+    if((K[" "]||K.ArrowUp||K.w)&&P.ground){P.vh=12.4;P.ground=false;}
+    if(!P.ground){P.h+=P.vh;P.vh-=.62;if(P.h<=0){P.h=0;P.vh=0;P.ground=true;}}
+  }else{P.vx=0;P.walk=0;}
+  cam+=(clamp(P.x-CW/2,0,WORLD-CW)-cam)*.085;
+
+  sky();
+  for(let i=0;i<9;i++){const x=((i*560-cam*.07)%(CW+460)+CW+460)%(CW+460)-230;
+    cloud(x,52+(i%4)*44,.5+(i%3)*.26,.42+(i%3)*.16);}
+  [[0,-cam*.05+T*.06],[1,-cam*.05+T*.06+40],[2,-cam*.05+T*.06+72]].forEach(([i,o])=>{
+    bird(((o+i*90)%(CW+120)+CW+120)%(CW+120)-60,118+i*16,.9,T+i*13);});
+  ridge(cam*.12,296,58,460,C["mt-a"],.85);
+  ridge(cam*.20,336,44,320,C["mt-b"],.9);
+  g.save();g.globalAlpha=.32;g.fillStyle="#DCEBF2";g.fillRect(0,250,CW,140);g.restore();
+  ridge(cam*.34,388,32,240,C["hill-a"]);
+  for(let i=0;i<30;i++){const x=(i*168-cam*.34)%(WORLD*.34);if(x>-60&&x<CW+60)tree(x,400+((i*41)%14),.36,0);}
+  ridge(cam*.54,436,24,200,C["hill-b"]);
+  for(let i=0;i<24;i++){const x=(i*214-cam*.54)%(WORLD*.54);if(x>-70&&x<CW+70)tree(x,450+((i*57)%10),.56,0);}
+
+  const gg=g.createLinearGradient(0,GY-16,0,CH);
+  gg.addColorStop(0,C["hill-c"]);gg.addColorStop(.12,C["grass"]);gg.addColorStop(1,C["grass-d"]);
+  g.fillStyle=gg;g.fillRect(0,GY-16,CW,CH-GY+16);
+  g.fillStyle=C["hill-c"];
+  for(let i=-1;i<CW/15+2;i++){const x=i*15-(cam%15);g.beginPath();g.ellipse(x,GY-16,10,8,0,Math.PI,0);g.fill();}
+  g.fillStyle=C["path"];g.fillRect(0,GY+62,CW,58);
+  g.fillStyle="rgba(120,90,45,.14)";g.fillRect(0,GY+62,CW,6);
+  g.fillStyle=C["path-d"];
+  for(let i=0;i<CW/46+2;i++){const x=i*46-(cam%46);
+    EL(x+((i%2)*18),GY+82+((i*13)%14),13,5,C["path-d"]);}
+  for(let i=0;i<64;i++){const x=(i*121-cam*1.02)%(WORLD*1.02);
+    if(x>-20&&x<CW+20)flower(x,GY+34+((i*47)%22),["#F3E27A","#F4A9C0","#FFFFFF","#EFC1F2"][i%4]);}
+
+  P.near=null;
+  ST.forEach((s,i)=>{
+    const sx=s.x-cam,done=D.done.includes(s.id);
+    if(Math.abs(P.x-s.x)<82&&P.ground)P.near=s;
+    if(sx<-280||sx>CW+280)return;
+    bush(sx-150,GY+10,.72,"#4C8C44","#9BDC7C");
+    tree(sx+168,GY+8,.72,1);
+    lamp(sx-118,GY+6,done,T+i*17);
+    shop(sx,GY+6,s,done,T,i);
+    flag(sx+108,GY+2,T+i*27,s.col);
+    person(sx+62,GY+8,s.face,-1,0,1,Math.sin(T/27+i)*1.7);
+    plate(sx+62,GY+28,s.role);
+    bub(sx+62,GY-104,done?"✓":"!",done?"#2F9B72":"#D9A032",T+i*40);});
+
+  person(P.x-cam,GY+8-P.h,{skin:"#F3D0AC",hair:"#2C2118",cloth:"#2F4A8A"},P.dir,P.walk,1.08,
+    P.walk?Math.sin(P.walk*.46)*1.7:Math.sin(T/32)*1.4);
+  if(D.who)plate(P.x-cam,GY+32-P.h,D.who);
+
+  lvs.forEach(l=>{const x=l.x-cam*.92,y=l.y+Math.sin(T/38+l.p)*26;
+    if(x>-20&&x<CW+20){g.save();g.globalAlpha=.55;g.translate(x,y);g.rotate(T/44+l.p);
+      EL(0,0,6*l.s,3.4*l.s,"#93C666");g.restore();}
+    l.x-=l.v;if(l.x<0)l.x=WORLD;});
+  for(let i=0;i<16;i++){const x=(i*268-cam*1.2)%(WORLD*1.2);
+    if(x>-90&&x<CW+90)bush(x,CH-10,1.2,"#3C7439");}
+  motes.forEach(m=>{const x=m.x-cam*1.05,y=m.y+Math.sin(T/30+m.p)*16;
+    if(x>-10&&x<CW+10){g.save();g.globalAlpha=.30+Math.sin(T/24+m.p)*.16;
+      EL(x,y,2.1*m.s,2.1*m.s,"#FFF6D2");g.restore();}
+    m.x-=m.v;if(m.x<0)m.x=WORLD;});
+
+  const v=g.createRadialGradient(CW/2,CH*.46,CH*.40,CW/2,CH*.5,CH*1.02);
+  v.addColorStop(0,"rgba(0,0,0,0)");v.addColorStop(1,"rgba(40,24,8,.34)");
+  g.fillStyle=v;g.fillRect(0,0,CW,CH);
+  g.save();g.globalCompositeOperation="overlay";g.globalAlpha=.06;g.fillStyle="#FFCE7A";g.fillRect(0,0,CW,CH);g.restore();
+
+  const h=$("#hint");
+  if(cur)h.style.opacity=0;
+  else{h.style.opacity=1;
+    h.innerHTML=P.near?`<b>${esc(P.near.name)}</b> — Enter 로 들어가기`
+      :"← → 걷기 · Space 점프 · Enter 로 입장 · 위 진행바를 눌러 바로 이동";}
+  const m=$("#rail .nd.cur");
+  if((P.near&&!m)||(!P.near&&m)||(P.near&&m&&+m.dataset.go!==ST.indexOf(P.near)))drawRail();
+  requestAnimationFrame(frame);
+}
+/*═════════ 입력 ═════════*/
+addEventListener("keydown",e=>{
+  if(e.key==="Escape"&&cur){shut();return;}
+  if(cur)return;
+  if(e.key==="Enter"){if(P.near){e.preventDefault();talk(P.near);}return;}
+  K[e.key]=true;K[e.key.toLowerCase()]=true;
+  if([" ","ArrowLeft","ArrowRight","ArrowUp","ArrowDown"].includes(e.key))e.preventDefault();});
+addEventListener("keyup",e=>{K[e.key]=false;K[e.key.toLowerCase()]=false;});
+$("#pad").querySelectorAll("button").forEach(b=>{const k=b.dataset.k;
+  const on=e=>{e.preventDefault();if(k==="Enter"){if(P.near&&!cur)talk(P.near);}else K[k]=true;};
+  const off=e=>{e.preventDefault();K[k]=false;};
+  b.addEventListener("pointerdown",on);b.addEventListener("pointerup",off);
+  b.addEventListener("pointercancel",off);b.addEventListener("pointerleave",off);});
+$("#nm").value=D.who;$("#nm").oninput=e=>{D.who=e.target.value;save();};
+function fit(){$("#frame").style.transform="scale("+Math.min(innerWidth/1300,innerHeight/740)+")";}
+addEventListener("resize",()=>{fit();dpr();});
+fit();drawRail();frame();
+</script>
+</body>
+</html>

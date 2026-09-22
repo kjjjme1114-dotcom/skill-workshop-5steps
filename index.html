@@ -1092,23 +1092,8 @@ function showIntro(){
    <p class="sub">내가 매번 하는 일 하나를, AI 가 대신할 수 있는 <b>SKILL 문서</b>로 만들어 봅니다.<br>다섯 군데만 들르면 끝나요.</p>
    <p class="q">어떤 캐릭터로 다니실래요?</p>
    <div class="picks">
-    <div class="pk ${D.ch.sex==="f"?"on":""}" data-sex="f">
-2
-여자주인공.png
-3
-<b>여자 캐릭터</b>
-4
-</div>
-5
- 
-6
-<div class="pk ${D.ch.sex==="m"?"on":""}" data-sex="m">
-7
-남자주인공.png
-8
-<b>남자 캐릭터</b>
-9
-</div>
+  <div class="pk ${D.ch.sex==="f"?"on":""}" data-sex="f"><canvas width="170" height="132"></canvas><b>여자 캐릭터</b></div>
+    <div class="pk ${D.ch.sex==="m"?"on":""}" data-sex="m"><canvas width="170" height="132"></canvas><b>남자 캐릭터</b></div></div>
    <p class="q">옷 색은요?</p>
    <div class="cols">${COLS.map(c=>`<button data-col="${c}" class="${D.ch.col===c?"on":""}" style="background:${c}"></button>`).join("")}</div>
    <p class="q">이름을 적어 주세요</p>

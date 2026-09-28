@@ -2,301 +2,334 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
-<title>SKILL 도출 워크샵</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SKILL 공방 · 반복 업무로 나만의 AI 스킬 만들기</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&display=swap">
 <style>
 :root{
-  --sky-a:#7FC0E6;--sky-b:#AFDAEF;--sky-c:#E4F2F6;
-  --mt-a:#9FB6D2;--mt-b:#8AA4C2;--hill-a:#A7CE92;--hill-b:#81BA6E;--hill-c:#62A052;
-  --grass:#579448;--grass-d:#3C7439;--path:#E6CE9E;--path-d:#C9A974;
-  --paper:#FDF9F0;--paper-2:#F5EDDD;--paper-3:#EBE0C9;--line:#E0D3B8;--line-2:#F0E7D6;
-  --ink:#393024;--ink-2:#6E6050;--ink-3:#9C8D79;
-  --gold:#EDB245;--gold-h:#FFD37C;--gold-d:#CE9420;--gold-i:#8A5A12;
-  --ok:#2F9B72;--ok-bg:#E7F5EE;--warn:#D2803C;--warn-bg:#FCF1E4;--bad:#CE5B4C;--bad-bg:#FBEAE7;
-  --c1:#5289CE;--c2:#2F9B72;--c3:#D9A032;--c4:#9270C2;--c5:#D9705C;--c6:#3C9CA0;
-  --fd:"Jua","Noto Sans KR",sans-serif;--fb:"Gowun Dodum","Noto Sans KR",system-ui,sans-serif;
-  --s1:0 1px 3px rgba(60,42,20,.09),0 4px 12px rgba(60,42,20,.07);
-  --s2:0 10px 34px rgba(50,34,14,.20);--s3:0 28px 80px rgba(30,18,6,.42);
+  --bg:#F4F0E8;--card:#fff;--ink:#1D2130;--ink2:#4A4F61;--ink3:#8C90A0;--line:#E6E0D3;--line2:#F0EBE1;--soft:#FAF8F4;
+  --ac:#3D78B0;--ac-soft:#E9F1F9;--ok:#2E8B6A;--ok-soft:#E6F3ED;--warn-soft:#FBF0E4;
+  --f:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --fh:"Gowun Batang",serif;
+  --sh1:0 1px 2px rgba(29,33,48,.04),0 6px 20px rgba(29,33,48,.06);
+  --sh2:0 20px 60px rgba(29,33,48,.18);
 }
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;margin:0}
-body{background:#231708;color:var(--ink);font-family:var(--fb);overflow:hidden;font-size:15px;line-height:1.68;word-break:keep-all}
-#stage{position:fixed;inset:0;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 28%,#7A5530,#231708 76%)}
-#frame{position:relative;width:1280px;height:720px;transform-origin:center;border-radius:20px;overflow:hidden;box-shadow:var(--s3)}
-canvas#cv{display:block;width:1280px;height:720px}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:var(--f);color:var(--ink);background:var(--bg);font-size:15px;line-height:1.65;word-break:keep-all;-webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(1100px 600px at 90% -10%,rgba(61,120,176,.12),transparent 70%),radial-gradient(900px 500px at -10% 110%,rgba(201,150,58,.10),transparent 70%);background-attachment:fixed}
+button{font-family:inherit;cursor:pointer}
 
-/* ── 시작 화면 ── */
-#intro{position:absolute;inset:0;z-index:40;display:grid;place-items:center;padding:20px;
-  background:linear-gradient(180deg,rgba(28,18,6,.62),rgba(28,18,6,.78));backdrop-filter:blur(6px);overflow:auto}
+.ph{position:relative;display:block;overflow:hidden;background:linear-gradient(160deg,var(--ac-soft),#fff);flex:none}
+.ph::before{content:attr(data-i);position:absolute;inset:0;display:grid;place-items:center;font:700 18px var(--fh);color:var(--ac)}
+.ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.av.ph::before{font-size:11px}
+
+.top{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:18px;padding:12px 28px;background:rgba(244,240,232,.86);backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;flex:none}
+.logo{width:36px;height:36px;border-radius:11px;background:linear-gradient(145deg,#2A2F45,#1D2130);color:#F3D894;display:grid;place-items:center;font:700 18px var(--fh)}
+.brand b{display:block;font-size:15px}.brand small{display:block;font-size:11.5px;color:var(--ink3);margin-top:-2px}
+#rail{flex:1;display:flex;align-items:center;justify-content:center}
+.nd{display:flex;align-items:center;gap:8px;background:none;border:0;padding:5px 12px 5px 5px;border-radius:999px;color:var(--ink3);transition:.2s}
+.nd:hover{background:rgba(255,255,255,.7)}
+.nd .av{width:34px;height:34px;border-radius:50%;box-shadow:0 0 0 2px #fff,0 0 0 3px var(--line);filter:grayscale(.7);opacity:.7;transition:.2s}
+.nd .nt{display:flex;flex-direction:column;align-items:flex-start;line-height:1.25;font-size:12.5px;font-weight:600}
+.nd .nt small{font-size:10.5px;font-weight:500;color:var(--ink3)}
+.nd.done .av{filter:none;opacity:1;box-shadow:0 0 0 2px #fff,0 0 0 3.5px var(--ok)}
+.nd.cur{background:#fff;box-shadow:var(--sh1);color:var(--ink)}
+.nd.cur .av{filter:none;opacity:1;box-shadow:0 0 0 2px #fff,0 0 0 4px var(--ac)}
+.lk{width:20px;height:2px;background:var(--line);border-radius:2px;flex:none}.lk.on{background:var(--ok)}
+.tools{display:flex;align-items:center;gap:8px;flex:none}
+#saved{font-size:12px;color:var(--ok);opacity:0;transition:.4s}#saved.on{opacity:1}
+#pct{font-size:12px;font-weight:700;color:var(--ac);background:var(--ac-soft);padding:4px 10px;border-radius:999px;white-space:nowrap}
+#pct:empty{display:none}
+.me{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:3px 12px 3px 3px;font-size:13px;font-weight:600;color:var(--ink2)}
+.me:empty{display:none}
+.me .av{width:28px;height:28px;border-radius:50%}
+.ghost{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-size:12.5px;color:var(--ink2)}
+.ghost:hover{border-color:var(--ink3)}
+
+.wrap{max-width:1320px;margin:0 auto;padding:28px;display:grid;grid-template-columns:340px 1fr;gap:28px;align-items:start}
+#guide{position:sticky;top:86px}
+.npc{position:relative;border-radius:24px;overflow:hidden;box-shadow:var(--sh1)}
+.npc .portrait{height:300px}
+.npc-tag{position:absolute;left:0;right:0;bottom:0;padding:44px 20px 16px;background:linear-gradient(180deg,transparent,rgba(20,22,32,.8));color:#fff}
+.npc-tag small{display:block;font-size:11.5px;opacity:.85}
+.npc-tag b{font:700 23px var(--fh)}
+.bubble{position:relative;margin-top:14px;background:#fff;border-radius:20px;padding:18px 20px;box-shadow:var(--sh1);font-size:14.3px;color:var(--ink2);line-height:1.8}
+.bubble::before{content:"";position:absolute;top:-7px;left:34px;width:16px;height:16px;background:#fff;transform:rotate(45deg);border-radius:3px}
+.bubble b{color:var(--ink);background:linear-gradient(transparent 62%,var(--ac-soft) 62%)}
+.todo{margin-top:14px;background:#fff;border-radius:20px;padding:16px 16px 10px;box-shadow:var(--sh1)}
+.todo h4{margin:0 0 6px;font-size:13px;color:var(--ink3);font-weight:600;display:flex;justify-content:space-between;padding:0 6px}
+.todo ul{list-style:none;margin:0;padding:0}
+.todo li{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:10px;font-size:13.5px;color:var(--ink2);cursor:pointer}
+.todo li:hover{background:var(--soft)}
+.todo li i{width:18px;height:18px;border-radius:50%;border:1.8px solid #CFC8BA;flex:none;display:grid;place-items:center}
+.todo li.y{color:var(--ink3);text-decoration:line-through;text-decoration-color:#CFC8BA}
+.todo li.y i{background:var(--ok);border-color:var(--ok)}
+.todo li.y i::after{content:"";width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:translateY(-1px) rotate(45deg)}
+.todo li em{margin-left:auto;font-style:normal;font-size:11px;color:var(--ink3);background:var(--soft);padding:1px 7px;border-radius:6px;flex:none}
+.tips{margin-top:12px;background:rgba(255,255,255,.6);border:1px dashed var(--line);border-radius:16px;padding:12px 16px;font-size:13px;color:var(--ink2)}
+.tips summary{cursor:pointer;font-weight:600;color:var(--ac)}
+.tips ul{margin:8px 0 0;padding-left:18px}.tips li{margin:5px 0}
+
+#work{background:var(--card);border-radius:26px;box-shadow:var(--sh1);display:flex;flex-direction:column;min-height:620px}
+.wh{display:flex;align-items:center;gap:16px;padding:24px 30px;border-bottom:1px solid var(--line2);background:linear-gradient(180deg,var(--ac-soft),#fff);border-radius:26px 26px 0 0}
+.wh .no{width:46px;height:46px;border-radius:14px;background:var(--ac);color:#fff;display:grid;place-items:center;font:700 20px var(--fh);flex:none}
+.wh h2{margin:0;font:700 22px var(--fh)}
+.wh p{margin:2px 0 0;color:var(--ink3);font-size:13.5px}
+.wh .time{margin-left:auto;font-size:12px;color:var(--ac);background:#fff;border:1px solid var(--line);padding:4px 10px;border-radius:999px;white-space:nowrap}
+.wb{padding:26px 30px 30px;flex:1}
+#foot{position:sticky;bottom:0;display:flex;align-items:center;gap:12px;padding:14px 30px;border-top:1px solid var(--line2);background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-radius:0 0 26px 26px}
+#gate{flex:1;font-size:13px;color:var(--ink3)}#gate.ok{color:var(--ok);font-weight:600}
+
+.sec{margin:30px 0 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sec:first-child{margin-top:0}
+.sec b{font:700 17px var(--fh)}
+.sec>span:not(.tag){font-size:12.5px;color:var(--ink3)}
+.tag{font-size:12px;font-weight:700;color:#fff;background:var(--ac);border-radius:7px;padding:1px 8px}
+.fld{margin:0 0 18px;border-radius:14px}
+.lab{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:650;margin-bottom:3px}
+.req{font-style:normal;font-size:10.5px;font-weight:600;color:var(--ac);background:var(--ac-soft);border-radius:5px;padding:1px 6px}
+.help{margin:0 0 8px;font-size:12.8px;color:var(--ink3)}
+.in{width:100%;border:1.5px solid var(--line);border-radius:12px;background:var(--soft);padding:10px 13px;font:inherit;font-size:14.5px;color:var(--ink);outline:none;transition:.15s}
+.in:hover{border-color:#D8D1C2}
+.in:focus{background:#fff;border-color:var(--ac);box-shadow:0 0 0 4px var(--ac-soft)}
+.in::placeholder{color:#B5B0A5}
+textarea.in{resize:vertical;line-height:1.7;min-height:84px}
+select.in{appearance:none;-webkit-appearance:none;cursor:pointer;padding-right:32px;background-repeat:no-repeat;background-position:right 12px center;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238C90A0' stroke-width='1.6' fill='none'/%3E%3C/svg%3E")}
+.in.sm{padding:7px 28px 7px 10px;font-size:13px;border-radius:10px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:0 16px}
+.ex{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}
+.ex>span{font-size:11.5px;color:var(--ink3);margin-right:2px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 11px;font-size:12.5px;color:var(--ink2);transition:.15s;text-align:left}
+.chip:hover{border-color:var(--ac);color:var(--ac);background:var(--ac-soft)}
+.chip.used{opacity:.4}
+.chip small{color:var(--ink3);margin-left:3px}
+.pulse{animation:pulse 1.4s ease 2}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 transparent}40%{box-shadow:0 0 0 7px rgba(61,120,176,.3)}}
+.btn{border:0;border-radius:12px;padding:10px 18px;font-size:14px;font-weight:650;background:var(--ac);color:#fff;transition:.15s;white-space:nowrap}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.06)}
+.btn.ghost{background:#fff;color:var(--ink2);border:1px solid var(--line)}
+.btn.sm{padding:6px 12px;font-size:12.5px;border-radius:10px}
+.btn.big{padding:14px 30px;font-size:16px;border-radius:14px}
+.btn.gold{background:linear-gradient(180deg,#E7B75A,#C9963A);color:#2A1D05;box-shadow:0 4px 14px rgba(201,150,58,.35)}
+.icon{width:32px;height:32px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink3);font-size:14px;flex:none}
+.icon:hover{color:var(--ink)}
+.icon.del:hover{color:#C4513F;border-color:#F0C9C1;background:#FDF1EE}
+.al{border-radius:14px;padding:12px 16px;font-size:13.5px;margin-bottom:16px}
+.al.w{background:var(--warn-soft);color:#8A4E1E}.al.o{background:var(--ok-soft);color:#1E6B4E}
+.empty{padding:26px;text-align:center;border:1.5px dashed var(--line);border-radius:16px;color:var(--ink3);font-size:13.5px}
+
+.goal{display:flex;align-items:center;gap:14px;margin-bottom:18px;font-size:13px;color:var(--ink2)}
+.meter{flex:1;max-width:260px;height:8px;background:var(--line2);border-radius:99px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--ac);border-radius:99px;transition:width .4s}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;padding:5px;background:var(--soft);border-radius:14px;border:1px solid var(--line2);width:fit-content;max-width:100%}
+.tab{border:0;background:none;border-radius:10px;padding:8px 15px;font-size:13.5px;font-weight:600;color:var(--ink3)}
+.tab.on{background:#fff;color:var(--ink);box-shadow:var(--sh1)}
+.tab i{font-style:normal;font-size:11px;margin-left:6px;background:var(--line2);color:var(--ink3);border-radius:99px;padding:1px 7px}
+.tab.on i{background:var(--ac);color:#fff}
+.drawer{margin:14px 0 18px;padding:18px;border-radius:18px;background:var(--ac-soft)}
+.nudge{margin:0 0 12px;font-size:13.8px;color:var(--ink2)}
+.nudge b{color:var(--ink)}
+.addrow{display:grid;grid-template-columns:1.4fr 1fr auto;gap:8px}
+.addrow .in{background:#fff}
+.list{display:flex;flex-direction:column;gap:8px}
+.row{display:grid;grid-template-columns:1.4fr 1fr 32px;gap:8px;align-items:center}
+
+.rank{border:1px solid var(--line2);border-radius:18px;padding:8px;margin-bottom:10px;background:var(--soft)}
+.rk{display:grid;grid-template-columns:26px 1.3fr 1fr 78px 92px;gap:12px;align-items:center;padding:8px 10px;border-radius:12px}
+.rk.on{background:#fff;box-shadow:var(--sh1)}
+.rn{width:24px;height:24px;border-radius:8px;background:var(--line2);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--ink3)}
+.rk:first-child .rn{background:#C9963A;color:#fff}
+.rk b{font-size:14px;font-weight:600}
+.rb{height:8px;background:var(--line2);border-radius:99px;overflow:hidden}
+.rb i{display:block;height:100%;background:var(--ac);border-radius:99px}
+.rk em{font-style:normal;font-size:12px;color:var(--ink3);text-align:right}
+.tc{border:1.5px solid var(--line2);border-radius:16px;padding:14px 16px;margin-bottom:10px;transition:.2s}
+.tc.on{border-color:var(--ac);background:var(--ac-soft)}
+.tc-h{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.tc-h b{flex:1;font-size:14.5px;min-width:140px}
+.badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:6px;background:var(--line2);color:var(--ink3);white-space:nowrap}
+.badge.hr{background:#fff;color:var(--ac)}
+.qs{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.qs label{font-size:11.5px;color:var(--ink3);display:flex;flex-direction:column;gap:3px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.seg button{border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:12px 14px;text-align:left;font-size:13.5px;font-weight:650;color:var(--ink2);transition:.15s}
+.seg button small{display:block;font-weight:400;font-size:12px;color:var(--ink3);margin-top:2px}
+.seg button.on{border-color:var(--ac);background:var(--ac-soft);color:var(--ink)}
+
+.bars{display:flex;height:10px;border-radius:99px;overflow:hidden;background:var(--line2);margin:0 0 8px}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--ink3);margin-bottom:18px}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:3px;margin-right:5px}
+.stp{border:1.5px solid var(--line2);border-radius:18px;padding:14px;margin-bottom:10px;background:#fff;transition:.2s}
+.stp:focus-within{border-color:var(--ac);box-shadow:0 0 0 4px var(--ac-soft)}
+.stp-h{display:grid;grid-template-columns:34px 1fr 128px 160px auto;gap:8px;align-items:center}
+.num{width:32px;height:32px;border-radius:10px;color:#fff;display:grid;place-items:center;font-weight:700;background:#B9B3A6}
+.stp-b{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;padding-left:42px}
+.stp-b label{font-size:12px;color:var(--ink2);font-weight:600;display:block;margin-bottom:3px}
+.stp-b label span{color:var(--ac);font-weight:500;margin-left:4px}
+.stp-b textarea{min-height:62px;font-size:13.5px}
+.mv{display:flex;gap:4px}
+.row2{display:grid;grid-template-columns:1fr 1fr 32px;gap:8px;margin-bottom:8px;align-items:center}
+
+.result{margin-top:30px;border-radius:24px;background:#1D2130;color:#E9E6DF;padding:24px;box-shadow:var(--sh2)}
+.res-h{display:flex;gap:20px;align-items:center;margin-bottom:16px}
+.ring{width:92px;height:92px;border-radius:50%;display:grid;place-items:center;flex:none}
+.ring b{width:74px;height:74px;border-radius:50%;background:#1D2130;display:grid;place-items:center;font:700 22px var(--fh);color:#F3D894}
+.res-h h3{margin:0;font:700 19px var(--fh);color:#fff}
+.res-h p{margin:4px 0 0;font-size:13px;color:#A9ADBB}
+.miss{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.miss button{border:1px solid #3A3F55;background:#262B3D;color:#D8D4CA;border-radius:999px;padding:3px 10px;font-size:12px}
+.miss button:hover{border-color:#E7B75A}
+pre#md{background:#12151F;border-radius:14px;padding:18px;font:12.5px/1.75 ui-monospace,Menlo,Consolas,monospace;color:#E6DDC6;max-height:400px;overflow:auto;white-space:pre-wrap;word-break:break-word;margin:0 0 14px}
+.res-btn{display:flex;gap:8px;flex-wrap:wrap}
+.result .btn.ghost{background:transparent;color:#E9E6DF;border-color:#3A3F55}
+.howto{margin-top:16px;font-size:13px;color:#A9ADBB;line-height:1.8}
+.howto b{color:#fff}
+
+/* 시작 화면 (HTML에 직접 들어 있어서 항상 먼저 보여요) */
+#intro{position:fixed;inset:0;z-index:60;overflow:auto;background:rgba(22,24,34,.55);backdrop-filter:blur(10px);display:grid;place-items:center;padding:24px}
 #intro[hidden]{display:none}
-.ibox{width:100%;max-width:700px;background:var(--paper);border-radius:24px;box-shadow:var(--s2);
-  padding:26px 30px 24px;text-align:center;animation:up .3s cubic-bezier(.2,.9,.3,1)}
-.ibox h1{font-family:var(--fd);font-size:31px;color:#7A5A30;margin:0 0 4px;font-weight:400}
-.ibox .sub{font-size:14px;color:var(--ink-2);margin:0 0 20px}
-.ibox .q{font-family:var(--fd);font-size:15px;color:#7A5A30;margin:0 0 9px;text-align:left}
-.picks{display:flex;gap:14px;justify-content:center;margin:0 0 20px}
-.pk{flex:1;max-width:190px;border:2.5px solid var(--line);border-radius:18px;background:#FFFDF6;
-  padding:10px 8px 12px;cursor:pointer;transition:.18s}
-.pk:hover{border-color:#DFC894;transform:translateY(-2px)}
-.pk.on{border-color:var(--gold);background:#FFF7E4;box-shadow:0 0 0 4px rgba(237,178,69,.22)}
-.pk canvas{display:block;width:100%;height:132px}
-.pk b{display:block;font-family:var(--fd);font-size:15px;color:var(--ink-2);font-weight:400;margin-top:2px}
-.pk.on b{color:var(--gold-i)}
-.cols{display:flex;gap:9px;justify-content:center;margin:0 0 20px}
-.cols button{width:38px;height:38px;border-radius:13px;border:3px solid #fff;cursor:pointer;
-  box-shadow:var(--s1);transition:.16s}
-.cols button.on{transform:scale(1.14);box-shadow:0 0 0 3px var(--gold),var(--s1)}
-#iname{width:100%;max-width:300px;padding:11px 15px;border:2px solid var(--line);border-radius:13px;
-  font-family:var(--fb);font-size:16px;text-align:center;outline:none;margin:0 0 18px}
-#iname:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(237,178,69,.2)}
-.ibox .note{font-size:12.5px;color:var(--ink-3);margin:14px 0 0}
+.ibox{width:100%;max-width:1000px;background:#FBF9F5;border-radius:30px;box-shadow:var(--sh2);padding:40px 44px;animation:up .4s cubic-bezier(.2,.9,.3,1)}
+.eyebrow{margin:0;font-size:12.5px;font-weight:700;color:#C9963A;letter-spacing:.6px}
+.ibox h1{font:700 34px/1.3 var(--fh);margin:8px 0 10px}
+.lead{margin:0 0 26px;color:var(--ink2);font-size:15px;max-width:660px}
+.stations{display:flex;align-items:flex-start;gap:6px;margin-bottom:26px}
+.stn{flex:1;text-align:center}
+.stn .av{width:84px;height:84px;border-radius:24px;margin:0 auto 10px;box-shadow:var(--sh1)}
+.stn b{display:block;font-size:13px}
+.stn small{display:block;font-size:11.5px;color:var(--ink3)}
+.arr{color:#CFC8BA;margin-top:32px}
+.ifoot{display:grid;grid-template-columns:1fr auto;gap:28px;align-items:center;padding:24px;border-radius:22px;background:#fff;border:1px solid var(--line2)}
+.hl{display:block;font-weight:650;font-size:14px;margin-bottom:8px}
+.hl small{font-weight:500;color:var(--ink3);margin-left:6px}
+.heroes{display:flex;gap:12px;border-radius:22px}
+.hero{position:relative;width:150px;border:2px solid var(--line);background:#fff;border-radius:20px;padding:6px;transition:.2s}
+.hero:hover{border-color:#CFC8BA;transform:translateY(-2px)}
+.hero .hp{height:180px;border-radius:15px}
+.hero .hn{display:block;font-size:13px;font-weight:650;color:var(--ink3);padding:8px 0 3px}
+.hero.on{border-color:#3D78B0;box-shadow:0 0 0 4px rgba(61,120,176,.16);transform:translateY(-2px)}
+.hero.on .hn{color:#3D78B0}
+.hero.on::after{content:"✓";position:absolute;top:12px;right:12px;width:26px;height:26px;border-radius:50%;background:#3D78B0;color:#fff;display:grid;place-items:center;font-size:14px;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.ibtn{display:flex;gap:10px;margin-top:22px;align-items:center;flex-wrap:wrap}
+.note{font-size:12px;color:var(--ink3);margin:10px 0 0}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 
-/* ── 상단 ── */
-#top{position:absolute;inset:0 0 auto 0;padding:15px 18px;display:flex;gap:14px;align-items:flex-start;
-  justify-content:space-between;pointer-events:none;background:linear-gradient(180deg,rgba(26,16,6,.40),transparent);z-index:5}
-.glass{background:rgba(253,249,240,.94);border-radius:16px;box-shadow:var(--s1);pointer-events:auto}
-#me{display:flex;align-items:center;gap:9px;padding:7px 13px;flex:none;cursor:pointer}
-#me canvas{width:26px;height:34px;display:block}
-#me b{font-family:var(--fd);font-size:14px;color:var(--ink-2);font-weight:400}
-#me small{font-size:11px;color:var(--ink-3)}
-#rail{display:flex;align-items:center;padding:9px 14px}
-#rail .nd{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:0 3px;transition:.16s}
-#rail .nd:hover{transform:translateY(-2px)}
-#rail .dot{width:29px;height:29px;border-radius:11px;display:grid;place-items:center;font-family:var(--fd);
-  font-size:13.5px;color:#fff;background:#CBBCA2;transition:.2s;box-shadow:inset 0 -2px 0 rgba(0,0,0,.13)}
-#rail .nd.on .dot{background:linear-gradient(180deg,#43B189,var(--ok))}
-#rail .nd.cur .dot{transform:scale(1.2);box-shadow:0 0 0 4px rgba(237,178,69,.45),inset 0 -2px 0 rgba(0,0,0,.13)}
-#rail .nd small{font-family:var(--fd);font-size:10.5px;color:var(--ink-2);white-space:nowrap}
-#rail .nd.cur small{color:var(--gold-i)}
-#rail .lk{width:26px;height:3px;border-radius:2px;background:#E2D7C0;margin-bottom:15px}
-#rail .lk.on{background:#8FD3B8}
-#pct{font-family:var(--fd);font-size:13px;color:var(--gold-i);background:#FCEFD4;border-radius:10px;padding:5px 11px;margin-left:9px}
+#tourBlock{position:fixed;inset:0;z-index:69}
+#spot{position:fixed;z-index:70;border-radius:22px;box-shadow:0 0 0 9999px rgba(18,20,30,.62);pointer-events:none;transition:all .35s cubic-bezier(.2,.9,.3,1)}
+#tip{position:fixed;z-index:71;width:320px;background:#fff;border-radius:18px;padding:18px 20px;box-shadow:var(--sh2);font-size:14px;color:var(--ink2);animation:up .3s}
+#tip .tn{font-size:11.5px;color:var(--ac);font-weight:700;margin-bottom:4px}
+#tip .tb{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
+.toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);z-index:90;background:#1D2130;color:#fff;padding:12px 22px;border-radius:999px;font-size:14px;box-shadow:var(--sh2);animation:up .25s;max-width:90vw;text-align:center}
+#errbox{position:fixed;left:16px;right:16px;bottom:16px;z-index:999;background:#FDF1EE;color:#8A2D1E;border:1px solid #F0C9C1;border-radius:14px;padding:12px 16px;font-size:13px;line-height:1.6}
 
-#hint{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);pointer-events:none;font-family:var(--fd);
-  font-size:14.5px;color:#FFF7E6;text-shadow:0 2px 8px rgba(26,14,2,.8);background:rgba(38,24,10,.36);
-  padding:8px 20px;border-radius:999px;backdrop-filter:blur(4px);transition:opacity .22s;z-index:4}
-#pad{position:absolute;right:16px;bottom:16px;display:flex;gap:9px;z-index:4}
-#pad button{width:56px;height:56px;border:none;border-radius:17px;cursor:pointer;font-family:var(--fd);font-size:19px;
-  color:var(--ink-2);background:rgba(253,249,240,.9);box-shadow:var(--s1)}
-#pad button:active{transform:translateY(2px)}
-#pad button.go{background:linear-gradient(180deg,var(--gold-h),var(--gold-d));color:#4A3008}
-#sv{position:absolute;left:18px;bottom:22px;font-family:var(--fd);font-size:12px;color:#FFF7E6;opacity:0;
-  transition:opacity .45s;background:rgba(38,24,10,.42);padding:5px 13px;border-radius:999px;z-index:4}
-#sv.on{opacity:1}
-
-/* ── 대화창 ── */
-#dlg{position:absolute;inset:0;z-index:20;display:grid;place-items:center;padding:20px;background:rgba(30,18,6,.55);
-  backdrop-filter:blur(5px);overflow:auto;animation:fi .2s ease}
-#dlg[hidden]{display:none}
-@keyframes fi{from{opacity:0}to{opacity:1}}
-@keyframes up{from{opacity:0;transform:translateY(16px) scale(.99)}to{opacity:1;transform:none}}
-.card{width:100%;max-width:1010px;max-height:678px;display:flex;flex-direction:column;background:var(--paper);
-  border-radius:22px;box-shadow:var(--s2);overflow:hidden;animation:up .24s cubic-bezier(.2,.9,.3,1)}
-.ch{position:relative;display:flex;gap:14px;align-items:center;padding:15px 20px;color:#fff;flex:none;overflow:hidden}
-.ch::after{content:"";position:absolute;right:-40px;top:-70px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.09)}
-.ch .av{width:50px;height:50px;border-radius:15px;background:rgba(255,255,255,.2);flex:none;overflow:hidden}
-.ch .av canvas{display:block;width:50px;height:50px}
-.ch h2{margin:0;font-family:var(--fd);font-size:21px;font-weight:400;letter-spacing:.3px}
-.ch p{margin:2px 0 0;font-size:12.5px;opacity:.88}
-.ch .rl{margin-left:auto;display:flex;gap:5px;align-items:center;z-index:1}
-.ch .rl i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.35)}
-.ch .rl i.on{background:#fff}.ch .rl i.me{width:22px;border-radius:5px;background:#fff}
-.ch .x{background:rgba(255,255,255,.2);border:none;color:#fff;cursor:pointer;width:34px;height:34px;
-  border-radius:11px;font-size:16px;flex:none;z-index:1;margin-left:10px}
-.ch .x:hover{background:rgba(255,255,255,.32)}
-.cb{padding:17px 22px 6px;overflow:auto;flex:1}
-.cf{padding:12px 20px 15px;display:flex;gap:9px;flex-wrap:wrap;align-items:center;border-top:1px solid var(--line);
-  background:linear-gradient(180deg,var(--paper-2),#F1E8D5);flex:none}
-.cf .sp{margin-left:auto;font-size:12px;color:var(--ink-3)}
-.say{background:#FFFDF6;border-left:4px solid var(--gold);border-radius:0 12px 12px 0;padding:13px 17px;
-  margin:0 0 17px;font-size:14.8px;color:var(--ink-2);box-shadow:var(--s1)}
-.say b{color:var(--ink)}
-
-label.f{display:block;margin:0 0 4px}
-label.f>span{display:block;font-family:var(--fd);font-size:15px;color:#7A5A30;margin-bottom:5px}
-label.f>span em{font-style:normal;color:var(--ink-3);font-family:var(--fb);font-size:12.5px;margin-left:6px}
-.fg{margin:0 0 15px}
-.in{width:100%;padding:9px 12px;background:#fff;border:1.5px solid var(--line);border-radius:11px;
-  font-family:var(--fb);font-size:14.5px;color:var(--ink);outline:none;transition:.14s}
-.in::placeholder{color:#BEB19C}
-.in:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(237,178,69,.2)}
-textarea.in{min-height:84px;resize:vertical;line-height:1.72}
-select.in{cursor:pointer;-webkit-appearance:none;appearance:none;
-  background-image:linear-gradient(45deg,transparent 50%,var(--ink-3) 50%),linear-gradient(135deg,var(--ink-3) 50%,transparent 50%);
-  background-position:calc(100% - 15px) 17px,calc(100% - 10px) 17px;background-size:5px 5px;background-repeat:no-repeat}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
-.tip{font-size:13px;color:var(--ink-3);margin:-4px 0 13px;line-height:1.64}
-.sec{font-family:var(--fd);font-size:15.5px;color:#7A5A30;margin:22px 0 9px;padding-left:10px;border-left:4px solid var(--gold)}
-
-.ex{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin:5px 0 0;padding:6px 8px;
-  background:#FBF4E4;border-radius:10px;border:1px dashed #E4D6B6}
-.ex>span{font-family:var(--fd);font-size:11px;color:var(--gold-i);background:#F7E3B8;border-radius:6px;padding:2px 8px;flex:none}
-.ex button,.exb{font-family:var(--fb);font-size:12px;border:1px solid #E7D9BC;background:#fff;color:var(--ink-2);
-  border-radius:8px;padding:4px 10px;cursor:pointer;transition:.13s;text-align:left;line-height:1.45}
-.ex button:hover,.exb:hover{border-color:var(--gold);background:#FFF6E1;color:var(--ink)}
-.ex button:active{transform:translateY(1px)}
-
-.btn{font-family:var(--fd);font-size:15px;border:none;border-radius:12px;padding:10px 20px;cursor:pointer;
-  color:#4A3008;background:linear-gradient(180deg,var(--gold-h),var(--gold));box-shadow:0 3px 0 var(--gold-d);transition:.1s}
-.btn:active{transform:translateY(3px);box-shadow:0 0 0 var(--gold-d)}
-.btn.g{background:#fff;color:#7A5A30;box-shadow:0 3px 0 var(--line)}
-.btn.g:active{box-shadow:0 0 0 var(--line)}
-.btn.sm{font-size:13.5px;padding:7px 14px;box-shadow:0 2px 0 var(--gold-d)}
-.btn.g.sm{box-shadow:0 2px 0 var(--line)}
-.btn.dk{background:linear-gradient(180deg,#59B792,#2F9B72);color:#fff;box-shadow:0 3px 0 #217A59}
-.btn.rd{background:linear-gradient(180deg,#F2F2F2,#E4E4E4);color:#B3453A;box-shadow:0 3px 0 #CFCFCF}
-.btn.demo{background:linear-gradient(180deg,#F4EBFB,#E8DAF7);color:#6B4A98;box-shadow:0 2px 0 #D4BFEF;font-size:13px;padding:7px 14px}
-.btn.big{font-size:17px;padding:12px 34px}
-
-.tabs{display:flex;gap:6px;margin:0 0 15px;flex-wrap:wrap}
-.tabs button{font-family:var(--fd);font-size:13.5px;border:1.5px solid var(--line);background:#fff;color:var(--ink-2);
-  border-radius:999px;padding:7px 16px;cursor:pointer;transition:.15s}
-.tabs button.on{background:linear-gradient(180deg,#8A6236,#6E4C28);border-color:#6E4C28;color:#FFF7E6;box-shadow:var(--s1)}
-.tabs button i{font-style:normal;font-size:11px;background:var(--gold);color:#4A3008;border-radius:999px;padding:1px 6px;margin-left:5px}
-.tabs button.on i{background:rgba(255,255,255,.28);color:#fff}
-
-.rows{display:flex;flex-direction:column;gap:7px;margin:0 0 10px}
-.rw{display:grid;gap:7px;align-items:center;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:8px 9px}
-.rw.a{grid-template-columns:1.5fr 1.2fr 32px}
-.rw.b{grid-template-columns:1fr 1.2fr 32px}
-.del{border:none;background:var(--bad-bg);color:var(--bad);width:30px;height:30px;border-radius:9px;cursor:pointer;font-size:15px}
-.del:hover{background:#F6D8D2}
-.empty{text-align:center;color:var(--ink-3);font-size:13.5px;padding:22px;border:1.5px dashed var(--line);
-  border-radius:13px;background:#FFFDF6;margin-bottom:10px}
-
-/* 업무 카드 (2단계) */
-.tc{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:10px 12px;margin:0 0 8px;transition:.16s}
-.tc.on{border-color:var(--gold);background:#FFFCF2;box-shadow:0 0 0 3px rgba(237,178,69,.16)}
-.tc .h{display:flex;align-items:center;gap:9px;margin-bottom:8px}
-.tc .h b{font-family:var(--fd);font-size:15px;font-weight:400;flex:1}
-.tc .h .hr{font-family:var(--fd);font-size:13px;color:var(--gold-i);background:#FCEFD4;border-radius:8px;padding:3px 10px;white-space:nowrap}
-.tc .h .p{border:none;background:#F0EADB;color:var(--ink-2);font-family:var(--fd);font-size:12.5px;
-  border-radius:9px;padding:6px 13px;cursor:pointer;white-space:nowrap}
-.tc .h .p:hover{background:#E7DEC8}
-.tc.on .h .p{background:linear-gradient(180deg,var(--gold-h),var(--gold));color:#4A3008}
-.qs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
-.qs label{display:block}
-.qs label span{display:block;font-size:11.5px;color:var(--ink-3);margin-bottom:3px}
-.qs select{width:100%;padding:7px 9px;font-size:13px;border:1.5px solid var(--line-2);border-radius:9px;
-  background:#FFFDF6;font-family:var(--fb);color:var(--ink);cursor:pointer;outline:none}
-.qs select:focus{border-color:var(--gold)}
-
-.quad{position:relative;height:222px;border-radius:15px;margin:0 0 13px;overflow:hidden;border:1.5px solid var(--line);
-  background:linear-gradient(135deg,#F2EFE4 0%,#F2EFE4 49%,#FCF3DE 51%,#F9E7C2 100%)}
-.quad .ax{position:absolute;background:#DFD2B6}
-.quad .lb{position:absolute;font-family:var(--fd);font-size:11px;color:var(--ink-3);padding:5px 9px}
-.quad .zn{position:absolute;font-family:var(--fd);font-size:11.5px;color:#AC9878;padding:8px 12px}
-.quad .pt{position:absolute;transform:translate(-50%,50%);cursor:pointer;transition:.2s}
-.quad .pt b{display:block;width:15px;height:15px;border-radius:50%;background:var(--c1);border:2.5px solid #fff;box-shadow:var(--s1)}
-.quad .pt.hot b{background:var(--bad)}
-.quad .pt.sel b{background:var(--gold);width:22px;height:22px;box-shadow:0 0 0 5px rgba(237,178,69,.32)}
-.quad .pt span{position:absolute;left:20px;top:-3px;font-size:11.5px;color:var(--ink-2);white-space:nowrap;
-  background:rgba(255,255,255,.86);border-radius:6px;padding:1px 6px}
-
-.step{background:#fff;border:1.5px solid var(--line);border-radius:14px;margin:0 0 9px;overflow:hidden;transition:.16s}
-.step.open{border-color:var(--gold);box-shadow:0 0 0 3px rgba(237,178,69,.16)}
-.sh{display:grid;grid-template-columns:30px 1fr 96px 30px;gap:8px;align-items:center;padding:8px 9px}
-.sh .no{width:27px;height:27px;border-radius:9px;display:grid;place-items:center;font-family:var(--fd);font-size:13px;color:#fff}
-.exp{border:none;background:var(--paper-2);border-radius:9px;width:28px;height:28px;cursor:pointer;color:var(--ink-2);font-size:12px}
-.exp:hover{background:var(--paper-3)}
-.sd{padding:4px 11px 12px;border-top:1px dashed var(--line);margin-top:3px}
-.sd .fg{margin-bottom:12px}
-.sd textarea.in{min-height:56px;font-size:13.5px}
-.bars{display:flex;height:28px;border-radius:9px;overflow:hidden;margin:0 0 5px;background:var(--paper-3);box-shadow:inset 0 1px 3px rgba(0,0,0,.08)}
-.bars div{display:grid;place-items:center;font-size:11px;color:#fff;font-family:var(--fd);overflow:hidden;white-space:nowrap;min-width:0}
-.lg{display:flex;gap:11px;flex-wrap:wrap;font-size:11.5px;color:var(--ink-3);margin:0 0 14px}
-.lg i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:4px}
-
-.al{border-radius:12px;padding:11px 15px;margin:0 0 13px;font-size:13.5px;line-height:1.68}
-.al.w{background:var(--warn-bg);border-left:4px solid var(--warn);color:#8A4E1E}
-.al.o{background:var(--ok-bg);border-left:4px solid var(--ok);color:#1E6B4E}
-.al.b{background:var(--bad-bg);border-left:4px solid var(--bad);color:#8A3226}
-.al ul{margin:6px 0 0;padding-left:18px}.al li{margin:3px 0}
-
-.gauge{display:flex;align-items:center;gap:16px;background:#fff;border:1.5px solid var(--line);border-radius:15px;padding:15px 17px;margin:0 0 13px}
-.ring{width:86px;height:86px;border-radius:50%;flex:none;display:grid;place-items:center;position:relative}
-.ring i{position:absolute;inset:10px;background:#fff;border-radius:50%}
-.ring b{position:relative;font-family:var(--fd);font-size:24px;color:var(--gold-i)}
-.chk{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:3px 18px;flex:1}
-.chk li{font-size:12.8px;color:var(--ink-3)}
-.chk li.y{color:var(--ok)}
-.chk li::before{content:"○ ";font-family:var(--fd)}
-.chk li.y::before{content:"● "}
-pre.md{background:#30251A;color:#F0DDB2;border-radius:14px;padding:16px 18px;font-size:12.5px;line-height:1.75;
-  overflow:auto;max-height:270px;white-space:pre-wrap;word-break:break-all;
-  font-family:ui-monospace,"SF Mono",Menlo,monospace;margin:0 0 13px;box-shadow:inset 0 2px 8px rgba(0,0,0,.25)}
-.toast{position:absolute;left:50%;top:80px;transform:translateX(-50%);z-index:50;background:rgba(38,24,10,.94);
-  color:#FFF7E6;font-family:var(--fd);font-size:14.5px;padding:11px 24px;border-radius:999px;box-shadow:var(--s2);animation:up .2s ease}
-@media(max-width:760px){.g2,.chk,.qs{grid-template-columns:1fr}.picks{flex-direction:column;align-items:center}}
+@media(max-width:1200px){.nd .nt{display:none}.brand small{display:none}.nd{padding:5px}}
+@media(max-width:960px){
+  .top{flex-wrap:wrap;padding:10px 14px;gap:10px}#rail{order:3;flex-basis:100%}
+  .wrap{grid-template-columns:1fr;padding:14px;gap:16px}
+  #guide{position:static;display:grid;grid-template-columns:120px 1fr;gap:12px}
+  .npc .portrait{height:150px}.npc-tag{padding:18px 10px 8px}.npc-tag b{font-size:15px}.npc-tag small{display:none}
+  .bubble{margin:0}.bubble::before{display:none}.todo,.tips{grid-column:1/-1;margin:0}
+  .g2,.g3,.qs,.seg,.stp-b,.addrow,.row,.row2{grid-template-columns:1fr}
+  .stp-h{grid-template-columns:34px 1fr}.stp-b{padding-left:0}
+  .rk{grid-template-columns:26px 1fr 92px}.rk .rb,.rk em{display:none}
+  .stations{flex-wrap:wrap}.stn{flex:0 0 30%}.arr{display:none}.ifoot{grid-template-columns:1fr}
+  .ibox{padding:28px 22px}.ibox h1{font-size:26px}.wb,.wh,#foot{padding-left:18px;padding-right:18px}
+  .hero{width:calc(50% - 6px)}
+}
 </style>
 </head>
 <body>
-<div id="stage"><div id="frame">
-  <canvas id="cv" width="1280" height="720"></canvas>
-  <div id="top">
-    <div class="glass" id="me"><canvas id="mc" width="52" height="68"></canvas>
-      <div><b id="mn">참가자</b><br><small>눌러서 바꾸기</small></div></div>
-    <div class="glass" id="rail"></div>
+<script>
+/* 문제가 생기면 화면에 바로 알려 줘요 */
+window.addEventListener("error",function(e){var b=document.getElementById("errbox");if(!b){b=document.createElement("div");b.id="errbox";document.body.appendChild(b);}
+ b.textContent="화면을 그리다가 문제가 생겼어요. 이 상자를 캡처해서 알려 주세요 → "+(e.message||"알 수 없는 오류")+" (줄 "+(e.lineno||"?")+")";});
+</script>
+
+<header class="top">
+  <div class="brand"><span class="logo">S</span><div><b>SKILL 공방</b><small>반복 업무로 나만의 AI 스킬 만들기</small></div></div>
+  <nav id="rail"></nav>
+  <div class="tools">
+    <span id="saved">자동 저장됨</span><span id="pct"></span>
+    <button class="me" id="me" data-act="intro" title="이름·캐릭터 바꾸기"></button>
+    <button class="ghost" data-act="tour">둘러보기</button>
+    <button class="ghost" data-act="demo">예시</button>
+    <button class="ghost" data-act="reset">초기화</button>
   </div>
-  <div id="hint"></div><div id="sv">저장됨</div>
-  <div id="pad">
-    <button data-k="ArrowLeft">←</button><button data-k="ArrowRight">→</button>
-    <button data-k=" ">↑</button><button class="go" data-k="Enter">입장</button>
+</header>
+<main class="wrap">
+  <aside id="guide"></aside>
+  <section id="work"></section>
+</main>
+
+<!-- 시작 화면: 캐릭터 선택 -->
+<div id="intro">
+ <div class="ibox">
+  <p class="eyebrow">HRD 실무자를 위한 약 85분 워크샵</p>
+  <h1>늘 하던 그 일,<br>이제 AI에게 가르쳐 볼까요?</h1>
+  <p class="lead">반복하는 업무를 꺼내 놓고, 그중 하나를 골라, 순서와 노하우를 풀어내면 AI가 그대로 따라 할 수 있는 <b>SKILL.md</b> 한 장이 완성돼요. 다섯 명의 안내자가 한 단계씩 곁에서 도와드릴게요.</p>
+  <div class="stations">
+   <div class="stn"><span class="ph av" data-i="한나"><img src="https://kjjjme1114-dotcom.github.io/skill-workshop-5steps/측량가한나.png" alt="" style="object-position:50% 15%" onerror="this.remove()"></span><b>1. 업무 지도소</b><small>한나 · 반복 업무 목록</small></div>
+   <span class="arr">→</span>
+   <div class="stn"><span class="ph av" data-i="도윤"><img src="https://kjjjme1114-dotcom.github.io/skill-workshop-5steps/분석가도윤.png" alt="" style="object-position:50% 15%" onerror="this.remove()"></span><b>2. 선별 언덕</b><small>도윤 · 업무 1개 + 범위</small></div>
+   <span class="arr">→</span>
+   <div class="stn"><span class="ph av" data-i="민서"><img src="https://kjjjme1114-dotcom.github.io/skill-workshop-5steps/서기민서.png" alt="" style="object-position:50% 15%" onerror="this.remove()"></span><b>3. 설계 사무소</b><small>민서 · 입력·결과물 설계</small></div>
+   <span class="arr">→</span>
+   <div class="stn"><span class="ph av" data-i="재현"><img src="https://kjjjme1114-dotcom.github.io/skill-workshop-5steps/목수재현.png" alt="" style="object-position:50% 15%" onerror="this.remove()"></span><b>4. 해부 공방</b><small>재현 · 작업 순서·노하우</small></div>
+   <span class="arr">→</span>
+   <div class="stn"><span class="ph av" data-i="강수"><img src="https://kjjjme1114-dotcom.github.io/skill-workshop-5steps/대장장이강수.png" alt="" style="object-position:50% 15%" onerror="this.remove()"></span><b>5. SKILL 대장간</b><small>강수 · SKILL.md</small></div>
   </div>
-  <div id="dlg" hidden></div>
-  <div id="intro" hidden></div>
-</div></div>
+  <div class="ifoot">
+   <div>
+    <label class="hl" for="iname">어떻게 불러 드릴까요? <small>선택</small></label>
+    <input class="in" id="iname" placeholder="이름이나 별명 (예: JUN)" style="max-width:320px">
+    <p class="note">적은 내용은 이 브라우저에만 자동 저장되고, 어디로도 보내지 않아요.</p>
+   </div>
+   <div>
+    <span class="hl">함께 걸어갈 캐릭터를 골라 주세요</span>
+    <div class="heroes">
+     <button class="hero" data-hero="f"><span class="ph hp" data-i="여자 주인공"><img src="https://kjjjme1114-dotcom.github.io/skill-workshop-5steps/여자주인공.png" alt="" style="object-position:50% 12%" onerror="this.remove()"></span><span class="hn">여자 주인공</span></button>
+     <button class="hero" data-hero="m"><span class="ph hp" data-i="남자 주인공"><img src="https://kjjjme1114-dotcom.github.io/skill-workshop-5steps/남자주인공.png" alt="" style="object-position:50% 12%" onerror="this.remove()"></span><span class="hn">남자 주인공</span></button>
+    </div>
+   </div>
+  </div>
+  <div class="ibtn">
+   <button class="btn big gold" data-act="start" id="startBtn">워크샵 시작하기</button>
+   <button class="btn ghost" data-act="demo">예시로 먼저 둘러보기</button>
+   <span class="note" style="margin:0">처음이시면 시작 후 짧은 화면 안내가 나와요.</span>
+  </div>
+ </div>
+</div>
+
 <script>
 "use strict";
-/*═══════ 그림 슬롯 — 파일을 준비하면 경로만 채우세요 (비워 두면 코드로 그립니다) ═══════
-  예) hero_m:"art/hero-m.png"  ·  shop_map:"art/shop-1.png"  ·  bg_far:"art/bg-far.png"    */
-const ART={hero_m:"",hero_f:"",npc_map:"",npc_sift:"",npc_deal:"",npc_anat:"",npc_forge:"",
-  shop_map:"",shop_sift:"",shop_deal:"",shop_anat:"",shop_forge:"",bg_far:"",bg_mid:""};
-const IMG={};
-Object.keys(ART).forEach(k=>{if(!ART[k])return;const i=new Image();i.src=ART[k];i.onload=()=>IMG[k]=i;});
-const px=k=>IMG[k]||null;
+/* ───── 그림: GitHub Pages에서 바로 불러와요 (내려받은 파일로 열어도 보여요) ───── */
+const BASE="https://kjjjme1114-dotcom.github.io/skill-workshop-5steps/";
+const ART={f:"여자주인공.png",m:"남자주인공.png",map:"측량가한나.png",sift:"분석가도윤.png",deal:"서기민서.png",anat:"목수재현.png",forge:"대장장이강수.png"};
+/* 얼굴이 잘려 보이면 두 번째 숫자(세로 위치 %)를 조절하세요. 0%=맨 위 */
+const FOCUS={f:"50% 12%",m:"50% 12%",map:"50% 15%",sift:"50% 15%",deal:"50% 15%",anat:"50% 15%",forge:"50% 15%"};
+const IMG=k=>BASE+encodeURIComponent(ART[k]||ART.f);
 
-/*═══════ 저장 ═══════*/
-const KEY="skillforge:v4";
-const blank=()=>({who:"",ch:{sex:"f",col:"#5289CE"},tasks:[],sel:null,
-  def:{trigger:"",client:"",input:"",outName:"",outForm:"보고서 / 문서",sections:"",vol:""},
-  steps:[],branches:[],terms:[],rules:{must:"",never:"",tone:""},dod:"",ex:{good:"",bad:""},done:[]});
-let D=blank();
-try{const r=localStorage.getItem(KEY);if(r)D=Object.assign(blank(),JSON.parse(r));}catch(e){}
-if(!D.ch)D.ch={sex:"f",col:"#5289CE"};
-let svt=null;
-function save(){try{localStorage.setItem(KEY,JSON.stringify(D));}catch(e){}
-  const s=document.getElementById("sv");s.classList.add("on");
-  clearTimeout(svt);svt=setTimeout(()=>s.classList.remove("on"),1100);}
-const $=s=>document.querySelector(s);
-const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const $=s=>document.querySelector(s),$$=s=>Array.from(document.querySelectorAll(s));
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const att=s=>esc(s).replace(/\n/g,"&#10;");
 const lines=s=>String(s||"").split("\n").map(x=>x.trim()).filter(Boolean);
 const uid=()=>Math.random().toString(36).slice(2,9);
-const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const tr=s=>String(s||"").trim();
+const jo=(w,a,b)=>{const c=tr(w).slice(-1).charCodeAt(0);if(!(c>=0xAC00&&c<=0xD7A3))return w+a;return w+(((c-0xAC00)%28)?a:b);};
+const ph=(k,cls,label)=>`<span class="ph ${cls||""}" data-i="${esc(label||"")}"><img src="${IMG(k)}" alt="" style="object-position:${FOCUS[k]||"50% 15%"}" onerror="this.remove()"></span>`;
 
-/*═══════ 예시 칩 ═══════*/
-function E(t,v,add){const f=v.split("\n");let l=f[0];if(l.length>34)l=l.slice(0,34)+"…";
-  return `<button class="exb" data-t="${t}" data-v="${att(v)}"${add?' data-m="add"':""}>${esc(l)}${f.length>1?` <span style="color:#B09A78">+${f.length-1}</span>`:""}</button>`;}
-const EX=(...b)=>`<div class="ex"><span>예시</span>${b.join("")}</div>`;
-function bindEx(el){el.querySelectorAll("[data-t][data-v]").forEach(b=>b.onclick=()=>{
-  const p=b.dataset.t.split(":"),v=b.dataset.v,add=b.dataset.m==="add";
-  const put=(o,k)=>{o[k]=(add&&o[k]&&o[k].trim())?o[k].replace(/\s+$/,"")+"\n"+v:v;};
-  if(p[0]==="d")put(D.def,p[1]);else if(p[0]==="r")put(D.rules,p[1]);
-  else if(p[0]==="e")put(D.ex,p[1]);else if(p[0]==="dod")put(D,"dod");
-  else if(p[0]==="s"&&D.steps[+p[1]])put(D.steps[+p[1]],p[2]);
-  save();re();});}
-
-/*═══════ 데이터 ═══════*/
+/* ───── 데이터 ───── */
 const CYC=[
- {k:"day",n:"거의 매일",hint:"아침에 컴퓨터 켜고 <b>제일 먼저</b> 뭐 하세요? 하루에 두 번 이상 여는 파일 있으세요? 퇴근 전에 꼭 확인하는 거요."},
- {k:"week",n:"매주",hint:"월요일 아침, 금요일 오후에 늘 하는 일이요. 주간 회의 <b>앞뒤로</b> 챙기는 것도 있잖아요."},
- {k:"month",n:"매월",hint:"월초나 월말에 몰리는 일이요. 매달 <b>양식은 똑같고 숫자만 바뀌는</b> 문서, 그런 게 딱이에요."},
- {k:"quar",n:"분기·연",hint:"분기나 반기, 1년에 한 번 돌아오는 일이요. <b>작년 이맘때</b> 뭐 했는지 떠올려 보시면 나와요."},
- {k:"adhoc",n:"수시 요청",hint:"누가 메일이나 메신저로 <b>부탁하면</b> 시작되는 일이요. '아, 또 왔네' 싶은 거 있잖아요."}];
+ {k:"day",n:"매일",hint:"출근해서 <b>제일 먼저</b> 여는 파일이나 메일이 있나요? 퇴근 전에 꼭 확인하는 일도 좋아요."},
+ {k:"week",n:"매주",hint:"월요일 아침이나 금요일 오후에 늘 하는 일, 주간 회의 <b>앞뒤로</b> 챙기는 일을 떠올려 보세요."},
+ {k:"month",n:"매월",hint:"월초·월말에 몰리는 일이요. <b>양식은 그대로인데 숫자만 바뀌는</b> 문서가 있다면 아주 좋은 후보예요."},
+ {k:"quar",n:"분기·연간",hint:"<b>작년 이맘때</b> 무슨 일을 했는지 떠올려 보면 금방 생각나요. 교육계획이나 수요조사 같은 것들이요."},
+ {k:"adhoc",n:"요청이 오면",hint:"메일이나 메신저로 <b>부탁을 받으면</b> 시작되는 일이에요. '아, 이거 또 왔네' 싶은 일 있잖아요."}];
 const CYCN=k=>(CYC.find(c=>c.k===k)||CYC[0]).n;
 const CHIP={
  day:["교육 문의 메일 회신","입과 신청 승인 처리","전일 수강 현황 확인","메일함 분류"],
@@ -304,836 +337,330 @@ const CHIP={
  month:["월간 교육 실적 보고서 작성","교육비 정산","교육 만족도 결과 요약","차월 과정 안내 공지"],
  quar:["교육 수요조사 취합","연간 교육계획 수립","과정 개설 품의","승진자 이수 현황 확인"],
  adhoc:["현업 교육 요청 검토","강사 섭외 메일 발송","교육 이수 증명 발급","교육 자료 수정 반영"]};
-const FREQ=[{n:"거의 매일",v:230},{n:"주에 한두 번",v:60},{n:"한 달에 한두 번",v:18},{n:"한 달에 몇 번",v:24},{n:"분기에 한 번",v:4},{n:"1년에 한두 번",v:2}];
-const DUR=[{n:"10분쯤",v:10},{n:"30분쯤",v:30},{n:"1시간쯤",v:60},{n:"2~3시간",v:150},{n:"반나절 넘게",v:300}];
-const SAME=[{n:"거의 같아요",v:5},{n:"반반이에요",v:3},{n:"매번 달라요",v:1}];
-const near=(arr,v)=>arr.reduce((a,b)=>Math.abs(b.v-v)<Math.abs(a.v-v)?b:a).v;
-const TYPES=[{k:"자료 모으기",c:"#5289CE"},{k:"정리·계산",c:"#2F9B72"},{k:"판단하기",c:"#D9A032"},
- {k:"글로 쓰기",c:"#9270C2"},{k:"확인하기",c:"#D9705C"},{k:"보내기",c:"#3C9CA0"}];
-const TC=k=>(TYPES.find(t=>t.k===k)||TYPES[0]).c;
-const ACT=["제가 직접 해야 해요","AI가 초안, 제가 검토","AI에게 맡길 수 있어요"];
+const FREQ=[{n:"거의 매일",v:230},{n:"주 1~2회",v:75},{n:"월 2~3회",v:30},{n:"월 1회",v:12},{n:"분기 1회",v:4},{n:"연 1~2회",v:2}];
+const DUR=[{n:"10분쯤",v:10},{n:"30분쯤",v:30},{n:"1시간쯤",v:60},{n:"2~3시간",v:150},{n:"반나절 이상",v:300}];
+const SAME=[{n:"거의 같아요",v:5},{n:"반쯤 같아요",v:3},{n:"매번 달라요",v:1}];
+const DIGI=[{n:"파일·메일로 와요",v:1},{n:"반반이에요",v:.8},{n:"말·종이로 와요",v:.5}];
+const RISK=[{n:"고치면 돼요",v:1},{n:"조금 신경 쓰여요",v:.9},{n:"틀리면 큰일",v:.7}];
+const TYPES=[{k:"자료 모으기",c:"#4F86C6"},{k:"정리·계산",c:"#2E8B6A"},{k:"판단하기",c:"#D39A2E"},{k:"글로 쓰기",c:"#8467C0"},{k:"확인하기",c:"#CF6A55"},{k:"보내기",c:"#3A9A9E"}];
+const TC=k=>(TYPES.find(t=>t.k===k)||{c:"#B9B3A6"}).c;
+const ACT=[
+ {v:"ai",n:"AI가 맡아요",d:"처음부터 끝까지 맡겨도 돼요",md:"AI가 직접 수행한다."},
+ {v:"draft",n:"AI 초안 → 내가 확인",d:"초안은 AI, 마무리는 제가",md:"AI가 초안을 만든 뒤 사용자에게 확인을 요청한다."},
+ {v:"me",n:"제가 직접 해요",d:"AI는 옆에서 자료만 챙겨요",md:"사용자가 직접 수행한다. AI는 필요한 자료만 정리해 건넨다."}];
+const FORMS=["보고서 · 문서","표 · 엑셀 정리","메일 · 메시지","공지 · 안내문","발표 자료 개요","체크리스트"];
+
+/* ───── 저장 ───── */
+const KEY="skill-workshop:v6";
+const blank=()=>({who:"",hero:"",started:false,toured:false,cur:0,tab:"day",tasks:[],sel:null,
+ scope:{why:"",inc:"",exc:"",role:""},
+ def:{triggers:"",input:"",missing:"",outName:"",outForm:FORMS[0],reader:"",sections:"",vol:"",tone:""},
+ steps:[],branches:[],terms:[],rules:{must:"",never:""},dod:"",ex:{good:"",bad:""},slug:"",tests:""});
+let D=blank();
+try{const r=JSON.parse(localStorage.getItem(KEY)||"null");if(r){const b=blank();D=Object.assign(b,r);["scope","def","rules","ex"].forEach(k=>{D[k]=Object.assign(blank()[k],r[k]||{});});}}catch(e){}
+let svT=null;
+function save(){try{localStorage.setItem(KEY,JSON.stringify(D));}catch(e){}
+ const s=$("#saved");if(s){s.classList.add("on");clearTimeout(svT);svT=setTimeout(()=>s.classList.remove("on"),1200);}}
+const getP=p=>p.split(".").reduce((o,k)=>o==null?o:o[k],D);
+const setP=(p,v)=>{const k=p.split(".");let o=D;for(let i=0;i<k.length-1;i++)o=o[k[i]];o[k[k.length-1]]=v;};
 const selT=()=>D.tasks.find(t=>t.id===D.sel)||null;
-const hrs=t=>((+(t&&t.yr)||0)*(+(t&&t.min)||0))/60;
-const scoreT=t=>hrs(t)*((+t.form||3)/5);
+const rated=t=>!!(t.freq&&t.dur&&t.same);
+const hrs=t=>(+t.freq||0)*(+t.dur||0)/60;
+const score=t=>rated(t)?hrs(t)*(+t.same/5)*(+t.digi||.8)*(+t.risk||1):0;
+const realSteps=()=>D.steps.filter(s=>tr(s.a));
 
-/*═══════ 5단계 ═══════*/
+/* ───── 5단계 ───── */
 const ST=[
-{id:"map",x:470,name:"한나",role:"업무 지도소",col:"#4E7FB8",roof:"#35598A",body:"#DFEAF6",
- face:{skin:"#F3D0AC",hair:"#3A2A1C",cloth:"#4E7FB8",sex:"f"},
- say:"오, 오셨네요! 반가워요.<br>자, 시작부터 어려운 거 안 물어볼게요. 그냥 <b>요즘 무슨 일 하고 계신지</b>만 좀 꺼내 주세요.<br>근데 갑자기 다 적으라고 하면 막막하시죠? 그래서 서랍을 다섯 칸 만들어 뒀어요. 매일 하는 일부터 하나씩 열어 보세요. 생각 안 나면 밑에 예시 눌러도 되고요."},
-{id:"sift",x:1170,name:"도윤",role:"선별 언덕",col:"#3F8F6F",roof:"#2B6A50",body:"#DDF1E7",
- face:{skin:"#E9C29A",hair:"#241A12",cloth:"#3F8F6F",sex:"m"},
- say:"꽤 많이 꺼내셨네요. 이제 여기서 <b>딱 하나만</b> 고를 거예요.<br>근데 '제일 중요한 일'을 고르시면 안 돼요. 중요한 일하고 AI한테 맡길 만한 일은 좀 달라요.<br>자주 하고, 시간 꽤 잡아먹고, 할 때마다 순서가 비슷한 일. 그런 게 딱이에요. 아래 질문 세 개만 답해 주시면 제가 계산해 드릴게요."},
-{id:"deal",x:1870,name:"민서",role:"설계 사무소",col:"#8A6BB8",roof:"#65478D",body:"#E9E1F6",
- face:{skin:"#F3D0AC",hair:"#4A2E1E",cloth:"#8A6BB8",sex:"f"},
- say:"솔직히 말씀드릴게요. AI는 눈치가 없어요.<br>\"알아서 잘 정리해 줘\" 하면 매번 다른 걸 가져옵니다. 그래서 <b>미리 못을 박아 둬야</b> 해요.<br>언제 시작하는지, 누가 볼 건지, 그리고 <b>결과물에 어떤 칸이 들어가는지</b>. 특히 마지막 게 제일 중요해요. 이것만 적어 두시면 결과가 확 달라집니다."},
-{id:"anat",x:2570,name:"재현",role:"해부 공방",col:"#C05A4A",roof:"#93372B",body:"#F8E0D9",
- face:{skin:"#E9C29A",hair:"#2B1D14",cloth:"#C05A4A",sex:"m"},
- say:"여기가 제일 중요한 곳이에요. 시간도 제일 많이 걸릴 거고요.<br>그 일을 <b>어떤 순서로 하시는지</b> 좀 풀어 주세요. 이미 머릿속에 다 있으실 거예요. 근데 그게 밖으로 안 나와 있어서 AI가 못 따라 하는 거죠.<br>그리고 하나 더요. 단계마다 <b>\"이때 뭘 보세요?\"</b>랑 <b>\"신입이 여기서 뭘 틀려요?\"</b>도 적어 주세요. 이게 진짜 핵심이에요. 절차는 누구나 쓸 수 있는데, 이건 <b>해 본 사람만</b> 쓸 수 있어요."},
-{id:"forge",x:3260,name:"강수",role:"SKILL 대장간",col:"#6B4A8F",roof:"#4A3066",body:"#E7DFF3",
- face:{skin:"#E1B58D",hair:"#1A1410",cloth:"#6B4A8F",sex:"m"},
- say:"고생하셨어요. 거의 다 왔습니다.<br>마지막으로 세 가지만요. <b>꼭 지켜야 할 것</b>, <b>절대 하면 안 되는 것</b>, 그리고 <b>\"이 정도면 됐다\" 싶은 기준</b>.<br>이것만 정해 주시면 제가 두드려서 파일 한 장으로 뽑아 드릴게요. 완성도도 점수로 매겨 드립니다."}];
-const WORLD=3620,CW=1280,CH=720,GY=500;
-const mark=id=>{if(!D.done.includes(id)){D.done.push(id);save();drawRail();}};
+{id:"map",name:"한나",who:"측량가 한나",role:"업무 지도소",col:"#3D78B0",soft:"#E9F1F9",time:15,out:"반복 업무 목록",
+ title:"내 업무 꺼내 놓기",sub:"평소 반복하는 일을 주기별 서랍에 편하게 담아요",
+ say:n=>`어서 오세요${n?`, <b>${esc(n)}</b>님`:""}. 저는 한나예요.<br><br>처음부터 대단한 걸 찾으려고 애쓰지 않으셔도 돼요. 오늘은 <b>요즘 손이 자주 가는 일</b>을 편하게 꺼내 보는 시간이에요.<br><br>서랍을 하나씩 열면서 떠오르는 대로 담아 주세요. 사소해 보이는 일일수록 좋은 재료가 되더라고요.`,
+ tips:["캘린더나 보낸 메일함을 한번 훑어보세요. 자주 보이는 제목이 곧 반복 업무예요.","'무엇을 + 어떻게' 모양으로 적으면 나중에 편해요. 예: 만족도 결과 요약","한 업무가 너무 크면 둘로 나눠 담아도 괜찮아요."],
+ todo:[{t:"업무 5개 이상 꺼내기",req:1,f:"nt",ok:()=>D.tasks.length>=5},
+  {t:"서랍 세 칸 이상 열어 보기",f:"tabs",ok:()=>new Set(D.tasks.map(t=>t.cyc)).size>=3},
+  {t:"업무마다 시작 신호 적기",f:"list",ok:()=>D.tasks.length>0&&D.tasks.every(t=>tr(t.trg))}]},
+{id:"sift",name:"도윤",who:"분석가 도윤",role:"선별 언덕",col:"#2C8A68",soft:"#E5F3EC",time:15,out:"업무 1개 + 범위",
+ title:"스킬로 만들 업무 하나 고르기",sub:"질문 몇 개로 점수를 매기고, 범위를 좁혀요",
+ say:()=>`와, 이만큼이나 하고 계셨네요. 정말 고생 많으세요.<br><br>이제 이 중에서 <b>딱 하나</b>만 골라 볼 거예요. 가장 중요한 일보다는 <b>자주 돌아오고, 시간이 꽤 들고, 할 때마다 순서가 비슷한 일</b>이 스킬로 만들기 좋아요.<br><br>업무마다 질문 몇 개만 골라 주시면 추천 순위는 제가 정리해 둘게요.`,
+ tips:["점수가 가장 높은 일이 정답은 아니에요. 마음이 가는 일을 골라도 괜찮아요.","'매번 달라요'로 답한 일은 이번엔 잠시 미뤄 두는 게 좋아요.","범위는 좁을수록 정확해져요. '보고서 전체'보다 '보고서 초안 작성'처럼요."],
+ todo:[{t:"업무마다 질문에 답하기",f:"cards",ok:()=>D.tasks.length>0&&D.tasks.every(rated)},
+  {t:"스킬로 만들 업무 하나 고르기",req:1,f:"cards",ok:()=>!!selT()},
+  {t:"이번 스킬이 해 줄 일 적기",req:1,f:"scope.inc",ok:()=>!!tr(D.scope.inc)},
+  {t:"하지 않을 일로 선 긋기",f:"scope.exc",ok:()=>!!tr(D.scope.exc)},
+  {t:"AI와 나의 역할 나누기",f:"scope.role",ok:()=>!!D.scope.role}]},
+{id:"deal",name:"민서",who:"서기 민서",role:"설계 사무소",col:"#7457B0",soft:"#EFEAF8",time:15,out:"입력·결과물 설계",
+ title:"입구와 출구 정하기",sub:"언제 부르고, 무엇을 건네고, 무엇을 받을지 정해요",
+ say:()=>`반가워요, 민서예요. 여기서는 스킬의 <b>입구와 출구</b>를 정해요.<br><br>AI는 성실하지만 우리 팀 사정은 잘 몰라서, '알아서 잘' 부탁하면 매번 조금씩 다른 걸 가져오곤 해요. 그래서 <b>언제 부르는지, 무엇을 건네는지, 무엇을 받고 싶은지</b>를 미리 적어 두려고 해요.<br><br>특히 결과물 목차를 적어 두면 결과가 정말 많이 달라져요.`,
+ tips:["호출 문장은 동료에게 부탁할 때 실제로 쓰는 말투 그대로 적어 보세요.","지난번 결과물 파일을 옆에 열어 두고 제목만 옮겨 적으면 금방이에요.","'먼저 물어볼 것'을 적어 두면 AI가 빈칸을 멋대로 채우지 않아요."],
+ todo:[{t:"호출 문장 2개 이상",req:1,f:"def.triggers",ok:()=>lines(D.def.triggers).length>=2},
+  {t:"건네는 자료 적기",req:1,f:"def.input",ok:()=>!!tr(D.def.input)},
+  {t:"부족할 때 물어볼 것",f:"def.missing",ok:()=>!!tr(D.def.missing)},
+  {t:"결과물 이름 정하기",req:1,f:"def.outName",ok:()=>!!tr(D.def.outName)},
+  {t:"결과물 목차 3칸 이상",req:1,f:"def.sections",ok:()=>lines(D.def.sections).length>=3},
+  {t:"읽는 사람과 말투 정하기",f:"def.reader",ok:()=>!!tr(D.def.reader)&&!!tr(D.def.tone)}]},
+{id:"anat",name:"재현",who:"목수 재현",role:"해부 공방",col:"#B8553F",soft:"#F9EAE5",time:25,out:"작업 순서·노하우",
+ title:"일하는 순서 풀어 놓기",sub:"머릿속 순서를 단계로 꺼내고, 단계마다 노하우를 붙여요",
+ say:()=>`안녕하세요, 재현이에요. 여기가 오늘 워크샵의 심장 같은 곳이라 시간도 조금 넉넉히 잡았어요.<br><br>이 일을 <b>평소 어떤 순서로 하시는지</b> 차근차근 풀어 주세요. 손은 이미 다 알고 있는데 글로 적혀 있지 않아서 AI가 따라 하지 못하는 거거든요.<br><br>단계마다 <b>이때 무엇을 보는지</b>, <b>처음 하는 사람이 어디서 자주 틀리는지</b>도 살짝 붙여 주세요. 해 본 분만 쓸 수 있는, 가장 값진 부분이에요.`,
+ tips:["지난번에 이 일을 했던 날을 떠올리며 '그다음엔?'을 반복해 보세요.","한 단계에는 동사 하나만 담아 주세요. '모아서 정리하고 보낸다'는 세 단계예요.","'자주 틀리는 곳'은 신입에게 인수인계할 때 했던 당부를 떠올리면 쉬워요."],
+ todo:[{t:"작업 단계 4개 이상",req:1,f:"steps",ok:()=>realSteps().length>=4},
+  {t:"단계마다 종류·담당 정하기",f:"steps",ok:()=>realSteps().length>0&&realSteps().every(s=>s.type&&s.who)},
+  {t:"'이때 보는 것' 절반 이상",req:1,f:"steps",ok:()=>{const r=realSteps();return r.length>0&&r.filter(s=>tr(s.look)).length>=Math.ceil(r.length/2);}},
+  {t:"'자주 틀리는 곳' 2개 이상",f:"steps",ok:()=>realSteps().filter(s=>tr(s.trap)).length>=2},
+  {t:"예외 상황 1개 이상",f:"branches",ok:()=>D.branches.some(b=>tr(b.a)&&tr(b.b))},
+  {t:"우리 팀 용어 정리",f:"terms",ok:()=>D.terms.some(b=>tr(b.a)&&tr(b.b))}]},
+{id:"forge",name:"강수",who:"대장장이 강수",role:"SKILL 대장간",col:"#8A5A1E",soft:"#F6EEDF",time:15,out:"SKILL.md",
+ title:"규칙 새기고 스킬 완성하기",sub:"지킬 것과 완료 기준을 정하면 SKILL.md가 완성돼요",
+ say:()=>`여기까지 오시느라 정말 수고 많으셨어요. 강수예요.<br><br>이제 <b>꼭 지킬 것</b>, <b>하지 말아야 할 것</b>, 그리고 <b>이 정도면 됐다 싶은 기준</b>만 정하면 돼요.<br><br>다 채우시면 한 장짜리 SKILL.md로 정성껏 두드려 드릴게요. 빠진 곳이 있으면 아래에서 바로 알려 드릴게요.`,
+ tips:["완료 기준은 '예/아니오'로 답할 수 있게 적어 주세요.","아쉬운 예를 함께 적으면 AI가 피해야 할 모습을 더 잘 알아요.","완성한 뒤 테스트 문장으로 한 번 돌려 보고, 어긋난 곳은 규칙에 한 줄씩 더해 주세요."],
+ todo:[{t:"꼭 지킬 것 2개 이상",req:1,f:"rules.must",ok:()=>lines(D.rules.must).length>=2},
+  {t:"하지 말 것 1개 이상",req:1,f:"rules.never",ok:()=>lines(D.rules.never).length>=1},
+  {t:"완료 기준 3개 이상",req:1,f:"dod",ok:()=>lines(D.dod).length>=3},
+  {t:"좋은 예·아쉬운 예",f:"ex.good",ok:()=>!!tr(D.ex.good)&&!!tr(D.ex.bad)},
+  {t:"테스트 문장 2개",f:"tests",ok:()=>lines(D.tests).length>=2}]}];
 
-/*═══════ 시연용 예시 ═══════*/
-const DT=[
- {t:"교육 문의 메일 회신",cyc:"day",trg:"문의 메일이 오면",yr:230,min:10,form:3},
- {t:"입과 신청 승인 처리",cyc:"day",trg:"신청 알림이 뜨면",yr:230,min:10,form:5},
- {t:"주간 교육 운영 현황 정리",cyc:"week",trg:"금요일 오후",yr:60,min:60,form:5},
- {t:"강사 일정 조율",cyc:"week",trg:"과정이 확정되면",yr:60,min:30,form:1},
- {t:"월간 교육 실적 보고서 작성",cyc:"month",trg:"매월 첫 영업일",yr:18,min:300,form:5},
- {t:"교육 만족도 결과 요약",cyc:"month",trg:"설문이 마감되면",yr:18,min:150,form:5},
- {t:"교육비 정산",cyc:"month",trg:"월말 마감 때",yr:18,min:150,form:3},
- {t:"교육 수요조사 취합",cyc:"quar",trg:"조사 마감일",yr:4,min:300,form:3},
- {t:"현업 교육 요청 검토",cyc:"adhoc",trg:"요청 메일이 오면",yr:24,min:30,form:1},
- {t:"교육 이수 증명 발급",cyc:"adhoc",trg:"발급 요청이 들어오면",yr:24,min:10,form:5}];
-const DEMO={
- map(){DT.forEach(d=>{if(!D.tasks.some(t=>t.t===d.t))D.tasks.push(Object.assign({id:uid()},d));});},
- sift(){if(!D.tasks.length)DEMO.map();
-   D.tasks.forEach(t=>{const d=DT.find(x=>x.t===t.t);if(d)Object.assign(t,{yr:d.yr,min:d.min,form:d.form});});
-   const b=[...D.tasks].sort((a,b)=>scoreT(b)-scoreT(a))[0];if(b)D.sel=b.id;},
- deal(){D.def={trigger:"매월 첫 영업일 오전, 전월 교육 데이터가 마감되면",
-   client:"인사팀장하고 각 부서 교육 담당자",
-   input:"전월 과정별 운영 내역 (엑셀 — 과정명·인원·일자·이수여부)\n만족도 설문 원본 (엑셀, 문항 12개)\n전월 보고서 (워드, 형식 참고용)",
-   outName:"월간 교육 실적 보고서",outForm:"보고서 / 문서",
-   sections:"1. 이달 요약 — 3줄 이내, 핵심 숫자 3개 꼭 넣기\n2. 과정별 실적 표 — 과정명 · 대상인원 · 이수인원 · 이수율 · 만족도\n3. 전월 대비 달라진 점과 그 이유\n4. 특이사항, 목표 못 채운 과정\n5. 다음 달 예정 과정",
-   vol:"A4 1~2장, 표 포함. 요약은 3줄 안에"};},
- anat(){D.steps=[
-  {a:"전월 운영 내역하고 설문 원본을 한 폴더에 모은다",type:"자료 모으기",actor:ACT[2],min:10,in:"LMS에서 내린 파일 2개",out:"정리된 원본 폴더",
-   watch:"파일 이름에 전월 연월이 맞는지 먼저 봐요.\n과정 수가 지난달과 너무 다르면 뭔가 빠진 거예요.",miss:"이번 달 파일 대신 지난달 파일을 그대로 받아 와요."},
-  {a:"중복이랑 미응답을 걸러낸다",type:"정리·계산",actor:ACT[1],min:25,in:"원본 2개",out:"정제된 데이터",
-   watch:"같은 사번이 두 번 있으면 뒤에 것만 남겨요.\n미응답 칸이 비어 있는지 0으로 들어왔는지 꼭 확인해요.",miss:"미응답을 0점으로 계산해서 평균을 깎아 먹어요.\n중복 제출을 안 걸러요."},
-  {a:"과정별로 이수율하고 만족도 평균을 낸다",type:"정리·계산",actor:ACT[2],min:20,in:"정제된 데이터",out:"과정별 집계표",
-   watch:"이수율은 이수인원 나누기 대상인원이에요. 신청인원이 아니에요.",miss:"분모를 신청인원으로 잡아서 이수율이 부풀려져요."},
-  {a:"응답이 적은 과정은 어떻게 표기할지 정한다",type:"판단하기",actor:ACT[0],min:15,in:"과정별 집계표",out:"표기 기준 적용된 표",
-   watch:"응답이 20건 안 되면 평균 안 쓰고 '표본 부족'이라고 적어요.\n부정 응답이 30% 넘으면 자유응답 원문도 같이 붙여요.",miss:"응답 3건짜리 과정 평균을 그냥 대표값처럼 써요."},
-  {a:"다섯 개 칸에 맞춰서 보고서를 쓴다",type:"글로 쓰기",actor:ACT[1],min:60,in:"표기 기준 적용된 표",out:"보고서 초안",
-   watch:"요약 3줄에는 숫자가 꼭 들어가야 해요.\n달라진 점을 적을 때는 왜 그런지 한 문장 붙여요.",miss:"'전반적으로 양호하다' 같은 근거 없는 총평을 써요."},
-  {a:"표 합계랑 원본 총계를 대조해서 확인한다",type:"확인하기",actor:ACT[0],min:20,in:"보고서 초안",out:"확인 끝난 보고서",
-   watch:"표 인원 합계가 원본 총계와 맞는지 숫자로 봐요.\n본문 숫자랑 표 숫자가 어긋나지 않는지도 봐요.",miss:"표만 고치고 본문에 옛 숫자를 그대로 둬요."},
-  {a:"팀장 검토받고 부서 담당자들에게 공유한다",type:"보내기",actor:ACT[0],min:10,in:"확인 끝난 보고서",out:"공유 완료",
-   watch:"수신자에 신규 담당자가 들어갔는지 봐요.",miss:""}];
-  D.branches=[
-   {cond:"운영 데이터가 마감일까지 안 올라왔을 때",act:"보고서를 미루지 말고 그 과정만 '집계 대기'로 표시하고 나머지 먼저 쓴다"},
-   {cond:"표 합계랑 원본 총계가 안 맞을 때",act:"대충 맞추지 말고 원본을 다시 받아서 재집계한다. 그래도 안 맞으면 차이 건수를 특이사항에 적는다"},
-   {cond:"응답이 20건도 안 되는 과정일 때",act:"평균 점수 대신 '표본 부족'이라고 적고 자유응답 원문을 3건까지만 인용한다"},
-   {cond:"과정 분류 기준이 작년과 바뀌었을 때",act:"전월 대비 비교는 생략하고, 기준이 바뀐 걸 특이사항 첫 줄에 써 둔다"}];
-  D.rules.tone="숫자하고 설명이 어긋나면 무조건 원본 숫자를 따른다\n애매하면 추측해서 쓰지 말고 '확인 필요'라고 남긴다\n이유를 확실히 모르면 '~로 보인다' 말고 '원인 미확인'으로 적는다";},
- forge(){D.rules.must="숫자는 원본 파일에서만 가져온다\n무슨 주장을 하면 근거 숫자를 꼭 같이 적는다\n존댓말, 평서형, 개조식으로 쓴다\n표 항목 순서랑 이름은 마음대로 바꾸지 않는다";
-  D.rules.never="없는 숫자를 지어내거나 추정치를 확정처럼 쓰지 않는다\n응답자 실명이나 사번을 그대로 노출하지 않는다\n'전반적으로', '지속적인 개선이 필요' 같은 뜬구름 총평을 쓰지 않는다\n원본에 없는 과정을 임의로 합치거나 나누지 않는다";
-  D.terms=[{k:"입과",v:"교육 과정에 등록해서 수강을 시작하는 것"},
-   {k:"이수율",v:"이수인원 ÷ 대상인원 × 100. 신청인원이 아니라 대상인원이 분모"},
-   {k:"집합교육",v:"강의장에서 모여서 하는 교육. 온라인 과정과 따로 집계함"}];
-  D.dod="다섯 개 칸이 다 채워져 있다\nA4 2장을 안 넘는다\n표 인원 합계가 원본 총계와 같다\n요약 3줄에 숫자가 3개 이상 들어 있다\n개선 제안마다 근거 숫자가 붙어 있다\n응답 20건 안 되는 과정에 평균값이 안 쓰였다";
-  D.ex.good="이달 만족도는 4.3점으로 전월 4.0점보다 0.3점 올랐다. 신규 실습형 과정 2건(응답 88건, 평균 4.6)이 반영된 결과로 보인다.";
-  D.ex.bad="전반적으로 만족도가 양호한 것으로 보이며, 향후 지속적인 개선이 필요할 것으로 판단된다.";}};
+/* ───── 입력 도우미 ───── */
+const opt=(arr,v)=>arr.map(o=>`<option value="${o.v}"${String(o.v)===String(v)?" selected":""}>${esc(o.n)}</option>`).join("");
+function chips(p,arr,add){const cur=String(getP(p)||"");
+ return `<div class="ex"><span>예시</span>${arr.map(v=>{const f=v.split("\n");let l=f[0];if(l.length>30)l=l.slice(0,30)+"…";
+  return `<button class="chip${cur.includes(f[0])?" used":""}" data-p="${p}" data-v="${att(v)}"${add?' data-add="1"':""}>${esc(l)}${f.length>1?`<small>+${f.length-1}</small>`:""}</button>`;}).join("")}</div>`;}
+function F(p,lab,o){o=o||{};const v=getP(p);const val=v==null?"":v;
+ const inp=o.input?`<input class="in" data-p="${p}" value="${att(val)}" placeholder="${att(o.ph||"")}">`
+  :`<textarea class="in" data-p="${p}" rows="${o.rows||3}" placeholder="${att(o.ph||"")}">${esc(val)}</textarea>`;
+ return `<div class="fld" data-f="${p}"><div class="lab">${lab}${o.req?'<i class="req">필수</i>':""}</div>${o.help?`<p class="help">${o.help}</p>`:""}${inp}${o.ex?chips(p,o.ex,o.add):""}</div>`;}
+function Q(t,k,lab,arr){return `<label>${lab}<select class="in sm" data-k="tasks|${t.id}|${k}"><option value="">골라 주세요</option>${opt(arr,t[k])}</select></label>`;}
+function pairs(c,pa,pb){return D[c].map(b=>`<div class="row2"><input class="in" data-k="${c}|${b.id}|a" value="${att(b.a)}" placeholder="${pa}"><input class="in" data-k="${c}|${b.id}|b" value="${att(b.b)}" placeholder="${pb}"><button class="icon del" data-act="del" data-c="${c}" data-id="${b.id}" title="지우기">✕</button></div>`).join("");}
 
-/*═══════ 1단계 ═══════*/
-let tab1="day";
-function r_map(){
-  const cnt=k=>D.tasks.filter(t=>t.cyc===k&&t.t.trim()).length;
-  const c=CYC.find(x=>x.k===tab1),ls=D.tasks.filter(t=>t.cyc===tab1);
-  return `<div class="tabs">${CYC.map(x=>`<button data-tab="${x.k}" class="${x.k===tab1?"on":""}">${x.n}${cnt(x.k)?`<i>${cnt(x.k)}</i>`:""}</button>`).join("")}</div>
-  <div class="al o" style="border-left-color:#5289CE;background:#EDF3FB;color:#2E4F7A">${c.hint}</div>
-  <p class="tip">두 칸만 적으면 돼요. 일 이름하고, <b>"뭐가 오면 시작되나"</b>요. 두 번째 칸이 나중에 SKILL 의 실행 조건이 됩니다.</p>
-  ${EX(...(CHIP[tab1]||[]).map(n=>`<button data-chip="${esc(n)}">+ ${esc(n)}</button>`))}
-  <div class="rows" style="margin-top:12px">
-   ${ls.length?ls.map(t=>`<div class="rw a">
-    <input class="in" data-id="${t.id}" data-k="t" value="${esc(t.t)}" placeholder="무슨 일이세요?">
-    <input class="in" data-id="${t.id}" data-k="trg" value="${esc(t.trg)}" placeholder="뭐가 오면 시작되나요?">
-    <button class="del" data-del="${t.id}">×</button></div>`).join("")
-   :`<div class="empty">아직 비어 있어요. 위에 예시를 누르거나 「직접 적기」로 시작해 보세요</div>`}</div>
-  <button class="btn g sm" id="add">+ 직접 적기</button>
-  <p class="tip" style="margin-top:15px">지금까지 <b>${D.tasks.filter(t=>t.t.trim()).length}</b>개요. 서랍을 <b>세 칸 정도</b>는 열어 보시는 게 좋아요. 한 칸만 보면 진짜 반복되는 일을 놓치거든요.</p>`;
-}
-function b_map(el){
-  el.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{tab1=b.dataset.tab;re();});
-  el.querySelectorAll("[data-chip]").forEach(b=>b.onclick=()=>{
-    const n=b.dataset.chip;if(D.tasks.some(t=>t.t===n))return toast("이미 있어요");
-    const d=DT.find(x=>x.t===n)||{};
-    D.tasks.push({id:uid(),t:n,cyc:tab1,trg:d.trg||"",yr:d.yr||18,min:d.min||30,form:d.form||3});save();re();});
-  el.querySelectorAll("[data-k]").forEach(i=>i.oninput=e=>{
-    const t=D.tasks.find(x=>x.id===e.target.dataset.id);if(t){t[e.target.dataset.k]=e.target.value;save();}});
-  el.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{
-    D.tasks=D.tasks.filter(t=>t.id!==b.dataset.del);if(D.sel&&!D.tasks.some(t=>t.id===D.sel))D.sel=null;save();re();});
-  el.querySelector("#add").onclick=()=>{
-    D.tasks.push({id:uid(),t:"",cyc:tab1,trg:"",yr:18,min:30,form:3});save();re();
-    setTimeout(()=>{const a=el.querySelectorAll('[data-k="t"]');a.length&&a[a.length-1].focus();},30);};
-}
-function ok_map(){
-  if(D.tasks.filter(t=>t.t.trim()).length<5)return toast("다섯 개는 채워 주세요. 적으면 고를 게 없어요");
-  if(new Set(D.tasks.filter(t=>t.t.trim()).map(t=>t.cyc)).size<2)return toast("서랍을 두 칸 이상 열어 보세요");
-  mark("map");toast("좋아요! 다음은 선별 언덕이에요");shut();}
+/* ───── 1단계 ───── */
+function s1(){const c=CYC.find(x=>x.k===D.tab)||CYC[0],n=D.tasks.length,cnt=k=>D.tasks.filter(t=>t.cyc===k).length;
+ return `<div class="goal"><span>꺼낸 업무 <b>${n}</b>개 · 목표 5개 이상</span><span class="meter"><i style="width:${Math.min(100,n/5*100)}%"></i></span>${n>=5?'<span style="color:var(--ok);font-weight:600">좋아요, 충분해요!</span>':""}</div>
+ <div class="tabs" data-f="tabs">${CYC.map(x=>`<button class="tab${x.k===c.k?" on":""}" data-act="tab" data-v="${x.k}">${x.n}<i>${cnt(x.k)}</i></button>`).join("")}</div>
+ <div class="drawer" data-f="nt"><p class="nudge">${c.hint}</p>
+  <div class="addrow"><input class="in" id="nt" placeholder="업무 이름 (예: 월간 교육 실적 보고서 작성)"><input class="in" id="ntr" placeholder="언제 시작되나요? (예: 매월 첫 영업일)"><button class="btn" data-act="add">담기</button></div>
+  <div class="ex"><span>HRD 예시</span>${CHIP[c.k].map(v=>`<button class="chip${D.tasks.some(t=>t.t===v)?" used":""}" data-act="addchip" data-v="${att(v)}">+ ${esc(v)}</button>`).join("")}</div></div>
+ <div class="sec"><b>담은 업무</b><span>이름과 시작 신호는 언제든 고칠 수 있어요</span></div>
+ <div class="list" data-f="list">${n?D.tasks.map(t=>`<div class="row"><input class="in" data-k="tasks|${t.id}|t" value="${att(t.t)}"><input class="in" data-k="tasks|${t.id}|trg" value="${att(t.trg)}" placeholder="시작 신호 (${CYCN(t.cyc)})"><button class="icon del" data-act="del" data-c="tasks" data-id="${t.id}" title="지우기">✕</button></div>`).join("")
+  :'<div class="empty">아직 비어 있어요. 위 서랍에서 떠오르는 일부터 하나 담아 볼까요?</div>'}</div>`;}
 
-/*═══════ 2단계 ═══════*/
-function r_sift(){
-  const ts=D.tasks.filter(t=>t.t.trim());
-  if(!ts.length)return `<div class="al b">아직 꺼낸 일이 없네요. <b>업무 지도소</b>부터 들러 주세요. 아래 <b>예시로 채우기</b>를 누르셔도 돼요.</div>`;
-  const mx=Math.max(1,...ts.map(hrs)),sorted=[...ts].sort((a,b)=>scoreT(b)-scoreT(a)),t=selT();
-  const sel=(id,k,arr,cv)=>`<select data-id="${id}" data-k="${k}">${arr.map(o=>`<option value="${o.v}"${near(arr,+cv)===o.v?" selected":""}>${o.n}</option>`).join("")}</select>`;
-  return `<p class="tip">일마다 세 가지만 골라 주세요. 어림잡아도 괜찮아요. 연간 시간은 제가 계산합니다.</p>
-  ${ts.map(x=>`<div class="tc ${x.id===D.sel?"on":""}">
-   <div class="h"><b>${esc(x.t)}</b><span class="hr">연 ${hrs(x).toFixed(0)}시간</span>
-    <button class="p" data-pick="${x.id}">${x.id===D.sel?"✓ 이걸로 정했어요":"이걸로 할래요"}</button></div>
-   <div class="qs">
-    <label><span>얼마나 자주 하세요?</span>${sel(x.id,"yr",FREQ,x.yr)}</label>
-    <label><span>한 번에 얼마나 걸려요?</span>${sel(x.id,"min",DUR,x.min)}</label>
-    <label><span>할 때마다 순서가 비슷해요?</span>${sel(x.id,"form",SAME,x.form)}</label>
-   </div></div>`).join("")}
-  <div class="sec">한눈에 보면 이래요</div>
-  <div class="quad">
-   <div class="ax" style="left:50%;top:0;bottom:0;width:1.5px"></div>
-   <div class="ax" style="top:50%;left:0;right:0;height:1.5px"></div>
-   <div class="zn" style="right:0;top:0;color:#B08A3A">여기 있는 게 딱이에요</div>
-   <div class="zn" style="left:0;top:0">나중에 만들면 좋아요</div>
-   <div class="zn" style="left:0;bottom:0">굳이 안 만들어도 돼요</div>
-   <div class="zn" style="right:0;bottom:0">사람이 해야 할 일이에요</div>
-   <div class="lb" style="right:6px;bottom:-2px">시간 많이 씀 →</div>
-   <div class="lb" style="left:4px;top:0;writing-mode:vertical-rl">순서가 비슷함 ↑</div>
-   ${ts.map(x=>{const px=clamp(Math.sqrt(hrs(x)/mx)*84+8,5,95),py=clamp(((+x.form||3)-1)/4*80+10,5,93);
-    return `<div class="pt ${x.id===D.sel?"sel":""} ${hrs(x)/mx>.5&&+x.form>=4?"hot":""}" data-pt="${x.id}" style="left:${px}%;bottom:${py}%"><b></b><span>${esc(x.t.slice(0,16))}</span></div>`;}).join("")}</div>
-  <div class="fg"><label class="f"><span>제가 추천하는 순서예요 <em>점수 높은 순</em></span>
-   <select class="in" id="pk"><option value="">— 아직 안 골랐어요 —</option>
-   ${sorted.map(x=>`<option value="${x.id}"${x.id===D.sel?" selected":""}>${esc(x.t)} — 연 ${hrs(x).toFixed(0)}시간</option>`).join("")}</select></label></div>
-  ${t?`<div class="al o"><b>${esc(t.t)}</b>로 정하셨네요. 이 일에 <b>1년에 ${hrs(t).toFixed(0)}시간</b>쯤 쓰고 계세요.<br>SKILL 로 절반만 줄여도 <b>${(hrs(t)/2).toFixed(0)}시간</b>이 돌아옵니다. 하루 8시간으로 치면 ${(hrs(t)/16).toFixed(0)}일쯤이네요.</div>`:""}`;
-}
-function b_sift(el){
-  if(!el.querySelector("#pk"))return;
-  el.querySelectorAll(".qs select").forEach(s=>s.onchange=e=>{
-    const t=D.tasks.find(x=>x.id===e.target.dataset.id);if(!t)return;
-    t[e.target.dataset.k]=+e.target.value;save();re();});
-  el.querySelectorAll("[data-pick]").forEach(b=>b.onclick=()=>{
-    D.sel=D.sel===b.dataset.pick?null:b.dataset.pick;save();re();});
-  el.querySelectorAll("[data-pt]").forEach(p=>p.onclick=()=>{D.sel=p.dataset.pt;save();re();});
-  el.querySelector("#pk").onchange=e=>{D.sel=e.target.value||null;save();re();};
-}
-function ok_sift(){
-  if(!D.sel)return toast("하나만 골라 주세요");
-  const t=selT();if(!D.def.trigger&&t.trg)D.def.trigger=t.trg;
-  save();mark("sift");toast("정했어요! 다음은 설계 사무소");shut();}
+/* ───── 2단계 ───── */
+function s2(){const r=D.tasks.filter(rated).sort((a,b)=>score(b)-score(a)),mx=r.length?(score(r[0])||1):1,s=selT();
+ const pick=t=>`<button class="btn sm${t.id===D.sel?"":" ghost"}" data-act="pick" data-id="${t.id}">${t.id===D.sel?"선택됨 ✓":"이걸로 할게요"}</button>`;
+ const top=r.length?`<div class="rank">${r.slice(0,5).map((t,i)=>`<div class="rk${t.id===D.sel?" on":""}"><span class="rn">${i+1}</span><b>${esc(t.t)}</b><span class="rb"><i style="width:${Math.max(6,score(t)/mx*100)}%"></i></span><em>연 ${Math.round(hrs(t))}시간</em>${pick(t)}</div>`).join("")}</div>`
+  :'<div class="empty" style="margin-bottom:10px">아래 업무 카드의 질문에 답하면 여기에 순위가 나타나요.</div>';
+ const cards=D.tasks.map(t=>`<div class="tc${t.id===D.sel?" on":""}"><div class="tc-h"><b>${esc(t.t)}</b><span class="badge">${CYCN(t.cyc)}</span>${rated(t)?`<span class="badge hr">연 ${Math.round(hrs(t))}시간</span>`:""}${pick(t)}</div>
+  <div class="qs">${Q(t,"freq","얼마나 자주?",FREQ)}${Q(t,"dur","한 번에 걸리는 시간",DUR)}${Q(t,"same","순서가 매번 같나요?",SAME)}${Q(t,"digi","자료는 어떻게 오나요?",DIGI)}${Q(t,"risk","틀리면 어떻게 되나요?",RISK)}</div></div>`).join("");
+ const scope=s?`<div class="sec"><span class="tag">선택</span><b>${esc(s.t)}</b><span>이제 범위를 좁혀 볼게요</span></div>
+ ${F("scope.why","왜 이 업무를 골랐나요?",{rows:2,help:"지금 가장 불편한 점을 한 줄로 적어 두면 나중에 효과를 확인하기 좋아요.",ex:["매달 반나절씩 같은 표를 다시 만들고 있어서","숫자는 금방 모으는데 요약 문장 쓰는 데 오래 걸려서"]})}
+ <div class="g2">${F("scope.inc","이 스킬이 해 줄 일",{req:1,rows:4,help:"한 줄에 하나씩 적어 주세요.",ex:["교육 실적 데이터로 핵심 지표를 계산한다\n전월 대비 증감을 정리한다\n보고서 초안을 목차대로 작성한다"],add:1})}
+ ${F("scope.exc","이번엔 하지 않을 일",{rows:4,help:"선을 그어 두면 AI가 엉뚱한 데까지 손대지 않아요.",ex:["결재 상신은 하지 않는다\n원본 데이터 파일은 수정하지 않는다\n예산 집행 여부는 판단하지 않는다"],add:1})}</div>
+ <div class="fld" data-f="scope.role"><div class="lab">AI와 나는 어떻게 나눌까요?</div><p class="help">전체적인 역할이에요. 단계별 역할은 4단계에서 다시 정해요.</p><div class="seg">${ACT.map(a=>`<button class="${D.scope.role===a.v?"on":""}" data-act="role" data-v="${a.v}">${a.n}<small>${a.d}</small></button>`).join("")}</div></div>`
+ :'<div class="al w" style="margin-top:18px">위에서 [이걸로 할게요]를 눌러 업무를 하나 골라 주세요. 그러면 범위를 정하는 칸이 열려요.</div>';
+ return `${D.tasks.length?"":'<div class="al w">1단계에서 업무를 먼저 담아 주세요.</div>'}
+ <div class="sec"><b>추천 순위</b><span>연간 시간 × 순서가 같은 정도 × 자료 형태 × 부담 정도로 계산했어요</span></div>${top}
+ <div class="sec"><b>업무별 질문</b><span>대략 감으로 골라도 충분해요</span></div><div data-f="cards">${cards}</div>${scope}`;}
 
-/*═══════ 3단계 ═══════*/
-function r_deal(){
-  const t=selT();if(!t)return `<div class="al b"><b>선별 언덕</b>에서 오늘 만들 일부터 골라 주세요.</div>`;
-  const F=D.def,n=lines(F.sections).length;
-  return `<div class="al o" style="margin-bottom:17px">오늘 만들 건 — <b>${esc(t.t)}</b></div>
-  <div class="fg"><label class="f"><span>① 이 일, 언제 시작하세요? <em>날짜나 신호로 적어 주세요</em></span>
-   <input class="in" data-d="trigger" value="${esc(F.trigger)}" placeholder="예: 매월 첫 영업일 오전에"></label>
-   ${EX(E("d:trigger","매월 첫 영업일 오전, 전월 교육 데이터가 마감되면"),E("d:trigger","교육 끝나고 설문 마감 메일 받으면"),E("d:trigger","현업에서 교육 요청 메일이 오면"),E("d:trigger","매주 금요일 오후"))}</div>
-  <div class="fg"><label class="f"><span>② 이거 누가 봐요? <em>읽는 사람에 따라 말투가 달라져요</em></span>
-   <input class="in" data-d="client" value="${esc(F.client)}" placeholder="예: 팀장님하고 각 부서 담당자"></label>
-   ${EX(E("d:client","인사팀장하고 각 부서 교육 담당자"),E("d:client","경영진 (월례 보고용)"),E("d:client","교육 신청한 본인"),E("d:client","외부 강사"))}</div>
-  <div class="fg"><label class="f"><span>③ 뭘 받아서 시작하세요? <em>파일 이름하고 형식까지 · 한 줄에 하나</em></span>
-   <textarea class="in" data-d="input" placeholder="전월 운영 내역 (엑셀)&#10;설문 원본 (엑셀)">${esc(F.input)}</textarea></label>
-   ${EX(E("d:input","전월 과정별 운영 내역 (엑셀 — 과정명·인원·일자·이수여부)",1),E("d:input","만족도 설문 원본 (엑셀, 문항 12개)",1),E("d:input","전월 보고서 (워드, 형식 참고용)",1),E("d:input","요청자 메일 원문",1))}</div>
-  <div class="g2">
-   <div class="fg"><label class="f"><span>④ 결과물 이름이 뭐예요?</span>
-    <input class="in" data-d="outName" value="${esc(F.outName)}" placeholder="예: 월간 교육 실적 보고서"></label>
-    ${EX(E("d:outName","월간 교육 실적 보고서"),E("d:outName","교육 만족도 요약본"),E("d:outName","교육 요청 검토 회신 메일"))}</div>
-   <div class="fg"><label class="f"><span>어떤 형태로 내세요?</span>
-    <select class="in" data-d="outForm">${["보고서 / 문서","메일 본문","표 / 엑셀","슬라이드","메신저 공지","짧은 메모"].map(o=>`<option${F.outForm===o?" selected":""}>${o}</option>`).join("")}</select></label></div></div>
-  <div class="fg"><label class="f"><span>⑤ 그 결과물에 어떤 칸이 들어가요? <em>여기가 제일 중요해요 · 한 줄에 하나</em></span>
-   <textarea class="in" data-d="sections" style="min-height:120px" placeholder="1. 이달 요약&#10;2. 과정별 실적 표">${esc(F.sections)}</textarea></label>
-   ${EX(E("d:sections","1. 이달 요약 — 3줄 이내, 핵심 숫자 3개 꼭 넣기",1),
-        E("d:sections","2. 과정별 실적 표 — 과정명 · 대상인원 · 이수인원 · 이수율 · 만족도",1),
-        E("d:sections","3. 전월 대비 달라진 점과 그 이유",1),
-        E("d:sections","4. 특이사항, 목표 못 채운 과정",1),
-        E("d:sections","5. 다음 달 예정 과정",1))}</div>
-  <div class="fg"><label class="f"><span>⑥ 분량은 어느 정도요? <em>안 적으셔도 괜찮아요</em></span>
-   <input class="in" data-d="vol" value="${esc(F.vol)}" placeholder="예: A4 1~2장, 요약은 3줄 안에"></label>
-   ${EX(E("d:vol","A4 1~2장, 표 포함. 요약은 3줄 안에"),E("d:vol","메일 본문 15줄 이내, 첨부 없이"),E("d:vol","슬라이드 5장 이내"))}</div>
-  <div class="al ${F.trigger&&F.outName&&n>=3?"o":"w"}" style="margin-top:15px">
-   정리하면 이렇네요 — <b>${esc(F.trigger||"[언제]")}</b>, <b>${esc(F.client||"[누구]")}</b>에게 줄 <b>${esc(F.outName||"[결과물]")}</b>을 <b>${n}개 칸</b>으로 만드는 일.
-   ${n<3?" 칸을 <b>세 개 이상</b> 적어 주셔야 AI 가 매번 같은 모양으로 내놔요.":""}</div>`;
-}
-function b_deal(el){
-  el.querySelectorAll("[data-d]").forEach(i=>{
-    i.oninput=e=>{D.def[e.target.dataset.d]=e.target.value;save();};
-    if(i.tagName==="SELECT")i.onchange=e=>{D.def[e.target.dataset.d]=e.target.value;save();};});
-  const tx=el.querySelector('[data-d="sections"]');if(tx)tx.onblur=()=>re();
-}
-function ok_deal(){
-  if(!D.def.trigger||!D.def.outName)return toast("①번하고 ④번은 꼭 적어 주세요");
-  if(lines(D.def.sections).length<3)return toast("⑤번 칸을 세 개 이상 적어 주세요. 여기가 정확도를 가릅니다");
-  mark("deal");toast("됐어요! 다음은 해부 공방");shut();}
+/* ───── 3단계 ───── */
+function s3(){const t=selT();
+ return `${t?`<div class="al o">지금 설계하는 업무: <b>${esc(t.t)}</b>${t.trg?` · 시작 신호: ${esc(t.trg)}`:""}</div>`:'<div class="al w">2단계에서 업무를 먼저 골라 주시면 더 수월해요.</div>'}
+ <div class="sec"><span class="tag">입구</span><b>언제, 무엇을 건네나요?</b></div>
+ ${F("def.triggers","이렇게 부탁하면 스킬이 움직여요",{req:1,rows:3,help:"평소 말투 그대로 한 줄에 하나씩, 두 개 이상 적어 주세요. AI가 스킬을 꺼내 쓸지 판단하는 기준이 돼요.",ex:["이번 달 교육 실적 보고서 만들어 줘","교육 실적 데이터 정리해서 보고서 초안 써 줘","월간 교육 결과 요약해 줘"],add:1})}
+ <div class="g2">${F("def.input","함께 건네는 자료",{req:1,rows:4,help:"파일 이름, 형식, 어디서 가져오는지까지 적으면 좋아요.",ex:["LMS 수강 이력 엑셀 (과정명, 인원, 수료 여부)\n만족도 조사 결과 CSV\n전월 보고서 파일"],add:1})}
+ ${F("def.missing","자료가 부족하면 먼저 물어볼 것",{rows:4,help:"AI가 빈칸을 짐작으로 채우지 않게 막아 줘요.",ex:["대상 월이 어디인지\n전월 보고서가 없으면 비교를 뺄지\n특이사항으로 꼭 넣을 내용이 있는지"],add:1})}</div>
+ <div class="sec"><span class="tag">출구</span><b>무엇을 받고 싶나요?</b></div>
+ <div class="g2">${F("def.outName","결과물 이름",{req:1,input:1,ph:"예: 월간 교육 실적 보고서",ex:["월간 교육 실적 보고서","주간 교육 운영 현황"]})}
+ <div class="fld" data-f="def.outForm"><div class="lab">결과물 형태</div><p class="help">가장 가까운 걸 골라 주세요.</p><select class="in" data-p="def.outForm">${FORMS.map(f=>`<option${D.def.outForm===f?" selected":""}>${f}</option>`).join("")}</select></div></div>
+ ${F("def.sections","결과물 목차 (한 줄에 한 칸)",{req:1,rows:6,help:"여기가 가장 중요해요. 지난번 결과물의 제목만 옮겨 적어도 충분해요.",ex:["1. 요약 (3줄)\n2. 핵심 지표 (운영 과정 수, 수료율, 만족도)\n3. 전월 대비 증감\n4. 과정별 상세 표\n5. 특이사항 및 다음 달 계획"]})}
+ <div class="g3">${F("def.reader","누가 읽나요?",{rows:2,ex:["팀장님, 본부장님 보고용","현업 부서장 공유용"]})}${F("def.vol","분량",{rows:2,ex:["A4 2장 이내","요약은 5줄 이내"]})}${F("def.tone","말투",{rows:2,ex:["개조식, ~함체","정중한 존댓말"]})}</div>`;}
 
-/*═══════ 4단계 ═══════*/
-let openStep=-1;
-function r_anat(){
-  if(!selT())return `<div class="al b"><b>선별 언덕</b>에서 대상 업무부터 골라 주세요.</div>`;
-  if(!D.steps.length)D.steps=[{a:"",in:"",out:"",type:"자료 모으기",actor:ACT[1],min:10,watch:"",miss:""}];
-  if(!D.branches.length)D.branches=[{cond:"",act:""},{cond:"",act:""}];
-  const tot=D.steps.reduce((s,x)=>s+(+x.min||0),0)||1,f=D.steps.filter(s=>s.a.trim()),w=[];
-  if(f.length<4)w.push("단계가 <b>네 개도 안 되네요</b>. 뭉뚱그리면 AI 가 그냥 건너뛰어요. 좀 더 잘게 쪼개 주세요.");
-  if(!D.steps.some(s=>s.type==="판단하기"&&s.a.trim()))w.push("<b>판단하기</b> 단계가 없어요. 반복되는 일에도 '어느 쪽으로 갈지 정하는' 자리가 꼭 있어요. 그게 없으면 SKILL 이 아니라 그냥 매크로예요.");
-  if(!D.steps.some(s=>s.type==="확인하기"&&s.a.trim()))w.push("<b>확인하기</b> 단계가 없어요. AI 가 내놓은 걸 뭘로 확인하시는지 넣어 주셔야 실전에서 쓸 수 있어요.");
-  const nd=f.filter(s=>!s.watch.trim()&&!s.miss.trim()).length;
-  if(nd)w.push(`<b>${nd}개 단계</b>의 속이 비었어요. ⌄ 눌러서 <b>뭘 보시는지</b>랑 <b>신입이 뭘 틀리는지</b>만 적어 주세요. 이게 제일 값어치 있는 부분이에요.`);
-  if(D.branches.filter(b=>b.cond.trim()&&b.act.trim()).length<2)w.push("<b>예외 상황</b>이 두 개도 안 되네요. SKILL 이 실전에서 무너지는 건 거의 여기서예요.");
-  return `<p class="tip">한 칸에 <b>동작 하나씩</b>이요. "~를 확인한다 / 대조한다 / 고른다 / 적는다"처럼 끝내시면 딱 좋아요. ⌄ 를 누르면 속을 채울 수 있어요.</p>
-  ${tot>10?`<div class="bars">${D.steps.map(s=>`<div style="flex:${Math.max(1,+s.min||1)};background:${TC(s.type)}" title="${esc(s.a)}">${(+s.min||0)>=Math.max(7,tot*.07)?(+s.min||0)+"분":""}</div>`).join("")}</div>
-  <div class="lg">${TYPES.map(t=>`<span><i style="background:${t.c}"></i>${t.k}</span>`).join("")}<span style="margin-left:auto">다 합쳐 <b>${tot}분</b></span></div>`:""}
-  ${D.steps.map((s,i)=>`<div class="step ${openStep===i?"open":""}">
-   <div class="sh"><div class="no" style="background:${TC(s.type)}">${i+1}</div>
-    <input class="in" data-i="${i}" data-k="a" value="${esc(s.a)}" placeholder="이 단계에서 뭐 하세요?">
-    <select class="in" data-i="${i}" data-k="type">${TYPES.map(t=>`<option${s.type===t.k?" selected":""}>${t.k}</option>`).join("")}</select>
-    <button class="exp" data-ex="${i}">${openStep===i?"⌃":"⌄"}</button></div>
-   ${openStep===i?`<div class="sd">
-    <div class="g2">
-     <div class="fg"><label class="f"><span>뭐가 있어야 이걸 할 수 있어요?</span><input class="in" data-i="${i}" data-k="in" value="${esc(s.in)}" placeholder="예: 설문 원본 엑셀"></label></div>
-     <div class="fg"><label class="f"><span>하고 나면 뭐가 나와요?</span><input class="in" data-i="${i}" data-k="out" value="${esc(s.out)}" placeholder="예: 문항별 평균표"></label></div></div>
-    <div class="g2">
-     <div class="fg"><label class="f"><span>이거 누가 하면 될까요?</span>
-      <select class="in" data-i="${i}" data-k="actor">${ACT.map(a=>`<option${s.actor===a?" selected":""}>${a}</option>`).join("")}</select></label></div>
-     <div class="fg"><label class="f"><span>몇 분쯤 걸려요?</span><input class="in" type="number" min="0" data-i="${i}" data-k="min" value="${esc(s.min)}"></label></div></div>
-    <div class="fg"><label class="f"><span>이때 뭘 보세요? <em>눈이 어디로 가는지, 어느 칸을 먼저 보는지</em></span>
-     <textarea class="in" data-i="${i}" data-k="watch" placeholder="예: 응답 수부터 봐요. 20건 안 되면 평균 안 내요.">${esc(s.watch)}</textarea></label>
-     ${EX(E(`s:${i}:watch`,"응답 수부터 봐요. 20건 안 되면 평균 안 내요.",1),
-          E(`s:${i}:watch`,"이수율은 이수인원 나누기 대상인원이에요. 신청인원 아니에요.",1),
-          E(`s:${i}:watch`,"표 합계랑 원본 총계가 맞는지 숫자로 대조해요.",1),
-          E(`s:${i}:watch`,"자유응답은 부정 의견부터 훑어봐요.",1))}</div>
-    <div class="fg"><label class="f"><span>신입이 여기서 뭘 틀려요? <em>이게 그대로 SKILL 의 금지 사항이 돼요</em></span>
-     <textarea class="in" data-i="${i}" data-k="miss" placeholder="예: 미응답을 0점으로 계산해 버려요.">${esc(s.miss)}</textarea></label>
-     ${EX(E(`s:${i}:miss`,"미응답을 0점으로 계산해서 평균을 깎아 먹어요.",1),
-          E(`s:${i}:miss`,"중복 제출을 안 걸러요.",1),
-          E(`s:${i}:miss`,"표만 고치고 본문에 옛 숫자를 그대로 둬요.",1),
-          E(`s:${i}:miss`,"근거 없이 총평을 붙여요.",1))}</div>
-    <div style="display:flex;gap:7px">
-     <button class="btn g sm" data-up="${i}">↑ 위로</button><button class="btn g sm" data-dn="${i}">↓ 아래로</button>
-     <button class="btn g sm" data-rm="${i}" style="margin-left:auto;color:var(--bad)">이 단계 지우기</button></div></div>`:""}</div>`).join("")}
-  <div style="display:flex;gap:8px;margin:2px 0 6px;flex-wrap:wrap">
-   <button class="btn g sm" id="add">+ 단계 추가</button>
-   <button class="btn g sm" id="ip">잘 안 떠오르세요? AI 에게 물어보기</button></div>
-  <div class="sec">"보통은 이렇게 하는데, 이런 경우엔…"</div>
-  <p class="tip">평소에 말로만 하고 넘어가던 예외요. 이걸 적어 두면 AI 가 안 헤맵니다.</p>
-  ${EX(...["자료가 늦게 올 때","숫자가 안 맞을 때","건수가 너무 적을 때","기준이 바뀌었을 때","급하게 요청받았을 때"].map(c=>`<button data-bc="${esc(c)}">+ ${esc(c)}</button>`))}
-  <div class="rows" style="margin-top:11px">${D.branches.map((b,i)=>`<div class="rw b">
-   <input class="in" data-bi="${i}" data-bk="cond" value="${esc(b.cond)}" placeholder="이런 경우엔…">
-   <input class="in" data-bi="${i}" data-bk="act" value="${esc(b.act)}" placeholder="이렇게 해요">
-   <button class="del" data-brm="${i}">×</button></div>`).join("")}</div>
-  <button class="btn g sm" id="badd">+ 예외 추가</button>
-  <div class="sec">애매할 때 뭘 기준으로 정하세요?</div>
-  <div class="fg"><textarea class="in" id="tone" placeholder="예: 숫자하고 설명이 어긋나면 무조건 원본 숫자를 따라요">${esc(D.rules.tone)}</textarea>
-   ${EX(E("r:tone","숫자하고 설명이 어긋나면 무조건 원본 숫자를 따른다",1),
-        E("r:tone","애매하면 추측해서 쓰지 말고 '확인 필요'라고 남긴다",1),
-        E("r:tone","이유를 확실히 모르면 '원인 미확인'으로 적는다",1))}</div>
-  ${w.length?`<div class="al w"><b>조금만 더 손보면 좋을 곳</b><ul>${w.map(x=>`<li>${x}</li>`).join("")}</ul></div>`
-   :`<div class="al o">잘 풀어 주셨어요. 단계, 판단, 확인, 속내용, 예외까지 다 들어 있네요.</div>`}`;
-}
-function b_anat(el){
-  if(!el.querySelector("#add"))return;
-  el.querySelectorAll("input[data-k],textarea[data-k]").forEach(i=>i.oninput=e=>{
-    const s=D.steps[+e.target.dataset.i];if(s){s[e.target.dataset.k]=e.target.value;save();}});
-  el.querySelectorAll("select[data-k]").forEach(i=>i.onchange=e=>{
-    const s=D.steps[+e.target.dataset.i];if(!s)return;s[e.target.dataset.k]=e.target.value;save();
-    if(e.target.dataset.k==="type")re();});
-  el.querySelectorAll('input[type=number][data-k]').forEach(i=>i.onchange=()=>re());
-  el.querySelectorAll("[data-ex]").forEach(b=>b.onclick=()=>{openStep=openStep===+b.dataset.ex?-1:+b.dataset.ex;re();});
-  el.querySelectorAll("[data-up]").forEach(b=>b.onclick=()=>{const i=+b.dataset.up;
-    if(i>0){[D.steps[i-1],D.steps[i]]=[D.steps[i],D.steps[i-1]];openStep=i-1;save();re();}});
-  el.querySelectorAll("[data-dn]").forEach(b=>b.onclick=()=>{const i=+b.dataset.dn;
-    if(i<D.steps.length-1){[D.steps[i+1],D.steps[i]]=[D.steps[i],D.steps[i+1]];openStep=i+1;save();re();}});
-  el.querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{D.steps.splice(+b.dataset.rm,1);openStep=-1;save();re();});
-  el.querySelector("#add").onclick=()=>{D.steps.push({a:"",in:"",out:"",type:"정리·계산",actor:ACT[1],min:10,watch:"",miss:""});
-    openStep=D.steps.length-1;save();re();};
-  el.querySelectorAll("[data-bk]").forEach(i=>i.oninput=e=>{D.branches[+e.target.dataset.bi][e.target.dataset.bk]=e.target.value;save();});
-  el.querySelectorAll("[data-brm]").forEach(b=>b.onclick=()=>{D.branches.splice(+b.dataset.brm,1);save();re();});
-  el.querySelectorAll("[data-bc]").forEach(b=>b.onclick=()=>{D.branches.push({cond:b.dataset.bc,act:""});save();re();});
-  el.querySelector("#badd").onclick=()=>{D.branches.push({cond:"",act:""});save();re();};
-  el.querySelector("#tone").oninput=e=>{D.rules.tone=e.target.value;save();};
-  el.querySelector("#ip").onclick=()=>cp(`저는 "${selT()?selT().t:"어떤 반복 업무"}"를 정기적으로 하는 담당자입니다.
-이 업무를 남이 그대로 따라 할 수 있는 절차서로 만들려고 해요.
+/* ───── 4단계 ───── */
+function s4(){const r=realSteps(),cnt={};r.forEach(s=>{if(s.type)cnt[s.type]=(cnt[s.type]||0)+1;});const tot=Object.values(cnt).reduce((a,b)=>a+b,0);
+ const steps=D.steps.map((s,i)=>`<div class="stp"><div class="stp-h"><span class="num" style="background:${TC(s.type)}">${i+1}</span>
+  <input class="in" data-k="steps|${s.id}|a" value="${att(s.a)}" placeholder="무엇을 하나요? (예: LMS에서 수강 이력 내려받기)">
+  <select class="in sm" data-k="steps|${s.id}|type"><option value="">종류</option>${TYPES.map(t=>`<option${s.type===t.k?" selected":""}>${t.k}</option>`).join("")}</select>
+  <select class="in sm" data-k="steps|${s.id}|who"><option value="">누가 하나요?</option>${opt(ACT,s.who)}</select>
+  <span class="mv"><button class="icon" data-act="mv" data-id="${s.id}" data-v="-1" title="위로">↑</button><button class="icon" data-act="mv" data-id="${s.id}" data-v="1" title="아래로">↓</button><button class="icon del" data-act="del" data-c="steps" data-id="${s.id}" title="지우기">✕</button></span></div>
+  <div class="stp-b"><div><label>이때 보는 것<span>무엇을 보고 판단하나요?</span></label><textarea class="in" data-k="steps|${s.id}|look" placeholder="예: 수료율이 80% 아래인 과정이 있는지">${esc(s.look)}</textarea></div>
+  <div><label>자주 틀리는 곳<span>처음 하면 어디서 실수하나요?</span></label><textarea class="in" data-k="steps|${s.id}|trap" placeholder="예: 중도 취소자를 수강 인원에 포함함">${esc(s.trap)}</textarea></div></div></div>`).join("");
+ return `${selT()?`<div class="al o">풀어 볼 업무: <b>${esc(selT().t)}</b></div>`:""}
+ <div class="sec"><span class="tag">순서</span><b>작업 단계</b><span>동사 하나에 단계 하나씩</span></div>
+ ${tot?`<div class="bars">${TYPES.filter(t=>cnt[t.k]).map(t=>`<div style="width:${cnt[t.k]/tot*100}%;background:${t.c}"></div>`).join("")}</div>`:""}
+ <div class="legend">${TYPES.map(t=>`<span><i style="background:${t.c}"></i>${t.k}${cnt[t.k]?` ${cnt[t.k]}`:""}</span>`).join("")}</div>
+ <div data-f="steps">${steps||'<div class="empty">아직 단계가 없어요. 아래 버튼으로 첫 단계를 추가해 보세요.</div>'}</div>
+ <button class="btn ghost" data-act="addstep" style="margin-top:4px">+ 단계 추가</button>
+ <div class="sec"><span class="tag">예외</span><b>이럴 땐 이렇게</b><span>평소와 다를 때는 어떻게 하시나요?</span></div>
+ <div data-f="branches">${pairs("branches","이럴 때 (예: 데이터에 빈칸이 있으면)","이렇게 해요 (예: 빈칸 목록을 먼저 보여 주고 확인받기)")}</div>
+ <button class="btn ghost sm" data-act="addpair" data-c="branches">+ 예외 추가</button>
+ <div class="sec"><span class="tag">용어</span><b>우리 팀 말 사전</b><span>팀 안에서만 통하는 말을 적어 주세요</span></div>
+ <div data-f="terms">${pairs("terms","용어 (예: 입과)","뜻 (예: 과정 수강이 확정된 상태)")}</div>
+ <button class="btn ghost sm" data-act="addpair" data-c="terms">+ 용어 추가</button>`;}
 
-당신은 업무 분석 인터뷰어입니다. 아래 규칙대로 저를 인터뷰해 주세요.
-1. 질문은 한 번에 하나만, 짧게.
-2. 제가 "정리한다", "확인한다"처럼 뭉뚱그려 답하면 "구체적으로 무엇을 보고, 무엇을 기준으로 정하나요?"라고 꼭 되물어 주세요.
-3. 단계마다 (뭐가 필요한지 / 뭘 하는지 / 뭐가 나오는지 / 판단 기준 / 흔한 실수)가 채워질 때까지 파고들어 주세요.
-4. 예외 상황을 최소 세 가지 캐물어 주세요 — "이런 경우엔 어떻게 하세요?"
-5. 질문이 10개쯤 넘으면, 지금까지 나온 걸 단계 표로 정리해 보여 주고 빈 칸을 짚어 주세요.
+/* ───── 5단계 ───── */
+function s5(){return `<div class="sec"><span class="tag">규칙</span><b>꼭 지킬 것과 하지 말 것</b></div>
+ <div class="g2">${F("rules.must","꼭 지킬 것",{req:1,rows:5,help:"한 줄에 하나씩, 두 개 이상 적어 주세요.",ex:["수치는 원본 데이터에서만 가져온다","증감은 %p와 인원을 함께 쓴다","개인 이름은 쓰지 않고 부서 단위로 쓴다"],add:1})}
+ ${F("rules.never","하지 말 것",{req:1,rows:5,help:"AI가 넘지 말아야 할 선이에요.",ex:["없는 수치를 추정해서 채우지 않는다","원인을 단정하지 않는다","자료에 없는 과정을 새로 만들지 않는다"],add:1})}</div>
+ ${F("dod","완료 기준 (예/아니오로 답할 수 있게)",{req:1,rows:4,help:"이 체크리스트를 모두 통과해야 완료예요. 세 개 이상 적어 주세요.",ex:["목차 5칸이 모두 채워졌다","모든 수치에 출처(파일·시트)가 적혀 있다","A4 2장을 넘지 않는다","특이사항이 없으면 없음이라고 적었다"],add:1})}
+ <div class="sec"><span class="tag">예시</span><b>좋은 예와 아쉬운 예</b><span>한두 문장이면 충분해요</span></div>
+ <div class="g2">${F("ex.good","좋은 예",{rows:3,ex:["9월 수료율은 92%로 전월(88%)보다 4%p 올랐습니다. 리더십 과정 재수강자 증가가 영향을 준 것으로 보입니다."]})}${F("ex.bad","아쉬운 예",{rows:3,ex:["이번 달 교육은 전반적으로 잘 진행되었습니다."]})}</div>
+ <div class="sec"><span class="tag">마무리</span><b>이름 붙이고 시험해 보기</b></div>
+ <div class="g2">${F("slug","스킬 파일 이름 (영문 소문자·하이픈)",{input:1,ph:"예: monthly-training-report",ex:["monthly-training-report","weekly-training-status"]})}
+ ${F("tests","테스트 문장",{rows:3,help:"완성 후 이 문장으로 부탁해 보고, 완료 기준을 통과하는지 확인해요.",ex:["9월 교육 실적 보고서 만들어 줘 (파일 첨부)","만족도 파일 없이 실적 보고서만 만들어 줘"],add:1})}</div>
+ <div class="result" id="result"></div>`;}
 
-첫 질문부터 시작해 주세요.`);
-}
-function ok_anat(){
-  if(D.steps.filter(s=>s.a.trim()).length<4)return toast("단계를 네 개 이상 적어 주세요");
-  if(!D.steps.some(s=>s.a.trim()&&(s.watch.trim()||s.miss.trim())))return toast("단계 하나라도 속을 채워 주세요. 거기에 노하우가 들어가요");
-  if(D.branches.filter(b=>b.cond.trim()&&b.act.trim()).length<2)return toast("예외를 두 개 이상 적어 주세요. 예외 없는 일은 없어요");
-  mark("anat");toast("수고하셨어요! 마지막은 대장간이에요");shut();}
+/* ───── SKILL.md ───── */
+const slug=()=>tr(D.slug).toLowerCase().replace(/[^a-z0-9-]+/g,"-").replace(/^-+|-+$/g,"")||"my-hrd-skill";
+function buildMD(){const d=D.def,t=selT(),out=tr(d.outName)||(t?t.t:"결과물"),trg=lines(d.triggers),L=[];
+ let desc=jo(out,"을","를")+" "+(tr(d.outForm)||"문서")+" 형태로 만든다. ";
+ if(trg.length)desc+='"'+trg.slice(0,3).join('", "')+'" 같은 요청을 받거나 ';
+ if(t&&t.trg)desc+=t.trg+" 시점에 ";
+ desc=(desc+"사용한다.").replace(/\s+/g," ");
+ L.push("---","name: "+slug(),"description: "+desc,"---","","# "+(t?t.t:out),"");
+ if(tr(D.scope.why))L.push("> 만든 이유: "+tr(D.scope.why),"");
+ const sec=(h,arr,fmt)=>{fmt=fmt||(x=>"- "+x);if(arr.length){L.push("## "+h);arr.forEach(x=>L.push(fmt(x)));L.push("");}};
+ const tl=trg.map(x=>'"'+x+'"');if(t&&t.trg)tl.push("시작 신호: "+t.trg+" ("+CYCN(t.cyc)+")");
+ sec("이럴 때 사용",tl);sec("해 줄 일",lines(D.scope.inc));sec("하지 않을 일",lines(D.scope.exc));
+ const role=ACT.find(a=>a.v===D.scope.role);if(role)L.push("## 역할 나누기","- "+role.md,"");
+ sec("입력 자료",lines(d.input));sec("시작 전에 확인할 것 (자료가 부족하면 먼저 물어본다)",lines(d.missing));
+ const meta=["이름: "+out,"형태: "+d.outForm];
+ if(tr(d.reader))meta.push("읽는 사람: "+lines(d.reader).join(", "));
+ if(tr(d.vol))meta.push("분량: "+lines(d.vol).join(", "));
+ if(tr(d.tone))meta.push("말투: "+lines(d.tone).join(", "));
+ sec("결과물",meta);
+ const ss=lines(d.sections);if(ss.length){L.push("### 목차 (이 순서와 제목을 그대로 따른다)");ss.forEach((x,j)=>L.push((j+1)+". "+x.replace(/^\d+[.)]\s*/,"")));L.push("");}
+ const st=realSteps();if(st.length){L.push("## 작업 순서");st.forEach((s,i)=>{const w=ACT.find(a=>a.v===s.who);
+  L.push((i+1)+". **"+tr(s.a)+"**"+(s.type?" ["+s.type+"]":"")+(w?" — "+w.n:""));
+  if(tr(s.look))L.push("   - 확인: "+lines(s.look).join(" / "));if(tr(s.trap))L.push("   - 주의: "+lines(s.trap).join(" / "));});L.push("");}
+ sec("예외 상황",D.branches.filter(b=>tr(b.a)),b=>"- "+tr(b.a)+" → "+tr(b.b));
+ sec("용어",D.terms.filter(b=>tr(b.a)),b=>"- **"+tr(b.a)+"**: "+tr(b.b));
+ sec("반드시 지킬 것",lines(D.rules.must));sec("절대 하지 말 것",lines(D.rules.never));
+ sec("완료 기준 (모두 통과해야 제출한다)",lines(D.dod),x=>"- [ ] "+x);
+ if(tr(D.ex.good)||tr(D.ex.bad)){L.push("## 예시");if(tr(D.ex.good)){L.push("좋은 예:");lines(D.ex.good).forEach(x=>L.push("> "+x));L.push("");}
+  if(tr(D.ex.bad)){L.push("피해야 할 예:");lines(D.ex.bad).forEach(x=>L.push("> "+x));L.push("");}}
+ sec("테스트 문장",lines(D.tests));
+ return L.join("\n").replace(/\n{3,}/g,"\n\n").trim()+"\n";}
 
-/*═══════ 5단계 ═══════*/
-let tab5="rule";
-function slug(s){return String(s||"skill").trim().replace(/\s+/g,"-").replace(/[^\w가-힣-]/g,"").slice(0,44)||"skill";}
-function quality(){
-  const t=selT()||{},F=D.def,R=D.rules,f=D.steps.filter(s=>s.a.trim());
-  const c=[["만들 일을 골랐다",!!t.t,7],["언제 시작하는지 적었다",(F.trigger||"").length>=6,8],
-   ["결과물 칸이 3개 이상이다",lines(F.sections).length>=3,13],["받는 자료를 적었다",lines(F.input).length>=1,6],
-   ["단계가 4개 이상이다",f.length>=4,11],["판단하는 단계가 있다",D.steps.some(s=>s.type==="판단하기"&&s.a.trim()),9],
-   ["확인하는 단계가 있다",D.steps.some(s=>s.type==="확인하기"&&s.a.trim()),8],
-   ["단계마다 결과물이 있다",f.length>0&&f.every(s=>s.out.trim()),7],
-   ["노하우를 2개 이상 적었다",f.filter(s=>s.watch.trim()||s.miss.trim()).length>=2,10],
-   ["예외가 2개 이상이다",D.branches.filter(b=>b.cond.trim()&&b.act.trim()).length>=2,9],
-   ["하면 안 되는 걸 2줄 이상 적었다",lines(R.never).length>=2,6],
-   ["완료 기준이 3줄 이상이다",lines(D.dod).length>=3,9],
-   ["좋은 예를 적었다",!!D.ex.good.trim(),4],["사내 용어를 풀었다",D.terms.some(x=>x.k.trim()&&x.v.trim()),3]];
-  const tot=c.reduce((s,x)=>s+x[2],0),got=c.reduce((s,x)=>s+(x[1]?x[2]:0),0);
-  return {c,pct:Math.round(got/tot*100)};
-}
-function buildMD(){
-  const t=selT()||{},F=D.def,R=D.rules,L=[];
-  const li=s=>lines(s).length?lines(s).map(x=>"- "+x).join("\n"):"- (적지 않음)";
-  const title=F.outName||t.t||"이름 없는 SKILL";
-  L.push("---","name: "+slug(t.t||title),
-   "description: "+(F.trigger?F.trigger+" 시점에 ":"")+(t.t||title)+" 하여 "+(F.outName||"산출물")+"을(를) 만든다."+(F.client?" 수신: "+F.client+".":""),
-   "---","","# "+title,"","## 1. 언제 실행하나",F.trigger||"(적지 않음)","");
-  if(F.client)L.push("**받아 보는 사람** — "+F.client,"");
-  L.push("## 2. 무엇을 받아서 시작하나",li(F.input),"",
-   "## 3. 무엇을 내놓아야 하나","**"+(F.outName||"산출물")+"** ("+F.outForm+")"+(F.vol?" · "+F.vol:""),"",
-   "아래 칸을 모두 채운다. 칸의 순서와 이름을 바꾸지 않는다.","",li(F.sections),"","## 4. 절차","");
-  const f=D.steps.filter(s=>s.a.trim());
-  if(!f.length)L.push("(적지 않음)","");
-  f.forEach((s,i)=>{
-    L.push("### "+(i+1)+". "+s.a.trim()+"  `"+s.type+"` `"+s.actor+"`"+(s.min?" `"+s.min+"분`":""));
-    if(s.in.trim())L.push("- 필요한 것 — "+s.in.trim());
-    if(s.out.trim())L.push("- 나오는 것 — "+s.out.trim());
-    lines(s.watch).forEach(x=>L.push("- 확인할 것 — "+x));
-    lines(s.miss).forEach(x=>L.push("- 주의(흔한 실수) — "+x));
-    L.push("");});
-  const br=D.branches.filter(b=>b.cond.trim());
-  L.push("## 5. 예외 상황","");
-  if(br.length){L.push("| 이런 경우엔 | 이렇게 한다 |","|---|---|");
-    br.forEach(b=>L.push("| "+b.cond.trim()+" | "+(b.act.trim()||"(적지 않음)")+" |"));L.push("");}
-  else L.push("(적지 않음)","");
-  L.push("## 6. 판단 기준",li(R.tone),"","## 7. 반드시 지킬 것",li(R.must),"","## 8. 절대 하지 말 것",li(R.never));
-  D.steps.map(s=>lines(s.miss)).flat().forEach(x=>L.push("- "+x));L.push("");
-  const tm=D.terms.filter(x=>x.k.trim()&&x.v.trim());
-  if(tm.length){L.push("## 9. 용어","");tm.forEach(x=>L.push("- **"+x.k.trim()+"** — "+x.v.trim()));L.push("");}
-  L.push("## 10. 완료 기준","","아래를 모두 만족해야 끝난 것이다. 하나라도 어긋나면 그 부분을 다시 처리한다.","",
-   lines(D.dod).map(x=>"- [ ] "+x).join("\n")||"- [ ] (적지 않음)","");
-  if(D.ex.good.trim()||D.ex.bad.trim()){L.push("## 11. 예시","");
-   if(D.ex.good.trim())L.push("**이렇게 쓴다**","","> "+D.ex.good.trim().split("\n").join("\n> "),"");
-   if(D.ex.bad.trim())L.push("**이렇게 쓰지 않는다**","","> "+D.ex.bad.trim().split("\n").join("\n> "),"");}
-  L.push("---","","만든 사람: "+(D.who||"-")+" · "+new Date().toLocaleDateString("ko-KR")+
-   (t.t?" · 지금 이 일에 연 "+hrs(t).toFixed(0)+"시간쯤 쓰고 있음":""));
-  return L.join("\n");
-}
-function r_forge(){
-  if(!D.terms.length)D.terms=[{k:"",v:""}];
-  const R=D.rules,q=quality();
-  const head=`<div class="tabs">
-   <button data-t5="rule" class="${tab5==="rule"?"on":""}">① 규칙 정하기</button>
-   <button data-t5="out" class="${tab5==="out"?"on":""}">② 파일 뽑기 <i>${q.pct}점</i></button></div>`;
-  if(tab5==="rule")return head+`
-  <div class="g2">
-   <div class="fg"><label class="f"><span>꼭 지켜야 할 거요 <em>한 줄에 하나</em></span>
-    <textarea class="in" data-r="must" style="min-height:100px" placeholder="숫자는 원본 파일에서만 가져온다">${esc(R.must)}</textarea></label>
-    ${EX(E("r:must","숫자는 원본 파일에서만 가져온다",1),E("r:must","무슨 주장을 하면 근거 숫자를 꼭 같이 적는다",1),E("r:must","존댓말, 평서형, 개조식으로 쓴다",1),E("r:must","표 항목 순서랑 이름은 마음대로 바꾸지 않는다",1))}</div>
-   <div class="fg"><label class="f"><span>절대 하면 안 되는 거요 <em>한 줄에 하나</em></span>
-    <textarea class="in" data-r="never" style="min-height:100px" placeholder="없는 숫자를 지어내지 않는다">${esc(R.never)}</textarea></label>
-    ${EX(E("r:never","없는 숫자를 지어내거나 추정치를 확정처럼 쓰지 않는다",1),E("r:never","응답자 실명이나 사번을 그대로 노출하지 않는다",1),E("r:never","'전반적으로 양호' 같은 뜬구름 총평을 쓰지 않는다",1))}</div></div>
-  <div class="sec">우리 회사에서만 쓰는 말 있으세요?</div>
-  <p class="tip">AI 는 사내 용어를 몰라요. 세 개만 풀어 주셔도 엉뚱하게 알아듣는 일이 확 줄어요. 없으면 넘어가셔도 돼요.</p>
-  <div class="rows">${D.terms.map((t,i)=>`<div class="rw b">
-   <input class="in" data-ti="${i}" data-tk="k" value="${esc(t.k)}" placeholder="용어 (예: 입과)">
-   <input class="in" data-ti="${i}" data-tk="v" value="${esc(t.v)}" placeholder="무슨 뜻이에요?">
-   <button class="del" data-trm="${i}">×</button></div>`).join("")}</div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap">
-   <button class="btn g sm" id="addt">+ 용어 추가</button>
-   <button class="btn g sm" id="ext">예시 용어 3개 넣기</button></div>
-  <div class="sec">"이 정도면 됐다" 싶은 기준이요</div>
-  <div class="fg"><label class="f"><span><em>체크리스트로 들어가요 · 한 줄에 하나 · 숫자가 들어가면 더 좋아요</em></span>
-   <textarea class="in" id="dod" style="min-height:100px" placeholder="다섯 개 칸이 다 채워져 있다">${esc(D.dod)}</textarea></label>
-   ${EX(E("dod","다섯 개 칸이 다 채워져 있다",1),E("dod","A4 2장을 안 넘는다",1),E("dod","표 인원 합계가 원본 총계와 같다",1),E("dod","요약 3줄에 숫자가 3개 이상 들어 있다",1),E("dod","개선 제안마다 근거 숫자가 붙어 있다",1))}</div>
-  <div class="g2">
-   <div class="fg"><label class="f"><span>이렇게 써 주면 좋겠다 싶은 문장 <em>안 적으셔도 돼요</em></span>
-    <textarea class="in" data-e="good" style="min-height:74px">${esc(D.ex.good)}</textarea></label>
-    ${EX(E("e:good","이달 만족도는 4.3점으로 전월 4.0점보다 0.3점 올랐다. 신규 실습형 과정 2건(응답 88건, 평균 4.6)이 반영된 결과로 보인다."))}</div>
-   <div class="fg"><label class="f"><span>이렇게 쓰면 곤란한 문장</span>
-    <textarea class="in" data-e="bad" style="min-height:74px">${esc(D.ex.bad)}</textarea></label>
-    ${EX(E("e:bad","전반적으로 만족도가 양호한 것으로 보이며, 향후 지속적인 개선이 필요할 것으로 판단된다."))}</div></div>`;
-  const md=buildMD(),miss=q.c.filter(x=>!x[1]),col=q.pct>=85?"#2F9B72":q.pct>=60?"#EDB245":"#CE5B4C";
-  return head+`
-  <div class="gauge"><div class="ring" style="background:conic-gradient(${col} ${q.pct*3.6}deg,#EBE0C9 0)"><i></i><b>${q.pct}</b></div>
-   <ul class="chk">${q.c.map(x=>`<li class="${x[1]?"y":""}">${x[0]}</li>`).join("")}</ul></div>
-  ${q.pct>=85?`<div class="al o">이 정도면 바로 쓰셔도 돼요. 내려받아서 실제 자료 한 건에 돌려 보세요.</div>`
-   :`<div class="al w"><b>이것만 채우면 확 좋아져요</b><ul>${miss.slice(0,4).map(x=>`<li>${x[0]}</li>`).join("")}</ul></div>`}
-  <pre class="md">${esc(md)}</pre>
-  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-   <button class="btn big" id="dl">SKILL.md 내려받기</button>
-   <button class="btn rd" id="rs">처음부터 다시</button>
-   <button class="btn g sm" id="cpb">전체 복사</button>
-   <button class="btn dk sm" id="ab">A / B 시험 프롬프트</button>
-   <button class="btn g sm" id="bk">작업 백업</button>
-   <button class="btn g sm" id="im">불러오기</button>
-   <input type="file" id="fi" accept=".json" hidden></div>
-  <div class="al w" style="margin-top:16px"><b>마지막으로 이거 꼭 해 보세요</b> — 실제 자료 한 건 가지고 ① 이 SKILL 주고 한 번, ② 아무것도 안 주고 한 번 돌려서 나란히 놓고 보세요.
-  차이가 안 나면 「결과물 칸」하고 「완료 기준」이 아직 두루뭉술한 거예요. 그럼 <b>설계 사무소</b>로 돌아가시면 됩니다.</div>`;
-}
-function b_forge(el){
-  el.querySelectorAll("[data-t5]").forEach(b=>b.onclick=()=>{tab5=b.dataset.t5;re();});
-  if(tab5==="rule"){
-    el.querySelectorAll("[data-r]").forEach(i=>i.oninput=e=>{D.rules[e.target.dataset.r]=e.target.value;save();});
-    el.querySelectorAll("[data-e]").forEach(i=>i.oninput=e=>{D.ex[e.target.dataset.e]=e.target.value;save();});
-    el.querySelectorAll("[data-tk]").forEach(i=>i.oninput=e=>{D.terms[+e.target.dataset.ti][e.target.dataset.tk]=e.target.value;save();});
-    el.querySelectorAll("[data-trm]").forEach(b=>b.onclick=()=>{D.terms.splice(+b.dataset.trm,1);save();re();});
-    el.querySelector("#addt").onclick=()=>{D.terms.push({k:"",v:""});save();re();};
-    el.querySelector("#ext").onclick=()=>{
-      [["입과","교육 과정에 등록해서 수강을 시작하는 것"],["이수율","이수인원 ÷ 대상인원 × 100. 신청인원이 아니라 대상인원이 분모"],
-       ["집합교육","강의장에서 모여서 하는 교육. 온라인 과정과 따로 집계함"]]
-       .forEach(([k,v])=>{if(!D.terms.some(t=>t.k===k))D.terms.push({k,v});});
-      D.terms=D.terms.filter(t=>t.k.trim()||t.v.trim());save();re();};
-    const dd=el.querySelector("#dod");if(dd)dd.oninput=e=>{D.dod=e.target.value;save();};
-    return;}
-  const md=buildMD();
-  el.querySelector("#dl").onclick=()=>{
-    const b=new Blob(["\ufeff"+md],{type:"text/markdown;charset=utf-8"});
-    const a=document.createElement("a");a.href=URL.createObjectURL(b);
-    a.download=slug((selT()||{}).t||"skill")+".md";
-    document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);
-    mark("forge");toast("내려받았어요. 수고하셨습니다!");};
-  el.querySelector("#rs").onclick=()=>{
-    if(!confirm("지금까지 적은 걸 다 지우고 처음부터 시작할까요?\n\n되돌릴 수 없어요. 필요하면 먼저 「작업 백업」을 눌러 저장해 두세요."))return;
-    D=blank();try{localStorage.removeItem(KEY);}catch(e){}
-    openStep=-1;tab1="day";tab5="rule";P.x=250;cam=0;
-    drawRail();shut();showIntro();toast("처음으로 돌아왔어요");};
-  el.querySelector("#cpb").onclick=()=>cp(md);
-  el.querySelector("#ab").onclick=()=>cp(`아래 SKILL 문서를 업무 지시서로 삼아 입력을 처리해 주세요.
-절차, 예외 상황, 금지 사항, 완료 기준을 그대로 따라 주세요. 완료 기준은 마지막에 하나씩 체크해서 보여 주세요.
+function renderResult(){const el=$("#result");if(!el)return;const all=[];ST.forEach((s,i)=>s.todo.forEach(t=>all.push({t:t.t,f:t.f,ok:t.ok,i:i})));
+ const miss=all.filter(t=>!t.ok()),p=Math.round((all.length-miss.length)/all.length*100);
+ const msg=p>=90?"아주 탄탄해요. 바로 써 보셔도 좋아요!":p>=70?"거의 다 왔어요. 빠진 칸 몇 개만 채우면 훨씬 정확해져요.":"뼈대는 잡혔어요. 아래 빠진 칸을 채울수록 스킬이 똑똑해져요.";
+ el.innerHTML=`<div class="res-h"><div class="ring" style="background:conic-gradient(#E7B75A ${p*3.6}deg,#31364A 0)"><b>${p}</b></div><div><h3>SKILL.md 완성도 ${p}점</h3><p>${msg}</p>${miss.length?`<div class="miss">${miss.map(m=>`<button data-jump="${m.i}|${m.f}">${m.i+1}단계 · ${esc(m.t)}</button>`).join("")}</div>`:""}</div></div>
+ <pre id="md">${esc(buildMD())}</pre>
+ <div class="res-btn"><button class="btn gold" data-act="dl">SKILL.md 내려받기</button><button class="btn ghost" data-act="copy">전체 복사</button></div>
+ <div class="howto"><b>이렇게 써 보세요.</b> 스킬 기능을 지원하는 도구라면 <b>${esc(slug())}/</b> 폴더에 SKILL.md를 넣어 등록하면 돼요. 지원하지 않는 도구라면 대화창에 내용을 그대로 붙여 넣고 "이 지침대로 해 줘"라고 부탁해도 괜찮아요. 테스트 문장으로 돌려 보고, 어긋난 부분은 규칙이나 자주 틀리는 곳에 한 줄씩 더해 가면 점점 정확해져요.</div>`;}
 
-그다음 같은 입력을 SKILL 문서 없이 평소 하던 대로 한 번 더 처리해서, 두 결과를 나란히 보여 주세요.
-마지막에 아래 세 가지를 각각 세 줄 안에 적어 주세요.
-1) SKILL 덕분에 나아진 점
-2) 그래도 틀리거나 빠진 점
-3) 이 SKILL 문서에서 고쳐야 할 문장 — 어느 항목의 어떤 표현이 모호한지
+/* ───── 화면 그리기 ───── */
+const R=[s1,s2,s3,s4,s5];
+const reqOk=i=>ST[i].todo.filter(t=>t.req).every(t=>t.ok());
+function totalPct(){let a=0,o=0;ST.forEach(s=>s.todo.forEach(t=>{a++;if(t.ok())o++;}));return Math.round(o/a*100);}
+function renderTodo(){const s=ST[D.cur],d=s.todo.filter(t=>t.ok()).length,el=$("#todo");if(!el)return;
+ el.innerHTML=`<h4><span>이번 단계 할 일</span><span>${d}/${s.todo.length}</span></h4><ul>${s.todo.map(t=>`<li class="${t.ok()?"y":""}" data-jump="${D.cur}|${t.f}"><i></i>${esc(t.t)}${t.req?"<em>필수</em>":""}</li>`).join("")}</ul>`;}
+function render(keep){if(!(D.cur>=0&&D.cur<5))D.cur=0;
+ const s=ST[D.cur],y=window.scrollY,rs=document.documentElement.style;rs.setProperty("--ac",s.col);rs.setProperty("--ac-soft",s.soft);
+ $("#rail").innerHTML=ST.map((x,i)=>`${i?'<span class="lk"></span>':""}<button class="nd${i===D.cur?" cur":""}" data-go="${i}">${ph(x.id,"av",x.name)}<span class="nt">${i+1}. ${x.role}<small>${x.name}</small></span></button>`).join("");
+ $("#me").innerHTML=D.started?`${ph(D.hero||"f","av","나")}${esc(D.who||"참가자")}`:"";
+ $("#guide").innerHTML=`<div class="npc">${ph(s.id,"portrait",s.who)}<div class="npc-tag"><small>${D.cur+1}단계 · ${s.role}</small><b>${s.who}</b></div></div><div class="bubble">${s.say(D.who)}</div><div class="todo" id="todo"></div><details class="tips"${D.cur===0?" open":""}><summary>막힐 때 보는 팁</summary><ul>${s.tips.map(t=>`<li>${esc(t)}</li>`).join("")}</ul></details>`;
+ $("#work").innerHTML=`<div class="wh"><span class="no">${D.cur+1}</span><div><h2>${s.title}</h2><p>${s.sub}</p></div><span class="time">약 ${s.time}분 · 결과: ${s.out}</span></div><div class="wb">${R[D.cur]()}</div>
+ <div id="foot">${D.cur?'<button class="btn ghost" data-act="prev">← 이전</button>':""}<span id="gate"></span>${D.cur<4?`<button class="btn" data-act="next">다음: ${ST[D.cur+1].role} →</button>`:'<button class="btn gold" data-act="dl">SKILL.md 내려받기</button>'}</div>`;
+ window.scrollTo(0,keep?y:0);refresh();}
+function refresh(){$$("#rail .nd").forEach((n,i)=>n.classList.toggle("done",reqOk(i)));$$("#rail .lk").forEach((n,i)=>n.classList.toggle("on",reqOk(i)));
+ $("#pct").textContent="전체 "+totalPct()+"%";renderTodo();
+ const g=$("#gate");if(g){const m=ST[D.cur].todo.filter(t=>t.req&&!t.ok());g.className=m.length?"":"ok";g.textContent=m.length?`필수 ${m.length}개가 남았어요 · ${m[0].t}`:"필수 항목을 다 채웠어요. 다음으로 넘어가도 좋아요!";}
+ renderResult();}
+function flash(el){if(!el)return;el.classList.remove("pulse");void el.offsetWidth;el.classList.add("pulse");}
+function jump(i,f){if(+i!==D.cur){D.cur=+i;save();render();}
+ setTimeout(()=>{const el=document.querySelector(`[data-f="${f}"]`);if(!el)return;el.scrollIntoView({behavior:"smooth",block:"center"});flash(el);
+  const inp=el.querySelector("input,textarea");if(inp&&!inp.value)setTimeout(()=>inp.focus({preventScroll:true}),400);},60);}
+function toast(m){const o=$(".toast");if(o)o.remove();document.body.insertAdjacentHTML("beforeend",`<div class="toast">${m}</div>`);const e=$(".toast");setTimeout(()=>{if(e)e.remove();},2600);}
 
-SKILL 문서:
-"""
-${md}
-"""
+/* ───── 시작 화면 ───── */
+function openIntro(){$("#intro").hidden=false;$("#iname").value=D.who||"";
 
-입력:
-"""
-<여기에 실제 자료 한 건을 붙여 넣으세요>
-"""`);
-  el.querySelector("#bk").onclick=()=>{
-    const b=new Blob([JSON.stringify(D,null,2)],{type:"application/json"});
-    const a=document.createElement("a");a.href=URL.createObjectURL(b);
-    a.download="skill-workshop-"+(D.who||"me")+".json";
-    document.body.appendChild(a);a.click();a.remove();toast("백업했어요");};
-  el.querySelector("#im").onclick=()=>el.querySelector("#fi").click();
-  el.querySelector("#fi").onchange=e=>{
-    const f=e.target.files[0];if(!f)return;const r=new FileReader();
-    r.onload=()=>{try{D=Object.assign(blank(),JSON.parse(r.result));save();re();drawRail();drawMe();
-      toast("불러왔어요");}catch(x){toast("파일을 못 읽었어요");}};
-    r.readAsText(f);};
-}
+ $$(".hero").forEach(h=>h.classList.toggle("on",h.dataset.hero===D.hero));
+ $("#startBtn").textContent=D.started?"이어서 하기":"워크샵 시작하기";}
 
-/*═══════ 대화창 ═══════*/
-const CARD={map:[r_map,b_map,ok_map,"이거면 됐어요","map"],sift:[r_sift,b_sift,ok_sift,"이걸로 정했어요","sift"],
- deal:[r_deal,b_deal,ok_deal,"다 적었어요","deal"],anat:[r_anat,b_anat,ok_anat,"다 풀었어요","anat"],
- forge:[r_forge,b_forge,null,"","forge"]};
-let cur=null;
-function talk(s){cur=s;re();$("#dlg").hidden=false;}
-function re(){
-  if(!cur)return;
-  const i=ST.indexOf(cur),[rf,bf,okf,okn,dk]=CARD[cur.id];
-  $("#dlg").innerHTML=`<div class="card">
-   <div class="ch" style="background:linear-gradient(135deg,${cur.col},${cur.roof})">
-    <div class="av"><canvas width="50" height="50" data-face="${i}"></canvas></div>
-    <div><h2>${esc(cur.name)}</h2><p>${esc(cur.role)} · ${i+1}단계</p></div>
-    <div class="rl">${ST.map((s,j)=>`<i class="${j===i?"me":(D.done.includes(s.id)?"on":"")}"></i>`).join("")}</div>
-    <button class="x" id="X">✕</button></div>
-   <div class="cb"><div class="say">${cur.say}</div>${rf()}</div>
-   <div class="cf">${okf?`<button class="btn" id="OK">${okn}</button>`:""}
-    <button class="btn demo" id="DEMO">예시로 한 번에 채우기</button>
-    <button class="btn g" id="CL">닫기</button>
-    <span class="sp">적는 대로 저장돼요 · Esc 로 닫기</span></div></div>`;
-  const el=$("#dlg");bf(el);bindEx(el);
-  const fc=el.querySelector("[data-face]");
-  if(fc){const c=fc.getContext("2d");c.clearRect(0,0,50,50);
-    person(c,25,50,cur.face,-1,0,.42,0,cur.face.sex);}
-  el.querySelector("#X").onclick=shut;el.querySelector("#CL").onclick=shut;
-  const ok=el.querySelector("#OK");if(ok)ok.onclick=okf;
-  el.querySelector("#DEMO").onclick=()=>{
-    if(!confirm("이 단계를 예시 내용으로 채웁니다.\n(교육 시연용 — 이미 적으신 게 있으면 덮어쓸 수 있어요)\n\n계속할까요?"))return;
-    DEMO[dk]&&DEMO[dk]();save();re();toast("예시로 채웠어요");};
-}
-function shut(){$("#dlg").hidden=true;cur=null;}
-function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;
-  $("#frame").appendChild(t);setTimeout(()=>t.remove(),2500);}
-async function cp(t){try{await navigator.clipboard.writeText(t);toast("복사했어요");}
-  catch(e){const a=document.createElement("textarea");a.value=t;a.style.cssText="position:fixed;opacity:0";
-   document.body.appendChild(a);a.select();
-   try{document.execCommand("copy");toast("복사했어요");}catch(x){toast("복사가 막혀 있어요. 직접 선택해 주세요");}a.remove();}}
+/* ───── 둘러보기 ───── */
+const TOUR=[["#rail","지금 어느 단계에 있는지 여기서 보여요. 필수 칸을 채운 단계엔 초록 테두리가 생기고, 누르면 언제든 오갈 수 있어요."],
+ ["#guide .bubble","단계마다 안내자가 무엇을 하면 되는지 먼저 알려 드려요. 천천히 읽고 시작해 주세요."],
+ ["#todo","이번 단계에서 할 일이에요. 칸을 채우면 저절로 체크되고, 항목을 누르면 그 칸으로 바로 이동해요."],
+ ["#work .wb","여기에 적으면 돼요. 막막할 땐 칸 아래 예시를 눌러 보세요. 바로 채워지고, 편하게 고쳐 쓰셔도 돼요."],
+ ["#foot","다 채우면 여기서 다음 단계로 넘어가요. 모든 내용은 자동 저장되니 잠깐 쉬었다 오셔도 괜찮아요."]];
+let tI=-1;
+function tour(){tI=0;D.toured=true;save();window.scrollTo(0,0);showTour();}
+function showTour(){["#spot","#tip","#tourBlock"].forEach(s=>{const e=$(s);if(e)e.remove();});if(tI<0||tI>=TOUR.length){tI=-1;return;}
+ const sel=TOUR[tI][0],txt=TOUR[tI][1],t=$(sel);if(!t){tI++;showTour();return;}
+ t.scrollIntoView({block:"nearest"});const r=t.getBoundingClientRect(),hh=Math.min(r.height,innerHeight-Math.max(r.top,0)-20);
+ document.body.insertAdjacentHTML("beforeend",`<div id="tourBlock"></div><div id="spot" style="left:${r.left-6}px;top:${r.top-6}px;width:${r.width+12}px;height:${hh+12}px"></div><div id="tip"><div class="tn">안내 ${tI+1} / ${TOUR.length}</div>${txt}<div class="tb"><button class="btn ghost sm" data-act="tskip">건너뛰기</button><button class="btn sm" data-act="tnext">${tI===TOUR.length-1?"시작할게요":"다음"}</button></div></div>`);
+ const tp=$("#tip"),w=320,h=tp.offsetHeight;let x=r.left,yy=r.bottom+14;
+ if(yy+h>innerHeight-10)yy=r.top-h-14;if(yy<10){yy=Math.min(innerHeight-h-20,Math.max(r.top,0)+40);x=r.right-w-20;}
+ tp.style.left=Math.max(10,Math.min(x,innerWidth-w-10))+"px";tp.style.top=Math.max(10,yy)+"px";}
 
-/*═══════ 진행 레일 ═══════*/
-const RN=["꺼내기","고르기","설계","풀어내기","완성"];
-function drawRail(){
-  const m=$("#rail");
-  m.innerHTML=ST.map((s,i)=>{const on=D.done.includes(s.id);
-   return (i?`<div class="lk ${on?"on":""}"></div>`:"")+
-   `<div class="nd ${on?"on":""} ${P.near===s?"cur":""}" data-go="${i}"><div class="dot">${on?"✓":i+1}</div><small>${RN[i]}</small></div>`;}).join("")
-   +`<div id="pct">${Math.round(D.done.length/ST.length*100)}%</div>`;
-  m.querySelectorAll("[data-go]").forEach(n=>n.onclick=()=>{
-    P.x=ST[+n.dataset.go].x-150;P.h=0;P.vh=0;cam=clamp(P.x-CW/2,0,WORLD-CW);});
-}
-function drawMe(){
-  $("#mn").textContent=D.who||"참가자";
-  const c=$("#mc").getContext("2d");c.clearRect(0,0,52,68);
-  person(c,26,66,{skin:"#F3D0AC",hair:"#2C2118",cloth:D.ch.col},-1,0,.56,0,D.ch.sex);
-}
+/* ───── 예시 ───── */
+function loadDemo(){const who=D.who,hero=D.hero;D=blank();D.who=who||"JUN";D.hero=hero||"f";D.started=true;D.toured=true;
+ const T=[["교육 문의 메일 회신","day","문의 메일이 오면",230,10,3,1,1],["입과 신청 승인 처리","day","신청 알림이 뜨면",230,10,5,1,.9],["주간 교육 운영 현황 정리","week","금요일 오후",75,60,3,1,1],["강사 일정 조율","week","과정이 확정되면",75,30,1,.8,.9],["월간 교육 실적 보고서 작성","month","매월 첫 영업일",12,300,5,1,.9],["교육 만족도 결과 요약","month","과정 종료 후 3일 이내",30,60,5,1,1],["교육 수요조사 취합","quar","매년 10월",2,300,3,.8,.9],["현업 교육 요청 검토","adhoc","요청 메일이 오면",30,30,3,1,.9]];
+ D.tasks=T.map(a=>({id:uid(),t:a[0],cyc:a[1],trg:a[2],freq:String(a[3]),dur:String(a[4]),same:String(a[5]),digi:String(a[6]),risk:String(a[7])}));
+ D.sel=D.tasks[4].id;
+ D.scope={why:"매달 반나절 넘게 같은 표와 문장을 다시 만들고 있어서",inc:"LMS 수강 이력과 만족도 결과로 핵심 지표를 계산한다\n전월 대비 증감을 정리한다\n보고서 초안을 정해진 목차대로 작성한다",exc:"결재 상신은 하지 않는다\n원본 데이터 파일은 수정하지 않는다\n예산 집행 여부는 판단하지 않는다",role:"draft"};
+ D.def={triggers:"이번 달 교육 실적 보고서 만들어 줘\n교육 실적 데이터 정리해서 보고서 초안 써 줘\n월간 교육 결과 요약해 줘",input:"LMS 수강 이력 엑셀 (과정명, 인원, 수료 여부)\n만족도 조사 결과 CSV\n전월 보고서 파일",missing:"대상 월이 어디인지\n전월 보고서가 없으면 비교를 뺄지\n특이사항으로 꼭 넣을 내용이 있는지",outName:"월간 교육 실적 보고서",outForm:FORMS[0],reader:"팀장님, 본부장님 보고용",sections:"1. 요약 (3줄)\n2. 핵심 지표 (운영 과정 수, 수료율, 만족도)\n3. 전월 대비 증감\n4. 과정별 상세 표\n5. 특이사항 및 다음 달 계획",vol:"A4 2장 이내",tone:"개조식, ~함체"};
+ D.steps=[["LMS에서 대상 월 수강 이력 내려받기","자료 모으기","me","대상 월 기간 필터가 맞는지","전월 말일에 끝난 과정이 빠짐"],["수강 이력과 만족도 파일 합치기","정리·계산","ai","과정명이 두 파일에서 똑같이 쓰였는지","과정명 띄어쓰기가 달라 짝이 안 맞음"],["핵심 지표 계산 (과정 수, 수료율, 만족도 평균)","정리·계산","ai","수료율 80% 미만 과정","중도 취소자를 수강 인원에 포함함"],["전월 보고서와 비교해 증감 정리","판단하기","draft","5%p 이상 변한 지표","전월 수치를 새로 계산해 원래 보고서와 달라짐"],["목차대로 보고서 초안 쓰기","글로 쓰기","ai","요약 3줄에 가장 큰 변화가 들어갔는지","원인을 단정해서 씀"],["수치와 출처 최종 확인","확인하기","me","모든 수치에 출처가 있는지",""]].map(a=>({id:uid(),a:a[0],type:a[1],who:a[2],look:a[3],trap:a[4]}));
+ D.branches=[{id:uid(),a:"데이터에 빈칸이 있으면",b:"빈칸 목록을 먼저 보여 주고 확인받는다"},{id:uid(),a:"전월 보고서가 없으면",b:"증감 칸에 비교 자료 없음이라고 적는다"}];
+ D.terms=[{id:uid(),a:"입과",b:"과정 수강이 확정된 상태"},{id:uid(),a:"이수",b:"출석 80% 이상 + 평가 통과"}];
+ D.rules={must:"수치는 원본 데이터에서만 가져온다\n증감은 %p와 인원을 함께 쓴다\n개인 이름은 쓰지 않고 부서 단위로 쓴다",never:"없는 수치를 추정해서 채우지 않는다\n원인을 단정하지 않는다"};
+ D.dod="목차 5칸이 모두 채워졌다\n모든 수치에 출처(파일·시트)가 적혀 있다\nA4 2장을 넘지 않는다\n특이사항이 없으면 없음이라고 적었다";
+ D.ex={good:"9월 수료율은 92%로 전월(88%)보다 4%p 올랐습니다. 리더십 과정 재수강자 증가가 영향을 준 것으로 보입니다.",bad:"이번 달 교육은 전반적으로 잘 진행되었습니다."};
+ D.slug="monthly-training-report";D.tests="9월 교육 실적 보고서 만들어 줘 (파일 첨부)\n만족도 파일 없이 실적 보고서만 만들어 줘";D.cur=4;save();}
 
-/*═══════ 그림 ═══════*/
-const cv=$("#cv"),g=cv.getContext("2d");
-function dpr(){const d=Math.min(2,devicePixelRatio||1);cv.width=CW*d;cv.height=CH*d;g.setTransform(d,0,0,d,0,0);}
-dpr();
-const OL="rgba(58,40,22,.42)";
-function rp(c,x,y,w,h,r){const k=Math.min(r,Math.abs(w)/2,Math.abs(h)/2);c.beginPath();
-  c.moveTo(x+k,y);c.arcTo(x+w,y,x+w,y+h,k);c.arcTo(x+w,y+h,x,y+h,k);c.arcTo(x,y+h,x,y,k);c.arcTo(x,y,x+w,y,k);c.closePath();}
-function RR(c,x,y,w,h,r,f,o,lw){c.fillStyle=f;rp(c,x,y,w,h,r);c.fill();if(o){c.strokeStyle=o;c.lineWidth=lw||2;c.stroke();}}
-function EL(c,x,y,rx,ry,f,o,lw){c.fillStyle=f;c.beginPath();c.ellipse(x,y,rx,ry,0,0,7);c.fill();
-  if(o){c.strokeStyle=o;c.lineWidth=lw||2;c.stroke();}}
-function sh(hex,d){const n=parseInt(String(hex).slice(1),16);
-  return "rgb("+[clamp((n>>16)+d,0,255)|0,clamp(((n>>8)&255)+d,0,255)|0,clamp((n&255)+d,0,255)|0].join(",")+")";}
-const V=k=>getComputedStyle(document.documentElement).getPropertyValue("--"+k).trim();
-const C={};["sky-a","sky-b","sky-c","mt-a","mt-b","hill-a","hill-b","hill-c","grass","grass-d","path","path-d","paper"].forEach(k=>C[k]=V(k));
+function dl(){const b=new Blob([buildMD()],{type:"text/markdown;charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="SKILL.md";
+ document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);toast("SKILL.md를 내려받았어요. 정말 수고 많으셨어요!");}
+function copyMD(){const t=buildMD();
+ const fb=()=>{const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();let ok=false;try{ok=document.execCommand("copy");}catch(e){}a.remove();toast(ok?"복사했어요!":"복사가 막혔어요. 글상자에서 직접 선택해 복사해 주세요.");};
+ if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(t).then(()=>toast("복사했어요!"),fb);else fb();}
 
-function sky(){
-  const gr=g.createLinearGradient(0,0,0,GY+30);
-  gr.addColorStop(0,C["sky-a"]);gr.addColorStop(.5,C["sky-b"]);gr.addColorStop(1,C["sky-c"]);
-  g.fillStyle=gr;g.fillRect(0,0,CW,GY+30);
-  const sx=1010,sy=108;
-  const rg=g.createRadialGradient(sx,sy,8,sx,sy,195);
-  rg.addColorStop(0,"rgba(255,246,214,.98)");rg.addColorStop(.28,"rgba(255,242,200,.34)");rg.addColorStop(1,"rgba(255,242,200,0)");
-  g.fillStyle=rg;g.beginPath();g.arc(sx,sy,195,0,7);g.fill();
-  EL(g,sx,sy,40,40,"#FFF8DC");
-  g.save();g.globalAlpha=.05;g.fillStyle="#FFF6D0";
-  [[-150,540],[120,420]].forEach(([o,w])=>{g.beginPath();g.moveTo(sx+o,sy);g.lineTo(sx+o-w*.5,CH);g.lineTo(sx+o+w*.5,CH);g.closePath();g.fill();});
-  g.restore();}
-function cloud(x,y,s,a){g.save();g.globalAlpha=a;
-  [[0,6,36,.6],[32,10,26,.6],[-32,10,24,.6],[14,-10,26,.7],[-14,-6,22,.7]].forEach(p=>EL(g,x+p[0]*s,y+p[1]*s,p[2]*s,p[2]*s*p[3],"#fff"));
-  g.globalAlpha=a*.45;EL(g,x-6*s,y+14*s,42*s,10*s,"#E8F1F6");g.restore();}
-function ridge(off,base,amp,wl,col,al){
-  g.save();if(al)g.globalAlpha=al;g.fillStyle=col;g.beginPath();g.moveTo(-10,GY+60);
-  for(let i=-10;i<=CW+10;i+=5){const w=i+off;
-    g.lineTo(i,base-Math.sin(w/wl)*amp-Math.sin(w/(wl*.36))*amp*.36-Math.sin(w/(wl*.13))*amp*.11);}
-  g.lineTo(CW+10,GY+60);g.closePath();g.fill();g.restore();}
-function tree(x,y,s,lt){
-  g.save();g.translate(x,y);g.scale(s,s);
-  EL(g,0,3,24,7,"rgba(44,32,14,.15)");
-  RR(g,-5.5,-44,11,46,5,lt?"#7A5230":"#5E4025");
-  const p=lt?["#4C8C44","#5FA351","#77BE63"]:["#3B7440","#47854A","#529155"];
-  [[0,-92,37],[-27,-68,30],[27,-68,30],[-13,-108,26],[15,-106,24],[0,-78,32]].forEach((q,i)=>EL(g,q[0],q[1],q[2],q[2]*.9,p[i%3]));
-  g.globalAlpha=.3;EL(g,-15,-102,16,12,"#9BDC7C");g.globalAlpha=1;g.restore();}
-function bush(x,y,s,c,hl){g.save();g.translate(x,y);g.scale(s,s);
-  EL(g,0,0,32,21,c);EL(g,-24,5,21,15,c);EL(g,24,5,21,15,c);
-  if(hl){g.globalAlpha=.26;EL(g,-9,-9,14,8,hl);g.globalAlpha=1;}g.restore();}
-function flower(x,y,c){[[0,0],[-3.4,0],[3.4,0],[0,-3.4],[0,3.4]].forEach((p,i)=>EL(g,x+p[0],y+p[1],i?2.4:2.6,i?2.4:2.6,c));
-  EL(g,x,y,1.4,1.4,"#FFE9A8");}
-function lamp(x,gy,lit,t){
-  RR(g,x-3,gy-54,6,54,3,"#6E5436",OL,1.5);
-  RR(g,x-9,gy-72,18,20,6,lit?"#FFE6A8":"#DCD6C6",OL,1.8);
-  RR(g,x-11,gy-76,22,6,3,"#5E4630",OL,1.5);
-  if(lit){g.save();g.globalAlpha=.2+Math.sin(t/22)*.05;
-    const r=g.createRadialGradient(x,gy-62,2,x,gy-62,44);
-    r.addColorStop(0,"#FFE08A");r.addColorStop(1,"rgba(255,224,138,0)");
-    g.fillStyle=r;g.beginPath();g.arc(x,gy-62,44,0,7);g.fill();g.restore();}}
-function smoke(x,y,t,sd){for(let i=0;i<4;i++){const p=((t*.55+i*34+sd)%136)/136;
-  g.save();g.globalAlpha=(1-p)*.32;EL(g,x+Math.sin(p*5+sd)*11,y-p*66,7+p*13,6+p*11,"#fff");g.restore();}}
-function shop(x,gy,s,done,t,idx){
-  const im=px("shop_"+s.id);
-  if(im){const w=230,h=w*im.height/im.width;g.drawImage(im,x-w/2,gy-h,w,h);
-    if(done)smoke(x+70,gy-h+14,t,idx*23);return;}
-  const W=196,H=132,bx=x-W/2,by=gy-H;
-  EL(g,x,gy+5,W*.55,14,"rgba(48,32,12,.17)");
-  const bg=g.createLinearGradient(0,by,0,gy);
-  bg.addColorStop(0,"#fff");bg.addColorStop(.18,s.body);bg.addColorStop(1,sh(s.body,-22));
-  RR(g,bx,by,W,H,11,bg,OL,2.2);
-  g.fillStyle=s.roof;g.beginPath();g.moveTo(bx-22,by+9);g.lineTo(x,by-54);g.lineTo(bx+W+22,by+9);g.closePath();g.fill();
-  g.fillStyle=sh(s.roof,18);g.beginPath();g.moveTo(bx-22,by+9);g.lineTo(x,by-54);g.lineTo(x,by+9);g.closePath();g.fill();
-  g.strokeStyle=OL;g.lineWidth=2.2;g.beginPath();g.moveTo(bx-22,by+9);g.lineTo(x,by-54);g.lineTo(bx+W+22,by+9);g.stroke();
-  g.save();g.globalAlpha=.15;g.strokeStyle="#000";g.lineWidth=1.4;
-  for(let i=1;i<5;i++){const p=i/5;g.beginPath();
-    g.moveTo(bx-22+(x-(bx-22))*p,by+9-63*p);g.lineTo(bx+W+22-((bx+W+22)-x)*p,by+9-63*p);g.stroke();}g.restore();
-  RR(g,bx-27,by+6,W+54,13,6,sh(s.roof,-26),OL,1.8);
-  RR(g,bx+W-56,by-44,21,34,4,sh(s.roof,-34),OL,1.8);
-  if(done)smoke(bx+W-45,by-48,t,idx*23);
-  for(let i=0;i<8;i++){g.fillStyle=i%2?"#FFF8E8":sh(s.col,14);g.fillRect(bx+13+i*21.4,by+H-64,21.4,16);}
-  g.strokeStyle=OL;g.lineWidth=1.6;g.strokeRect(bx+13,by+H-64,171,16);
-  g.fillStyle="rgba(70,48,22,.18)";g.fillRect(bx+13,by+H-50,171,4);
-  RR(g,x-27,gy-60,54,60,8,sh(s.col,-24),OL,2);
-  RR(g,x-21,gy-54,42,54,6,done?"#FFE9B6":"#E5DAC4");
-  if(done){g.save();g.globalAlpha=.3+Math.sin(t/26)*.06;
-    const r=g.createRadialGradient(x,gy-28,4,x,gy-28,58);
-    r.addColorStop(0,"#FFD98A");r.addColorStop(1,"rgba(255,217,138,0)");
-    g.fillStyle=r;g.fillRect(x-58,gy-86,116,86);g.restore();}
-  EL(g,x+14,gy-28,3.2,3.2,sh(s.col,-50));
-  [[bx+27,by+32],[bx+W-63,by+32]].forEach(p=>{
-    RR(g,p[0],p[1],36,32,7,sh(s.col,-12),OL,1.8);
-    RR(g,p[0]+4,p[1]+4,28,24,4,done?"#FFECC0":"#DEE8EE");
-    g.fillStyle="rgba(255,255,255,.5)";g.fillRect(p[0]+4,p[1]+4,28,9);
-    g.strokeStyle="rgba(70,48,22,.3)";g.lineWidth=1.4;
-    g.beginPath();g.moveTo(p[0]+18,p[1]+4);g.lineTo(p[0]+18,p[1]+28);g.stroke();});
-  const sy=by-96,sw=182;
-  g.strokeStyle="#6E5436";g.lineWidth=2.4;
-  g.beginPath();g.moveTo(x-sw/2+18,sy+4);g.lineTo(x-34,by-56);g.moveTo(x+sw/2-18,sy+4);g.lineTo(x+34,by-56);g.stroke();
-  RR(g,x-sw/2,sy,sw,38,11,C["paper"],sh(s.roof,-14),2.4);
-  g.font='18px "Jua","Noto Sans KR",sans-serif';g.textAlign="center";g.textBaseline="middle";
-  g.fillStyle=sh(s.roof,-28);g.fillText(s.role,x,sy+20);
-  RR(g,x-sw/2-16,sy+8,16,16,5,done?"#43B189":"#CBBCA2",OL,1.6);
-  g.font='11px "Jua","Noto Sans KR",sans-serif';g.fillStyle="#fff";g.fillText(done?"✓":String(idx+1),x-sw/2-8,sy+17);}
-function flag(x,y,t,c){g.save();g.translate(x,y);
-  g.strokeStyle="#7A5C3A";g.lineWidth=3.2;g.beginPath();g.moveTo(0,0);g.lineTo(0,-52);g.stroke();
-  EL(g,0,-54,4,4,"#D9A032");
-  g.fillStyle=c;g.beginPath();g.moveTo(0,-50);
-  for(let i=0;i<=32;i+=4)g.lineTo(i,-50+Math.sin(t/12+i/8)*3.4);
-  for(let i=32;i>=0;i-=4)g.lineTo(i,-33+Math.sin(t/12+i/8)*3.4);
-  g.closePath();g.fill();g.strokeStyle=OL;g.lineWidth=1.4;g.stroke();g.restore();}
+/* ───── 이벤트 ───── */
+let warned=-1;
+document.addEventListener("click",e=>{const b=e.target.closest("[data-act],[data-go],[data-hero],[data-jump],.chip[data-p]");if(!b)return;
+ if(b.dataset.jump!=null){const q=b.dataset.jump.split("|");jump(q[0],q[1]);return;}
+ if(b.dataset.go!=null){D.cur=+b.dataset.go;warned=-1;save();render();return;}
+ if(b.dataset.hero){D.hero=b.dataset.hero;save();$$(".hero").forEach(h=>h.classList.toggle("on",h.dataset.hero===D.hero));return;}
+ if(b.dataset.p&&!b.dataset.act){const p=b.dataset.p,v=b.dataset.v,cur=String(getP(p)||"");
+  setP(p,b.dataset.add&&tr(cur)?(cur.includes(v)?cur:cur.replace(/\s+$/,"")+"\n"+v):v);save();render(true);return;}
+ const a=b.dataset.act,id=b.dataset.id;
+ if(a==="intro"){openIntro();}
+ else if(a==="start"){
+  if(!D.hero){toast("함께 걸어갈 캐릭터를 먼저 골라 주세요.");flash($(".heroes"));return;}
+  D.who=tr($("#iname").value);D.started=true;save();$("#intro").hidden=true;render();
+  if(!D.toured)setTimeout(tour,350);else toast(`${esc(D.who||"참가자")}님, 다시 오셨네요. 이어서 해 볼까요?`);}
+ else if(a==="tour"){tour();}
+ else if(a==="tnext"){tI++;showTour();}
+ else if(a==="tskip"){tI=-1;showTour();}
+ else if(a==="demo"){if(D.tasks.length&&!confirm("지금 적은 내용이 예시로 바뀌어요. 괜찮으세요?"))return;loadDemo();$("#intro").hidden=true;render();toast("예시를 불러왔어요. 위 단계를 눌러 가며 둘러보세요.");}
+ else if(a==="reset"){if(!confirm("처음부터 다시 할까요? 적은 내용이 모두 지워져요."))return;D=blank();save();render();openIntro();}
+ else if(a==="tab"){D.tab=b.dataset.v;save();render(true);}
+ else if(a==="add"){const n=tr($("#nt").value);if(!n){$("#nt").focus();toast("업무 이름을 먼저 적어 주세요.");return;}
+  D.tasks.push({id:uid(),t:n,cyc:D.tab,trg:tr($("#ntr").value)});save();render(true);$("#nt").focus();}
+ else if(a==="addchip"){if(D.tasks.some(t=>t.t===b.dataset.v))return;D.tasks.push({id:uid(),t:b.dataset.v,cyc:D.tab,trg:""});save();render(true);}
+ else if(a==="del"){const c=b.dataset.c;D[c]=D[c].filter(x=>x.id!==id);if(c==="tasks"&&D.sel===id)D.sel=null;save();render(true);}
+ else if(a==="pick"){D.sel=id;const t=selT();if(!tr(D.def.outName))D.def.outName=t.t.replace(/\s*(작성|정리|처리)$/,"");save();render(true);toast(`[${esc(t.t)}] 업무로 정했어요. 아래에서 범위를 좁혀 볼게요.`);}
+ else if(a==="role"){D.scope.role=b.dataset.v;save();render(true);}
+ else if(a==="addstep"){D.steps.push({id:uid(),a:"",type:"",who:"",look:"",trap:""});save();render(true);const ins=$$('[data-k$="|a"][data-k^="steps|"]');if(ins.length)ins[ins.length-1].focus();}
+ else if(a==="mv"){const i=D.steps.findIndex(s=>s.id===id),j=i+(+b.dataset.v);if(j<0||j>=D.steps.length)return;const tmp=D.steps[i];D.steps[i]=D.steps[j];D.steps[j]=tmp;save();render(true);}
+ else if(a==="addpair"){D[b.dataset.c].push({id:uid(),a:"",b:""});save();render(true);}
+ else if(a==="prev"){D.cur--;warned=-1;save();render();}
+ else if(a==="next"){const m=ST[D.cur].todo.filter(t=>t.req&&!t.ok());
+  if(m.length&&warned!==D.cur){warned=D.cur;toast(`아직 채우지 않은 필수 칸이 ${m.length}개 있어요. 그래도 넘어가려면 한 번 더 눌러 주세요.`);jump(D.cur,m[0].f);return;}
+  warned=-1;D.cur++;save();render();toast(`${ST[D.cur].who}에게 왔어요. 안내부터 읽어 볼까요?`);}
+ else if(a==="dl"){dl();}
+ else if(a==="copy"){copyMD();}
+});
+function setK(el){const q=el.dataset.k.split("|"),o=D[q[0]].find(x=>x.id===q[1]);if(o)o[q[2]]=el.value;}
+document.addEventListener("input",e=>{const el=e.target;if(el.tagName==="SELECT")return;
+ if(el.dataset.p)setP(el.dataset.p,el.value);else if(el.dataset.k)setK(el);else return;save();refresh();});
+document.addEventListener("change",e=>{const el=e.target;if(el.tagName!=="SELECT")return;
+ if(el.dataset.p)setP(el.dataset.p,el.value);else if(el.dataset.k)setK(el);else return;save();render(true);});
+document.addEventListener("keydown",e=>{const id=e.target.id;
+ if(e.key==="Enter"&&(id==="nt"||id==="ntr")){e.preventDefault();$('[data-act="add"]').click();}
+ if(e.key==="Enter"&&id==="iname"){e.preventDefault();$("#startBtn").click();}
+ if(e.key==="Escape"&&tI>=0){tI=-1;showTour();}});
+window.addEventListener("resize",()=>{if(tI>=0)showTour();});
 
-/* 캐릭터 — sex: 'm' 짧은 머리·바지, 'f' 긴 머리·치마 */
-function person(c,x,gy,f,dir,walk,sc,bob,sex){
-  const key=sex==="f"?"hero_f":"hero_m";
-  if(c===g&&f.useArt&&px(key)){const im=px(key),h=150*sc,w=h*im.width/im.height;
-    c.save();c.translate(x,gy+bob);if(dir<0)c.scale(-1,1);c.drawImage(im,-w/2,-h,w,h);c.restore();return;}
-  const fem=sex==="f";
-  c.save();c.translate(x,gy);c.scale(sc,sc);
-  EL(c,0,3,21,6.5,"rgba(48,32,12,.22)");
-  c.translate(0,bob);if(dir<0)c.scale(-1,1);
-  const sw=walk?Math.sin(walk*.23)*.6:0;
-  [[-6.5,sw],[6.5,-sw]].forEach(([ox,a])=>{c.save();c.translate(ox,fem?-33:-37);c.rotate(a);
-    RR(c,-4.6,0,9.2,fem?27:31,5,fem?"#E3C6A8":"#4B4138",OL,1.6);
-    RR(c,-6.5,fem?23:27,14,9,4.5,"#332C25",OL,1.6);c.restore();});
-  if(fem){c.fillStyle=sh(f.cloth,-14);c.beginPath();
-    c.moveTo(-15,-48);c.lineTo(15,-48);c.lineTo(23,-26);c.lineTo(-23,-26);c.closePath();c.fill();
-    c.strokeStyle=OL;c.lineWidth=2;c.stroke();}
-  const bd=c.createLinearGradient(0,-72,0,-30);
-  bd.addColorStop(0,sh(f.cloth,26));bd.addColorStop(1,sh(f.cloth,-22));
-  RR(c,-16.5,-72,33,fem?32:42,fem?12:14,bd,OL,2);
-  if(!fem)RR(c,-16.5,-45,33,15,7,sh(f.cloth,-30));
-  c.strokeStyle="rgba(255,255,255,.22)";c.lineWidth=1.6;
-  c.beginPath();c.moveTo(-7,-70);c.lineTo(0,-58);c.lineTo(7,-70);c.stroke();
-  [[-17.5,-sw*.78],[17.5,sw*.78]].forEach(([ox,a])=>{c.save();c.translate(ox,-67);c.rotate(a);
-    RR(c,-4.6,0,9.2,27,4.6,sh(f.cloth,10),OL,1.6);EL(c,0,28,5.2,5.2,f.skin,OL,1.4);c.restore();});
-  RR(c,-5,-80,10,11,4,sh(f.skin,-26));
-  if(fem){c.fillStyle=f.hair;
-    RR(c,-20,-100,10,34,7,f.hair);RR(c,10,-100,10,34,7,f.hair);
-    EL(c,-19,-66,7,6,f.hair);EL(c,19,-66,7,6,f.hair);}
-  EL(c,0,-94,17.5,18.5,f.skin,OL,2);
-  c.fillStyle=f.hair;c.beginPath();c.ellipse(0,-100,18.5,16.5,0,Math.PI*1.03,Math.PI*2.03);c.fill();
-  if(fem){EL(c,-13,-108,9,7,f.hair);EL(c,9,-110,10,7,f.hair);
-    EL(c,17,-104,5,5,"#E8788C");}
-  else{RR(c,-18.5,-102,9,16,5,f.hair);RR(c,11,-102,8,13,5,f.hair);}
-  EL(c,6,-93,2.2,2.8,"#3A2E20");EL(c,-2.2,-93,2.2,2.8,"#3A2E20");
-  EL(c,6.7,-94,.8,.9,"rgba(255,255,255,.85)");
-  EL(c,10.5,-87,4.6,3,"rgba(230,138,118,.4)");EL(c,-6.5,-87,4.6,3,"rgba(230,138,118,.26)");
-  c.strokeStyle="rgba(80,55,35,.7)";c.lineWidth=1.4;c.beginPath();c.arc(2,-89,3.4,.2,Math.PI-.5);c.stroke();
-  c.restore();}
-function bub(x,y,txt,col,t){const w=36,h=36,fy=y+Math.sin(t/18)*5;
-  g.save();g.shadowColor="rgba(40,26,10,.2)";g.shadowBlur=10;g.shadowOffsetY=3;
-  g.fillStyle="rgba(255,255,255,.97)";rp(g,x-w/2,fy-h,w,h,13);g.fill();
-  g.beginPath();g.moveTo(x-7,fy-1);g.lineTo(x,fy+10);g.lineTo(x+7,fy-1);g.closePath();g.fill();g.restore();
-  g.font='20px "Jua","Noto Sans KR",sans-serif';g.textAlign="center";g.textBaseline="middle";
-  g.fillStyle=col;g.fillText(txt,x,fy-h/2+1);}
-function plate(x,y,txt){
-  g.font='13px "Jua","Noto Sans KR",sans-serif';g.textAlign="center";g.textBaseline="middle";
-  const w=g.measureText(txt).width+24;
-  g.fillStyle="rgba(52,36,16,.6)";rp(g,x-w/2,y-12,w,24,12);g.fill();
-  g.fillStyle="#FFF7E6";g.fillText(txt,x,y+1);}
-function bird(x,y,s,t){g.save();g.strokeStyle="rgba(70,80,95,.5)";g.lineWidth=1.8*s;
-  const f=Math.sin(t/9)*4*s;g.beginPath();g.moveTo(x-7*s,y+f);g.quadraticCurveTo(x-3*s,y-3*s,x,y);
-  g.quadraticCurveTo(x+3*s,y-3*s,x+7*s,y+f);g.stroke();g.restore();}
-
-const motes=Array.from({length:30},()=>({x:Math.random()*WORLD,y:Math.random()*430+50,s:Math.random()*.7+.4,p:Math.random()*7,v:Math.random()*.25+.1}));
-const lvs=Array.from({length:14},()=>({x:Math.random()*WORLD,y:Math.random()*330+70,s:Math.random()*.6+.6,p:Math.random()*7,v:Math.random()*.4+.25}));
-const P={x:250,vx:0,dir:1,h:0,vh:0,ground:true,walk:0,near:null};
-let cam=0,T=0;const K={};
-function frame(){
-  T++;
-  const lock=cur||!$("#intro").hidden;
-  if(!lock){
-    const sp=(K.ArrowLeft||K.a?-1:0)+(K.ArrowRight||K.d?1:0);
-    P.vx=sp*4.5;if(sp)P.dir=sp;
-    P.x=clamp(P.x+P.vx,60,WORLD-60);P.walk=sp&&P.ground?P.walk+1:0;
-    if((K[" "]||K.ArrowUp||K.w)&&P.ground){P.vh=12.4;P.ground=false;}
-    if(!P.ground){P.h+=P.vh;P.vh-=.62;if(P.h<=0){P.h=0;P.vh=0;P.ground=true;}}
-  }else{P.vx=0;P.walk=0;}
-  cam+=(clamp(P.x-CW/2,0,WORLD-CW)-cam)*.085;
-
-  sky();
-  for(let i=0;i<9;i++){const x=((i*560-cam*.07)%(CW+460)+CW+460)%(CW+460)-230;
-    cloud(x,52+(i%4)*44,.5+(i%3)*.26,.42+(i%3)*.16);}
-  for(let i=0;i<3;i++){const o=-cam*.05+T*.06+i*90;
-    bird(((o)%(CW+120)+CW+120)%(CW+120)-60,118+i*16,.9,T+i*13);}
-  ridge(cam*.12,296,58,460,C["mt-a"],.85);
-  ridge(cam*.20,336,44,320,C["mt-b"],.9);
-  g.save();g.globalAlpha=.3;g.fillStyle="#DCEBF2";g.fillRect(0,250,CW,140);g.restore();
-  ridge(cam*.34,388,32,240,C["hill-a"]);
-  for(let i=0;i<30;i++){const x=(i*168-cam*.34)%(WORLD*.34);if(x>-60&&x<CW+60)tree(x,400+((i*41)%14),.36,0);}
-  ridge(cam*.54,436,24,200,C["hill-b"]);
-  for(let i=0;i<24;i++){const x=(i*214-cam*.54)%(WORLD*.54);if(x>-70&&x<CW+70)tree(x,450+((i*57)%10),.56,0);}
-
-  const gg=g.createLinearGradient(0,GY-16,0,CH);
-  gg.addColorStop(0,C["hill-c"]);gg.addColorStop(.12,C["grass"]);gg.addColorStop(1,C["grass-d"]);
-  g.fillStyle=gg;g.fillRect(0,GY-16,CW,CH-GY+16);
-  g.fillStyle=C["hill-c"];
-  for(let i=-1;i<CW/15+2;i++){const x=i*15-(cam%15);g.beginPath();g.ellipse(x,GY-16,10,8,0,Math.PI,0);g.fill();}
-  g.fillStyle=C["path"];g.fillRect(0,GY+62,CW,58);
-  g.fillStyle="rgba(120,90,45,.14)";g.fillRect(0,GY+62,CW,6);
-  for(let i=0;i<CW/46+2;i++){const x=i*46-(cam%46);EL(g,x+((i%2)*18),GY+82+((i*13)%14),13,5,C["path-d"]);}
-  for(let i=0;i<64;i++){const x=(i*121-cam*1.02)%(WORLD*1.02);
-    if(x>-20&&x<CW+20)flower(x,GY+34+((i*47)%22),["#F3E27A","#F4A9C0","#FFFFFF","#EFC1F2"][i%4]);}
-
-  P.near=null;
-  ST.forEach((s,i)=>{
-    const sx=s.x-cam,done=D.done.includes(s.id);
-    if(Math.abs(P.x-s.x)<82&&P.ground&&!lock)P.near=s;
-    if(sx<-290||sx>CW+290)return;
-    bush(sx-150,GY+10,.72,"#4C8C44","#9BDC7C");
-    tree(sx+168,GY+8,.72,1);
-    lamp(sx-118,GY+6,done,T+i*17);
-    shop(sx,GY+6,s,done,T,i);
-    flag(sx+108,GY+2,T+i*27,s.col);
-    person(g,sx+62,GY+8,s.face,-1,0,1,Math.sin(T/27+i)*1.7,s.face.sex);
-    plate(sx+62,GY+28,s.name);
-    bub(sx+62,GY-104,done?"✓":"!",done?"#2F9B72":"#D9A032",T+i*40);});
-
-  person(g,P.x-cam,GY+8-P.h,{skin:"#F3D0AC",hair:"#2C2118",cloth:D.ch.col,useArt:1},P.dir,P.walk,1.08,
-    P.walk?Math.sin(P.walk*.46)*1.7:Math.sin(T/32)*1.4,D.ch.sex);
-  if(D.who)plate(P.x-cam,GY+32-P.h,D.who);
-
-  lvs.forEach(l=>{const x=l.x-cam*.92,y=l.y+Math.sin(T/38+l.p)*26;
-    if(x>-20&&x<CW+20){g.save();g.globalAlpha=.5;g.translate(x,y);g.rotate(T/44+l.p);
-      EL(g,0,0,6*l.s,3.4*l.s,"#93C666");g.restore();}
-    l.x-=l.v;if(l.x<0)l.x=WORLD;});
-  for(let i=0;i<16;i++){const x=(i*268-cam*1.2)%(WORLD*1.2);if(x>-90&&x<CW+90)bush(x,CH-10,1.2,"#3C7439");}
-  motes.forEach(m=>{const x=m.x-cam*1.05,y=m.y+Math.sin(T/30+m.p)*16;
-    if(x>-10&&x<CW+10){g.save();g.globalAlpha=.28+Math.sin(T/24+m.p)*.16;
-      EL(g,x,y,2.1*m.s,2.1*m.s,"#FFF6D2");g.restore();}
-    m.x-=m.v;if(m.x<0)m.x=WORLD;});
-  const v=g.createRadialGradient(CW/2,CH*.46,CH*.40,CW/2,CH*.5,CH*1.02);
-  v.addColorStop(0,"rgba(0,0,0,0)");v.addColorStop(1,"rgba(40,24,8,.34)");
-  g.fillStyle=v;g.fillRect(0,0,CW,CH);
-  g.save();g.globalCompositeOperation="overlay";g.globalAlpha=.055;g.fillStyle="#FFCE7A";g.fillRect(0,0,CW,CH);g.restore();
-
-  const h=$("#hint");
-  if(lock)h.style.opacity=0;
-  else{h.style.opacity=1;
-    h.innerHTML=P.near?`<b>${esc(P.near.role)}</b> — Enter 로 들어가기`
-      :"← → 걷기 · Space 점프 · Enter 로 들어가기 · 위 진행바를 눌러 바로 이동";}
-  const m=$("#rail .nd.cur");
-  if((P.near&&!m)||(!P.near&&m)||(P.near&&m&&+m.dataset.go!==ST.indexOf(P.near)))drawRail();
-  requestAnimationFrame(frame);}
-
-/*═══════ 시작 화면 ═══════*/
-const COLS=["#5289CE","#2F9B72","#D9705C","#9270C2"];
-function showIntro(){
-  const b=$("#intro");
-  b.innerHTML=`<div class="ibox">
-   <h1>SKILL 도출 워크샵</h1>
-   <p class="sub">내가 매번 하는 일 하나를, AI 가 대신할 수 있는 <b>SKILL 문서</b>로 만들어 봅니다.<br>다섯 군데만 들르면 끝나요.</p>
-   <p class="q">어떤 캐릭터로 다니실래요?</p>
-   <div class="picks">
-    <div class="pk ${D.ch.sex==="f"?"on":""}" data-sex="f"><canvas width="170" height="132"></canvas><b>여자 캐릭터</b></div>
-    <div class="pk ${D.ch.sex==="m"?"on":""}" data-sex="m"><canvas width="170" height="132"></canvas><b>남자 캐릭터</b></div></div>
-   <p class="q">옷 색은요?</p>
-   <div class="cols">${COLS.map(c=>`<button data-col="${c}" class="${D.ch.col===c?"on":""}" style="background:${c}"></button>`).join("")}</div>
-   <p class="q">이름을 적어 주세요</p>
-   <input id="iname" placeholder="예: 김지영" maxlength="12" value="${esc(D.who)}">
-   <div><button class="btn big" id="istart">들어가기</button></div>
-   <p class="note">적으신 내용은 이 브라우저에만 저장돼요. 다른 사람이 볼 수 없고, 나중에 파일로 백업하실 수 있어요.</p></div>`;
-  b.hidden=false;
-  b.querySelectorAll(".pk canvas").forEach((cv2,i)=>{
-    const c=cv2.getContext("2d");c.clearRect(0,0,170,132);
-    person(c,85,126,{skin:"#F3D0AC",hair:"#2C2118",cloth:D.ch.col},1,0,1.02,0,i?"m":"f");});
-  b.querySelectorAll("[data-sex]").forEach(p=>p.onclick=()=>{D.ch.sex=p.dataset.sex;save();showIntro();});
-  b.querySelectorAll("[data-col]").forEach(p=>p.onclick=()=>{D.ch.col=p.dataset.col;save();showIntro();});
-  const nm=b.querySelector("#iname");
-  const go=()=>{const v=nm.value.trim();
-    if(!v){nm.focus();return toast("이름을 적어 주세요");}
-    D.who=v;save();b.hidden=true;drawMe();toast(v+"님, 반가워요! 첫 번째 집으로 가 보세요");};
-  b.querySelector("#istart").onclick=go;
-  nm.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.isComposing)go();});
-  setTimeout(()=>nm.focus(),80);}
-
-/*═══════ 입력 ═══════*/
-addEventListener("keydown",e=>{
-  if(!$("#intro").hidden)return;
-  if(e.key==="Escape"&&cur){shut();return;}
-  if(cur)return;
-  if(e.key==="Enter"){if(P.near){e.preventDefault();talk(P.near);}return;}
-  K[e.key]=true;K[e.key.toLowerCase()]=true;
-  if([" ","ArrowLeft","ArrowRight","ArrowUp","ArrowDown"].includes(e.key))e.preventDefault();});
-addEventListener("keyup",e=>{K[e.key]=false;K[e.key.toLowerCase()]=false;});
-$("#pad").querySelectorAll("button").forEach(b=>{const k=b.dataset.k;
-  const on=e=>{e.preventDefault();if(!$("#intro").hidden)return;
-    if(k==="Enter"){if(P.near&&!cur)talk(P.near);}else K[k]=true;};
-  const off=e=>{e.preventDefault();K[k]=false;};
-  b.addEventListener("pointerdown",on);b.addEventListener("pointerup",off);
-  b.addEventListener("pointercancel",off);b.addEventListener("pointerleave",off);});
-$("#me").onclick=()=>{if(!cur)showIntro();};
-function fit(){$("#frame").style.transform="scale("+Math.min(innerWidth/1300,innerHeight/740)+")";}
-addEventListener("resize",()=>{fit();dpr();});
-fit();drawRail();drawMe();frame();
-if(!D.who)showIntro();
+/* ───── 시작 ───── */
+render();
+openIntro();
 </script>
 </body>
 </html>

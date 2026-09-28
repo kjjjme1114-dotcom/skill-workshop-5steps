@@ -49,6 +49,8 @@ button{font-family:inherit;cursor:pointer}
 .me .av{width:28px;height:28px;border-radius:50%}
 .ghost{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-size:12.5px;color:var(--ink2)}
 .ghost:hover{border-color:var(--ink3)}
+.library-nav{border-color:#C9963A;background:#FFF4D8;color:#62440D;font-weight:700;box-shadow:0 1px 3px rgba(98,68,13,.14)}
+.library-nav:hover{border-color:#A8751F;background:#FCE9B8}
 .library-dialog{width:min(760px,calc(100vw - 28px));max-height:min(80vh,900px);padding:0;border:1px solid var(--line);border-radius:22px;background:#FBF9F5;color:var(--ink);box-shadow:var(--sh2)}
 .library-dialog::backdrop{background:rgba(22,24,34,.55);backdrop-filter:blur(4px)}
 .library-head{position:sticky;top:0;z-index:1;display:flex;align-items:center;gap:12px;padding:18px 22px;background:#FBF9F5;border-bottom:1px solid var(--line)}
@@ -252,7 +254,7 @@ pre#md{background:#12151F;border-radius:14px;padding:18px;font:12.5px/1.75 ui-mo
 
 @media(max-width:1200px){.nd .nt{display:none}.brand small{display:none}.nd{padding:5px}}
 @media(max-width:960px){
-  .top{flex-wrap:wrap;padding:10px 14px;gap:10px}#rail{order:3;flex-basis:100%}
+  .top{flex-wrap:wrap;padding:10px 14px;gap:10px}.tools{flex:1 1 100%;flex-wrap:wrap}#rail{order:3;flex-basis:100%}
   .wrap{grid-template-columns:1fr;padding:14px;gap:16px}
   #guide{position:static;display:grid;grid-template-columns:120px 1fr;gap:12px}
   .npc .portrait{height:150px}.npc-tag{padding:18px 10px 8px}.npc-tag b{font-size:15px}.npc-tag small{display:none}
@@ -279,7 +281,7 @@ window.addEventListener("error",function(e){var b=document.getElementById("errbo
   <div class="tools">
     <span id="saved">자동 저장됨</span><span id="pct"></span>
     <button class="me" id="me" data-act="intro" title="이름·캐릭터 바꾸기"></button>
-    <button class="ghost" data-act="library">라이브러리</button>
+    <button class="ghost library-nav" data-act="library" aria-label="완성 스킬 라이브러리 열기">라이브러리</button>
     <button class="ghost" data-act="tour">둘러보기</button>
     <button class="ghost" data-act="demo">예시</button>
     <button class="ghost" data-act="reset">초기화</button>
@@ -294,7 +296,7 @@ window.addEventListener("error",function(e){var b=document.getElementById("errbo
  <div class="library-body"><div class="library-status" id="libraryStatus" role="status" aria-live="polite">라이브러리를 불러오는 중이에요.</div><div class="library-list" id="libraryList"></div></div>
 </dialog>
 <dialog class="library-dialog" id="publishDialog" aria-labelledby="publishTitle">
- <div class="library-head"><div><h2 id="publishTitle">라이브러리에 공유하기</h2><p>이름은 로그인으로 확인되지 않으며 누구나 입력할 수 있어요.</p></div><button class="icon" data-act="closePublish" aria-label="공유 창 닫기">✕</button></div>
+ <div class="library-head"><div><h2 id="publishTitle">라이브러리에 공유하기</h2><p id="publishHint">이름은 로그인으로 확인되지 않으며 누구나 입력할 수 있어요.</p></div><button class="icon" data-act="closePublish" aria-label="공유 창 닫기">✕</button></div>
  <form class="library-body publish-form" id="publishForm">
   <label>작성자 이름 (확인되지 않음)<input class="in" id="publishAuthor" maxlength="50" required autocomplete="name"></label>
   <label>스킬 이름<input class="in" id="publishTitleInput" maxlength="120" required></label>
@@ -302,7 +304,7 @@ window.addEventListener("error",function(e){var b=document.getElementById("errbo
   <label class="hp-field" aria-hidden="true">웹사이트<input id="publishWebsite" tabindex="-1" autocomplete="off"></label>
   <p class="help">작성자명과 스킬 내용은 공개되어 누구나 볼 수 있습니다. 개인 정보나 비밀 정보가 없는지 확인해 주세요.</p>
   <div class="publish-error" id="publishError" role="alert"></div>
-  <div class="publish-actions"><button type="button" class="btn ghost" data-act="closePublish">취소</button><button type="submit" class="btn gold" id="publishSubmit">공유하기</button></div>
+  <div class="publish-actions"><button type="button" class="btn ghost" id="downloadLocal" hidden>라이브러리 저장 없이 다운로드</button><button type="button" class="btn ghost" data-act="closePublish">취소</button><button type="submit" class="btn gold" id="publishSubmit">공유하기</button></div>
  </form>
 </dialog>
 
@@ -590,17 +592,27 @@ function libraryConfigured(){return /^https:\/\/[^/]+\/?$/.test(LIBRARY_CONFIG.u
 function librarySetupMessage(){return "라이브러리 저장소 설정이 아직 연결되지 않았어요. Supabase 프로젝트 URL과 공개용 anon key, Edge Function을 설정해야 사용할 수 있어요.";}
 function libraryStatus(message,isError){const el=$("#libraryStatus");el.textContent=message;el.classList.toggle("error",!!isError);}
 function libraryDescription(){return (tr(D.scope.why)||lines(D.scope.inc).join(" · ")||"반복 업무를 돕는 AI 스킬입니다.").slice(0,500);}
-function openPublish(){
- const incomplete=ST.findIndex(s=>s.todo.some(t=>t.req&&!t.ok()));
- if(incomplete>=0){const item=ST[incomplete].todo.find(t=>t.req&&!t.ok());jump(incomplete,item.f);toast("필수 항목을 모두 채운 뒤 라이브러리에 공유할 수 있어요.");return;}
- const task=selT(),title=tr(D.def.outName)||(task?tr(task.t):tr(D.slug));
+let publishMode="share";
+function openPublish(mode="share"){
+ publishMode=mode;
+ if(mode==="share"){
+  const incomplete=ST.findIndex(s=>s.todo.some(t=>t.req&&!t.ok()));
+  if(incomplete>=0){const item=ST[incomplete].todo.find(t=>t.req&&!t.ok());jump(incomplete,item.f);toast("필수 항목을 모두 채운 뒤 라이브러리에 공유할 수 있어요.");return;}
+ }
+ const task=selT(),title=tr(D.def.outName)||(task?tr(task.t):tr(D.slug))||"나만의 AI 스킬";
  $("#publishAuthor").value=tr(D.who);
  $("#publishTitleInput").value=title.slice(0,120);
  $("#publishDescription").value=libraryDescription();
  $("#publishWebsite").value="";
- $("#publishError").textContent=libraryConfigured()?"":"공유 설정을 마무리해야 등록할 수 있어요. "+librarySetupMessage();
- $("#publishSubmit").disabled=!libraryConfigured();
+ $("#publishTitle").textContent=mode==="download"?"라이브러리 저장 후 다운로드":"라이브러리에 공유하기";
+ $("#publishHint").textContent=mode==="download"?"저장에 성공하면 SKILL.md를 바로 내려받아요. 작성자 이름이 없으면 입력해 주세요.":"이름은 로그인으로 확인되지 않으며 누구나 입력할 수 있어요.";
+ const canPublish=libraryConfigured();
+ $("#publishError").textContent=canPublish?"":librarySetupMessage();
+ $("#publishSubmit").textContent=mode==="download"?"저장 후 다운로드":"공유하기";
+ $("#publishSubmit").disabled=!canPublish;
+ $("#downloadLocal").hidden=mode!=="download"||canPublish;
  $("#publishDialog").showModal();
+ if(mode==="download"&&!tr(D.who))$("#publishAuthor").focus();
 }
 async function loadLibrary(){
  const list=$("#libraryList");list.replaceChildren();
@@ -647,28 +659,30 @@ function apiMessage(body,status){
  if(status===429)return "등록 횟수 제한에 도달했어요. 한 시간 뒤에 다시 시도해 주세요.";
  if(status===400)return body&&body.error==="skill_too_large"?"SKILL.md가 너무 커서 등록할 수 없어요.":"입력 내용을 확인해 주세요. 스킬 이름과 설명을 입력해야 해요.";
  if(status===413)return "제출 내용이 너무 커서 등록할 수 없어요.";
- if(status===503)return "공유 기능이 아직 설정되지 않았어요.";
+ if(status===503)return "공유 기능이 일시적으로 응답하지 않아요. 잠시 후 다시 시도해 주세요.";
  return "등록하지 못했어요. 연결 상태를 확인한 뒤 다시 시도해 주세요.";
 }
 async function publishSkill(){
  const form=$("#publishForm"),submit=$("#publishSubmit"),error=$("#publishError");
- if(!libraryConfigured()){error.textContent=librarySetupMessage();return;}
+ const localDownload=$("#downloadLocal");
+ if(!libraryConfigured()){error.textContent=librarySetupMessage();if(publishMode==="download")localDownload.hidden=false;return;}
  if(!form.reportValidity())return;
  const payload={author_name:tr($("#publishAuthor").value),title:tr($("#publishTitleInput").value),description:tr($("#publishDescription").value),slug:slug().slice(0,80),skill_md:buildMD(),website:$("#publishWebsite").value};
- if(!payload.author_name||!payload.title||!payload.description){error.textContent="작성자 이름, 스킬 이름, 설명을 모두 입력해 주세요.";return;}
- if(new TextEncoder().encode(payload.skill_md).length>30000){error.textContent="SKILL.md가 30KB를 넘어요. 내용을 줄인 뒤 다시 시도해 주세요.";return;}
+ if(!payload.author_name||!payload.title||!payload.description){error.textContent="작성자 이름, 스킬 이름, 설명을 모두 입력해 주세요.";if(publishMode==="download")localDownload.hidden=false;return;}
+ if(new TextEncoder().encode(payload.skill_md).length>30000){error.textContent="SKILL.md가 30KB를 넘어요. 내용을 줄인 뒤 다시 시도해 주세요.";if(publishMode==="download")localDownload.hidden=false;return;}
  payload.title=payload.title.slice(0,120);payload.description=payload.description.slice(0,500);
- submit.disabled=true;submit.textContent="공유 중…";error.textContent="";
+ submit.disabled=true;submit.textContent=publishMode==="download"?"저장 중…":"공유 중…";error.textContent="";localDownload.hidden=true;
  try{
   const res=await fetch(new URL("/functions/v1/publish-skill",LIBRARY_CONFIG.url),{method:"POST",headers:{apikey:LIBRARY_CONFIG.anonKey,"Content-Type":"application/json"},body:JSON.stringify(payload)});
   let body=null;try{body=await res.json();}catch(e){}
-  if(!res.ok){error.textContent=apiMessage(body,res.status);return;}
+  if(!res.ok){error.textContent=apiMessage(body,res.status);if(publishMode==="download")localDownload.hidden=false;return;}
   $("#publishDialog").close();
+  if(publishMode==="download"){dl("saved");return;}
   $("#libraryDialog").showModal();
   await loadLibrary();
   toast(`${esc(payload.title)} 스킬을 라이브러리에 공유했어요.`);
- }catch(e){error.textContent="등록 중 연결 오류가 발생했어요. 저장 여부가 불확실하면 라이브러리를 새로고침해 확인해 주세요.";}
- finally{submit.disabled=false;submit.textContent="공유하기";}
+ }catch(e){error.textContent="저장 여부를 확인하지 못했어요. 네트워크 연결을 확인해 다시 시도하거나 아래 버튼으로 라이브러리 저장 없이 파일만 내려받으세요.";if(publishMode==="download")localDownload.hidden=false;}
+ finally{submit.disabled=!libraryConfigured();submit.textContent=publishMode==="download"?"저장 후 다운로드":"공유하기";}
 }
 
 /* ───── 화면 그리기 ───── */
@@ -732,8 +746,9 @@ function loadDemo(){const who=D.who,hero=D.hero;D=blank();D.who=who||"JUN";D.her
  D.ex={good:"9월 수료율은 92%로 전월(88%)보다 4%p 올랐습니다. 리더십 과정 재수강자 증가가 영향을 준 것으로 보입니다.",bad:"이번 달 교육은 전반적으로 잘 진행되었습니다."};
  D.slug="monthly-training-report";D.tests="9월 교육 실적 보고서 만들어 줘 (파일 첨부)\n만족도 파일 없이 실적 보고서만 만들어 줘";D.cur=4;save();}
 
-function dl(){const b=new Blob([buildMD()],{type:"text/markdown;charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="SKILL.md";
- document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);toast("SKILL.md를 내려받았어요. 정말 수고 많으셨어요!");}
+function dl(mode="local"){const b=new Blob([buildMD()],{type:"text/markdown;charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="SKILL.md";
+ document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);
+ toast(mode==="saved"?"라이브러리에 저장하고 SKILL.md를 내려받았어요.":"SKILL.md를 라이브러리에 저장하지 않고 내려받았어요.");}
 function copyMD(){const t=buildMD();
  const fb=()=>{const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();let ok=false;try{ok=document.execCommand("copy");}catch(e){}a.remove();toast(ok?"복사했어요!":"복사가 막혔어요. 글상자에서 직접 선택해 복사해 주세요.");};
  if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(t).then(()=>toast("복사했어요!"),fb);else fb();}
@@ -777,10 +792,11 @@ document.addEventListener("click",e=>{const b=e.target.closest("[data-act],[data
  else if(a==="next"){const m=ST[D.cur].todo.filter(t=>t.req&&!t.ok());
   if(m.length&&warned!==D.cur){warned=D.cur;toast(`아직 채우지 않은 필수 칸이 ${m.length}개 있어요. 그래도 넘어가려면 한 번 더 눌러 주세요.`);jump(D.cur,m[0].f);return;}
   warned=-1;D.cur++;save();render();toast(`${ST[D.cur].who}에게 왔어요. 안내부터 읽어 볼까요?`);}
- else if(a==="dl"){dl();}
+ else if(a==="dl"){openPublish("download");if(tr(D.who)&&libraryConfigured())publishSkill();}
  else if(a==="copy"){copyMD();}
 });
 $("#publishForm").addEventListener("submit",e=>{e.preventDefault();publishSkill();});
+$("#downloadLocal").addEventListener("click",()=>{$("#publishDialog").close();dl();});
 ["libraryDialog","publishDialog"].forEach(id=>$("#"+id).addEventListener("click",e=>{if(e.target===e.currentTarget)e.currentTarget.close();}));
 function setK(el){const q=el.dataset.k.split("|"),o=D[q[0]].find(x=>x.id===q[1]);if(o)o[q[2]]=el.value;}
 document.addEventListener("input",e=>{const el=e.target;if(el.tagName==="SELECT")return;

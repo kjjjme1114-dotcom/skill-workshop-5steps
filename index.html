@@ -49,6 +49,29 @@ button{font-family:inherit;cursor:pointer}
 .me .av{width:28px;height:28px;border-radius:50%}
 .ghost{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-size:12.5px;color:var(--ink2)}
 .ghost:hover{border-color:var(--ink3)}
+.library-dialog{width:min(760px,calc(100vw - 28px));max-height:min(80vh,900px);padding:0;border:1px solid var(--line);border-radius:22px;background:#FBF9F5;color:var(--ink);box-shadow:var(--sh2)}
+.library-dialog::backdrop{background:rgba(22,24,34,.55);backdrop-filter:blur(4px)}
+.library-head{position:sticky;top:0;z-index:1;display:flex;align-items:center;gap:12px;padding:18px 22px;background:#FBF9F5;border-bottom:1px solid var(--line)}
+.library-head h2{margin:0;font:700 21px var(--fh)}
+.library-head p{margin:2px 0 0;color:var(--ink3);font-size:12.5px}
+.library-head .icon{margin-left:auto}
+.library-body{padding:18px 22px 24px}
+.library-status{padding:14px 16px;border-radius:12px;background:var(--ac-soft);color:var(--ink2);font-size:13px}
+.library-status.error{background:var(--warn-soft);color:#8A4E1E}
+.library-list{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.library-card{padding:16px;border:1px solid var(--line);border-radius:15px;background:#fff}
+.library-card h3{margin:0;font-size:16px}
+.library-card .byline{margin:3px 0 10px;color:var(--ink3);font-size:12px}
+.library-card p{margin:0;color:var(--ink2);font-size:13.5px;white-space:pre-wrap}
+.library-card pre{max-height:320px;overflow:auto;margin:10px 0 0;padding:14px;border-radius:10px;background:#1D2130;color:#E9E6DF;white-space:pre-wrap;word-break:break-word;font:12px/1.7 ui-monospace,Menlo,Consolas,monospace}
+.publish-form{display:grid;gap:12px}
+.publish-form label{display:grid;gap:4px;font-size:13px;font-weight:650}
+.publish-form .help{margin:0;font-weight:400}
+.publish-form textarea.in{min-height:86px}
+.hp-field{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.publish-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:6px}
+.publish-error{min-height:0;color:#8A4E1E;font-size:13px}
+.publish-error:not(:empty){padding:10px 12px;border-radius:10px;background:var(--warn-soft)}
 
 .wrap{max-width:1320px;margin:0 auto;padding:28px;display:grid;grid-template-columns:340px 1fr;gap:28px;align-items:start}
 #guide{position:sticky;top:86px}
@@ -256,6 +279,7 @@ window.addEventListener("error",function(e){var b=document.getElementById("errbo
   <div class="tools">
     <span id="saved">자동 저장됨</span><span id="pct"></span>
     <button class="me" id="me" data-act="intro" title="이름·캐릭터 바꾸기"></button>
+    <button class="ghost" data-act="library">라이브러리</button>
     <button class="ghost" data-act="tour">둘러보기</button>
     <button class="ghost" data-act="demo">예시</button>
     <button class="ghost" data-act="reset">초기화</button>
@@ -265,6 +289,22 @@ window.addEventListener("error",function(e){var b=document.getElementById("errbo
   <aside id="guide"></aside>
   <section id="work"></section>
 </main>
+<dialog class="library-dialog" id="libraryDialog" aria-labelledby="libraryTitle">
+ <div class="library-head"><div><h2 id="libraryTitle">완성 스킬 라이브러리</h2><p>작성자명은 계정으로 확인되지 않은 공개 입력 정보예요.</p></div><button class="btn ghost sm" data-act="refreshLibrary">새로고침</button><button class="icon" data-act="closeLibrary" aria-label="라이브러리 닫기">✕</button></div>
+ <div class="library-body"><div class="library-status" id="libraryStatus" role="status" aria-live="polite">라이브러리를 불러오는 중이에요.</div><div class="library-list" id="libraryList"></div></div>
+</dialog>
+<dialog class="library-dialog" id="publishDialog" aria-labelledby="publishTitle">
+ <div class="library-head"><div><h2 id="publishTitle">라이브러리에 공유하기</h2><p>이름은 로그인으로 확인되지 않으며 누구나 입력할 수 있어요.</p></div><button class="icon" data-act="closePublish" aria-label="공유 창 닫기">✕</button></div>
+ <form class="library-body publish-form" id="publishForm">
+  <label>작성자 이름 (확인되지 않음)<input class="in" id="publishAuthor" maxlength="50" required autocomplete="name"></label>
+  <label>스킬 이름<input class="in" id="publishTitleInput" maxlength="120" required></label>
+  <label>설명<textarea class="in" id="publishDescription" maxlength="500" required></textarea></label>
+  <label class="hp-field" aria-hidden="true">웹사이트<input id="publishWebsite" tabindex="-1" autocomplete="off"></label>
+  <p class="help">작성자명과 스킬 내용은 공개되어 누구나 볼 수 있습니다. 개인 정보나 비밀 정보가 없는지 확인해 주세요.</p>
+  <div class="publish-error" id="publishError" role="alert"></div>
+  <div class="publish-actions"><button type="button" class="btn ghost" data-act="closePublish">취소</button><button type="submit" class="btn gold" id="publishSubmit">공유하기</button></div>
+ </form>
+</dialog>
 
 <!-- 시작 화면: 캐릭터 선택 -->
 <div id="intro">
@@ -287,7 +327,7 @@ window.addEventListener("error",function(e){var b=document.getElementById("errbo
    <div>
     <label class="hl" for="iname">어떻게 불러 드릴까요? <small>선택</small></label>
     <input class="in" id="iname" placeholder="이름이나 별명 (예: JUN)" style="max-width:320px">
-    <p class="note">적은 내용은 이 브라우저에만 자동 저장되고, 어디로도 보내지 않아요.</p>
+    <p class="note">워크샵 입력은 이 브라우저에 자동 저장되며, 공유를 선택한 스킬만 공용 라이브러리에 등록돼요.</p>
    </div>
    <div>
     <span class="hl">함께 걸어갈 캐릭터를 골라 주세요</span>
@@ -352,6 +392,7 @@ const FORMS=["보고서 · 문서","표 · 엑셀 정리","메일 · 메시지",
 
 /* ───── 저장 ───── */
 const KEY="skill-workshop:v6";
+const LIBRARY_CONFIG={url:"https://vupzxdeqvpvhenyehzkn.supabase.co",anonKey:"sb_publishable_U063TSjIcsjgNRWtZ6n1WA_5S7veL71"};
 const blank=()=>({who:"",hero:"",started:false,toured:false,cur:0,tab:"day",tasks:[],sel:null,
  scope:{why:"",inc:"",exc:"",role:""},
  def:{triggers:"",input:"",missing:"",outName:"",outForm:FORMS[0],reader:"",sections:"",vol:"",tone:""},
@@ -541,8 +582,94 @@ function renderResult(){const el=$("#result");if(!el)return;const all=[];ST.forE
  const msg=p>=90?"아주 탄탄해요. 바로 써 보셔도 좋아요!":p>=70?"거의 다 왔어요. 빠진 칸 몇 개만 채우면 훨씬 정확해져요.":"뼈대는 잡혔어요. 아래 빠진 칸을 채울수록 스킬이 똑똑해져요.";
  el.innerHTML=`<div class="res-h"><div class="ring" style="background:conic-gradient(#E7B75A ${p*3.6}deg,#31364A 0)"><b>${p}</b></div><div><h3>SKILL.md 완성도 ${p}점</h3><p>${msg}</p>${miss.length?`<div class="miss">${miss.map(m=>`<button data-jump="${m.i}|${m.f}">${m.i+1}단계 · ${esc(m.t)}</button>`).join("")}</div>`:""}</div></div>
  <pre id="md">${esc(buildMD())}</pre>
- <div class="res-btn"><button class="btn gold" data-act="dl">SKILL.md 내려받기</button><button class="btn ghost" data-act="copy">전체 복사</button></div>
+ <div class="res-btn"><button class="btn gold" data-act="publish">라이브러리에 공유</button><button class="btn ghost" data-act="dl">SKILL.md 내려받기</button><button class="btn ghost" data-act="copy">전체 복사</button></div>
  <div class="howto"><b>이렇게 써 보세요.</b> 스킬 기능을 지원하는 도구라면 <b>${esc(slug())}/</b> 폴더에 SKILL.md를 넣어 등록하면 돼요. 지원하지 않는 도구라면 대화창에 내용을 그대로 붙여 넣고 "이 지침대로 해 줘"라고 부탁해도 괜찮아요. 테스트 문장으로 돌려 보고, 어긋난 부분은 규칙이나 자주 틀리는 곳에 한 줄씩 더해 가면 점점 정확해져요.</div>`;}
+
+/* ───── 공용 라이브러리 ───── */
+function libraryConfigured(){return /^https:\/\/[^/]+\/?$/.test(LIBRARY_CONFIG.url)&&!!LIBRARY_CONFIG.anonKey;}
+function librarySetupMessage(){return "라이브러리 저장소 설정이 아직 연결되지 않았어요. Supabase 프로젝트 URL과 공개용 anon key, Edge Function을 설정해야 사용할 수 있어요.";}
+function libraryStatus(message,isError){const el=$("#libraryStatus");el.textContent=message;el.classList.toggle("error",!!isError);}
+function libraryDescription(){return (tr(D.scope.why)||lines(D.scope.inc).join(" · ")||"반복 업무를 돕는 AI 스킬입니다.").slice(0,500);}
+function openPublish(){
+ const incomplete=ST.findIndex(s=>s.todo.some(t=>t.req&&!t.ok()));
+ if(incomplete>=0){const item=ST[incomplete].todo.find(t=>t.req&&!t.ok());jump(incomplete,item.f);toast("필수 항목을 모두 채운 뒤 라이브러리에 공유할 수 있어요.");return;}
+ const task=selT(),title=tr(D.def.outName)||(task?tr(task.t):tr(D.slug));
+ $("#publishAuthor").value=tr(D.who);
+ $("#publishTitleInput").value=title.slice(0,120);
+ $("#publishDescription").value=libraryDescription();
+ $("#publishWebsite").value="";
+ $("#publishError").textContent=libraryConfigured()?"":"공유 설정을 마무리해야 등록할 수 있어요. "+librarySetupMessage();
+ $("#publishSubmit").disabled=!libraryConfigured();
+ $("#publishDialog").showModal();
+}
+async function loadLibrary(){
+ const list=$("#libraryList");list.replaceChildren();
+ if(!libraryConfigured()){libraryStatus(librarySetupMessage(),true);return;}
+ libraryStatus("라이브러리를 불러오는 중이에요.");
+ try{
+  const url=new URL("/rest/v1/skills",LIBRARY_CONFIG.url);
+  url.search=new URLSearchParams({select:"id,author_name,title,description,created_at",order:"created_at.desc",limit:"100"}).toString();
+  const res=await fetch(url,{headers:{apikey:LIBRARY_CONFIG.anonKey},cache:"no-store"});
+  if(!res.ok){libraryStatus(res.status===401||res.status===403?"라이브러리 읽기 권한을 확인해 주세요.":"라이브러리를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.",true);return;}
+  const records=await res.json();
+  if(!Array.isArray(records)){libraryStatus("라이브러리 응답 형식이 올바르지 않아요.",true);return;}
+  if(!records.length){libraryStatus("아직 등록된 스킬이 없어요. 첫 번째 스킬을 공유해 보세요.");return;}
+  libraryStatus(`완성 스킬 ${records.length}개를 보여 드려요${records.length===100?" (최근 100개)":""}.`);
+  list.innerHTML=records.map(item=>{
+   const date=Date.parse(item.created_at),when=Number.isFinite(date)?new Date(date).toLocaleDateString("ko-KR"):"";
+   return `<article class="library-card" data-skill-id="${att(item.id)}"><h3>${esc(item.title)}</h3><div class="byline">${esc(item.author_name)} · ${when}</div><p>${esc(item.description)}</p><button class="btn ghost sm" data-act="viewSkill" data-id="${att(item.id)}">SKILL.md 보기</button><pre data-skill-body hidden></pre></article>`;
+  }).join("");
+ }catch(e){libraryStatus("라이브러리에 연결하지 못했어요. 네트워크와 Supabase 설정을 확인해 주세요.",true);}
+}
+async function toggleSkillContent(id,button){
+ const card=button.closest(".library-card"),preview=card&&card.querySelector("[data-skill-body]");
+ if(!preview)return;
+ if(!preview.hidden){preview.hidden=true;button.textContent="SKILL.md 보기";return;}
+ if(preview.dataset.loaded==="true"){preview.hidden=false;button.textContent="SKILL.md 숨기기";return;}
+ button.disabled=true;button.textContent="불러오는 중…";
+ try{
+  const url=new URL("/rest/v1/skills",LIBRARY_CONFIG.url);
+  url.search=new URLSearchParams({select:"skill_md",id:"eq."+id,limit:"1"}).toString();
+  const res=await fetch(url,{headers:{apikey:LIBRARY_CONFIG.anonKey},cache:"no-store"});
+  if(!res.ok)throw new Error("skill_read_failed");
+  const records=await res.json();
+  if(!Array.isArray(records)||!records.length)throw new Error("skill_not_found");
+  preview.textContent=records[0].skill_md;
+  preview.dataset.loaded="true";
+  preview.hidden=false;
+  button.textContent="SKILL.md 숨기기";
+ }catch(e){preview.textContent="SKILL.md를 불러오지 못했어요. 다시 시도해 주세요.";preview.hidden=false;button.textContent="다시 시도";}
+ finally{button.disabled=false;}
+}
+function openLibrary(){const dialog=$("#libraryDialog");dialog.showModal();loadLibrary();}
+function apiMessage(body,status){
+ if(status===409)return "같은 작성자와 스킬 이름으로 이미 등록된 스킬이에요.";
+ if(status===429)return "등록 횟수 제한에 도달했어요. 한 시간 뒤에 다시 시도해 주세요.";
+ if(status===400)return body&&body.error==="skill_too_large"?"SKILL.md가 너무 커서 등록할 수 없어요.":"입력 내용을 확인해 주세요. 스킬 이름과 설명을 입력해야 해요.";
+ if(status===413)return "제출 내용이 너무 커서 등록할 수 없어요.";
+ if(status===503)return "공유 기능이 아직 설정되지 않았어요.";
+ return "등록하지 못했어요. 연결 상태를 확인한 뒤 다시 시도해 주세요.";
+}
+async function publishSkill(){
+ const form=$("#publishForm"),submit=$("#publishSubmit"),error=$("#publishError");
+ if(!libraryConfigured()){error.textContent=librarySetupMessage();return;}
+ if(!form.reportValidity())return;
+ const payload={author_name:tr($("#publishAuthor").value),title:tr($("#publishTitleInput").value),description:tr($("#publishDescription").value),slug:slug().slice(0,80),skill_md:buildMD(),website:$("#publishWebsite").value};
+ if(!payload.author_name||!payload.title||!payload.description){error.textContent="작성자 이름, 스킬 이름, 설명을 모두 입력해 주세요.";return;}
+ if(new TextEncoder().encode(payload.skill_md).length>30000){error.textContent="SKILL.md가 30KB를 넘어요. 내용을 줄인 뒤 다시 시도해 주세요.";return;}
+ payload.title=payload.title.slice(0,120);payload.description=payload.description.slice(0,500);
+ submit.disabled=true;submit.textContent="공유 중…";error.textContent="";
+ try{
+  const res=await fetch(new URL("/functions/v1/publish-skill",LIBRARY_CONFIG.url),{method:"POST",headers:{apikey:LIBRARY_CONFIG.anonKey,"Content-Type":"application/json"},body:JSON.stringify(payload)});
+  let body=null;try{body=await res.json();}catch(e){}
+  if(!res.ok){error.textContent=apiMessage(body,res.status);return;}
+  $("#publishDialog").close();
+  $("#libraryDialog").showModal();
+  await loadLibrary();
+  toast(`${esc(payload.title)} 스킬을 라이브러리에 공유했어요.`);
+ }catch(e){error.textContent="등록 중 연결 오류가 발생했어요. 저장 여부가 불확실하면 라이브러리를 새로고침해 확인해 주세요.";}
+ finally{submit.disabled=false;submit.textContent="공유하기";}
+}
 
 /* ───── 화면 그리기 ───── */
 const R=[s1,s2,s3,s4,s5];
@@ -621,6 +748,12 @@ document.addEventListener("click",e=>{const b=e.target.closest("[data-act],[data
   setP(p,b.dataset.add&&tr(cur)?(cur.includes(v)?cur:cur.replace(/\s+$/,"")+"\n"+v):v);save();render(true);return;}
  const a=b.dataset.act,id=b.dataset.id;
  if(a==="intro"){openIntro();}
+ else if(a==="library"){openLibrary();}
+ else if(a==="refreshLibrary"){loadLibrary();}
+ else if(a==="closeLibrary"){$("#libraryDialog").close();}
+ else if(a==="viewSkill"){toggleSkillContent(id,b);}
+ else if(a==="publish"){openPublish();}
+ else if(a==="closePublish"){$("#publishDialog").close();}
  else if(a==="start"){
   if(!D.hero){toast("함께 걸어갈 캐릭터를 먼저 골라 주세요.");flash($(".heroes"));return;}
   D.who=tr($("#iname").value);D.started=true;save();$("#intro").hidden=true;render();
@@ -647,6 +780,8 @@ document.addEventListener("click",e=>{const b=e.target.closest("[data-act],[data
  else if(a==="dl"){dl();}
  else if(a==="copy"){copyMD();}
 });
+$("#publishForm").addEventListener("submit",e=>{e.preventDefault();publishSkill();});
+["libraryDialog","publishDialog"].forEach(id=>$("#"+id).addEventListener("click",e=>{if(e.target===e.currentTarget)e.currentTarget.close();}));
 function setK(el){const q=el.dataset.k.split("|"),o=D[q[0]].find(x=>x.id===q[1]);if(o)o[q[2]]=el.value;}
 document.addEventListener("input",e=>{const el=e.target;if(el.tagName==="SELECT")return;
  if(el.dataset.p)setP(el.dataset.p,el.value);else if(el.dataset.k)setK(el);else return;save();refresh();});

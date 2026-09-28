@@ -1,0 +1,2 @@
+[functions.publish-skill]
+verify_jwt = false

@@ -60,12 +60,23 @@ button{font-family:inherit;cursor:pointer}
 .library-body{padding:18px 22px 24px}
 .library-status{padding:14px 16px;border-radius:12px;background:var(--ac-soft);color:var(--ink2);font-size:13px}
 .library-status.error{background:var(--warn-soft);color:#8A4E1E}
-.library-list{display:flex;flex-direction:column;gap:10px;margin-top:14px}
-.library-card{padding:16px;border:1px solid var(--line);border-radius:15px;background:#fff}
-.library-card h3{margin:0;font-size:16px}
-.library-card .byline{margin:3px 0 10px;color:var(--ink3);font-size:12px}
-.library-card p{margin:0;color:var(--ink2);font-size:13.5px;white-space:pre-wrap}
-.library-card pre{max-height:320px;overflow:auto;margin:10px 0 0;padding:14px;border-radius:10px;background:#1D2130;color:#E9E6DF;white-space:pre-wrap;word-break:break-word;font:12px/1.7 ui-monospace,Menlo,Consolas,monospace}
+.library-search-label{display:block;margin:14px 0 4px;color:var(--ink3);font-size:12px}
+.library-search{width:100%;margin:0 0 10px}
+.library-table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:#fff}
+.library-table{width:100%;border-collapse:collapse;text-align:left;font-size:13px}
+.library-table th,.library-table td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+.library-table th{background:#F5F1E9;color:var(--ink3);font-size:12px;font-weight:700;white-space:nowrap}
+.library-table tbody tr:last-child td{border-bottom:0}
+.library-table .library-title{min-width:170px}
+.library-title-link{padding:0;border:0;background:none;color:var(--ink);font:inherit;font-weight:700;text-align:left;text-decoration:underline;text-decoration-color:#D8C59F;text-underline-offset:3px}
+.library-title-link:hover{color:var(--ac)}
+.library-date,.library-count{text-align:center;white-space:nowrap}
+.library-download{white-space:nowrap}
+.library-detail td{padding:14px;background:#FCFAF6}
+.library-detail p{margin:0 0 10px;color:var(--ink2);white-space:pre-wrap}
+.library-detail pre{max-height:320px;overflow:auto;margin:0;padding:14px;border-radius:10px;background:#1D2130;color:#E9E6DF;white-space:pre-wrap;word-break:break-word;font:12px/1.7 ui-monospace,Menlo,Consolas,monospace}
+.library-empty{text-align:center;color:var(--ink3)}
+.library-view-error{margin-top:8px;color:#8A4E1E;font-size:12px}
 .publish-form{display:grid;gap:12px}
 .publish-form label{display:grid;gap:4px;font-size:13px;font-weight:650}
 .publish-form .help{margin:0;font-weight:400}
@@ -293,7 +304,7 @@ window.addEventListener("error",function(e){var b=document.getElementById("errbo
 </main>
 <dialog class="library-dialog" id="libraryDialog" aria-labelledby="libraryTitle">
  <div class="library-head"><div><h2 id="libraryTitle">완성 스킬 라이브러리</h2><p>작성자명은 계정으로 확인되지 않은 공개 입력 정보예요.</p></div><button class="btn ghost sm" data-act="refreshLibrary">새로고침</button><button class="icon" data-act="closeLibrary" aria-label="라이브러리 닫기">✕</button></div>
- <div class="library-body"><div class="library-status" id="libraryStatus" role="status" aria-live="polite">라이브러리를 불러오는 중이에요.</div><div class="library-list" id="libraryList"></div></div>
+ <div class="library-body"><div class="library-status" id="libraryStatus" role="status" aria-live="polite">라이브러리를 불러오는 중이에요.</div><label class="library-search-label" for="librarySearch">라이브러리 검색</label><input class="in library-search" id="librarySearch" type="search" placeholder="생성자·제목·설명 검색"><div class="library-table-wrap"><table class="library-table"><thead><tr><th scope="col">생성자</th><th scope="col">스킬 제목</th><th scope="col" class="library-date">일시</th><th scope="col" class="library-count">조회수</th><th scope="col">스킬 다운로드</th></tr></thead><tbody id="libraryList"></tbody></table></div></div>
 </dialog>
 <dialog class="library-dialog" id="publishDialog" aria-labelledby="publishTitle">
  <div class="library-head"><div><h2 id="publishTitle">라이브러리에 공유하기</h2><p id="publishHint">이름은 로그인으로 확인되지 않으며 누구나 입력할 수 있어요.</p></div><button class="icon" data-act="closePublish" aria-label="공유 창 닫기">✕</button></div>
@@ -593,6 +604,8 @@ function librarySetupMessage(){return "라이브러리 저장소 설정이 아�
 function libraryStatus(message,isError){const el=$("#libraryStatus");el.textContent=message;el.classList.toggle("error",!!isError);}
 function libraryDescription(){return (tr(D.scope.why)||lines(D.scope.inc).join(" · ")||"반복 업무를 돕는 AI 스킬입니다.").slice(0,500);}
 let publishMode="share";
+let libraryRecords=[];
+let libraryViewCountReady=true;
 function openPublish(mode="share"){
  publishMode=mode;
  if(mode==="share"){
@@ -616,42 +629,90 @@ function openPublish(mode="share"){
 }
 async function loadLibrary(){
  const list=$("#libraryList");list.replaceChildren();
+ libraryRecords=[];
+ libraryViewCountReady=true;
+ $("#librarySearch").value="";
  if(!libraryConfigured()){libraryStatus(librarySetupMessage(),true);return;}
  libraryStatus("라이브러리를 불러오는 중이에요.");
  try{
   const url=new URL("/rest/v1/skills",LIBRARY_CONFIG.url);
-  url.search=new URLSearchParams({select:"id,author_name,title,description,created_at",order:"created_at.desc",limit:"100"}).toString();
-  const res=await fetch(url,{headers:{apikey:LIBRARY_CONFIG.anonKey},cache:"no-store"});
-  if(!res.ok){libraryStatus(res.status===401||res.status===403?"라이브러리 읽기 권한을 확인해 주세요.":"라이브러리를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.",true);return;}
+  url.search=new URLSearchParams({select:"id,author_name,title,description,created_at,view_count",order:"created_at.desc",limit:"100"}).toString();
+  let res=await fetch(url,{headers:{apikey:LIBRARY_CONFIG.anonKey},cache:"no-store"});
+  if(!res.ok){
+   const body=await res.json().catch(()=>null);
+   if(res.status!==400||!body||!["PGRST204","42703"].includes(body.code)){
+    libraryStatus(res.status===401||res.status===403?"라이브러리 읽기 권한을 확인해 주세요.":"라이브러리를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.",true);return;
+   }
+   libraryViewCountReady=false;
+   url.search=new URLSearchParams({select:"id,author_name,title,description,created_at",order:"created_at.desc",limit:"100"}).toString();
+   res=await fetch(url,{headers:{apikey:LIBRARY_CONFIG.anonKey},cache:"no-store"});
+   if(!res.ok){libraryStatus("라이브러리를 불러오지 못했어요. Supabase 마이그레이션과 연결 설정을 확인해 주세요.",true);return;}
+  }
   const records=await res.json();
   if(!Array.isArray(records)){libraryStatus("라이브러리 응답 형식이 올바르지 않아요.",true);return;}
-  if(!records.length){libraryStatus("아직 등록된 스킬이 없어요. 첫 번째 스킬을 공유해 보세요.");return;}
-  libraryStatus(`완성 스킬 ${records.length}개를 보여 드려요${records.length===100?" (최근 100개)":""}.`);
-  list.innerHTML=records.map(item=>{
-   const date=Date.parse(item.created_at),when=Number.isFinite(date)?new Date(date).toLocaleDateString("ko-KR"):"";
-   return `<article class="library-card" data-skill-id="${att(item.id)}"><h3>${esc(item.title)}</h3><div class="byline">${esc(item.author_name)} · ${when}</div><p>${esc(item.description)}</p><button class="btn ghost sm" data-act="viewSkill" data-id="${att(item.id)}">SKILL.md 보기</button><pre data-skill-body hidden></pre></article>`;
-  }).join("");
+  if(!libraryViewCountReady)records.forEach(item=>{item.view_count=0;});
+  libraryRecords=records;
+  const migrationNotice=libraryViewCountReady?"":" 조회수 집계를 위해 Supabase 마이그레이션 적용이 필요해요.";
+  if(!records.length)libraryStatus("아직 등록된 스킬이 없어요. 첫 번째 스킬을 공유해 보세요."+migrationNotice,!libraryViewCountReady);
+  else libraryStatus(`완성 스킬 ${records.length}개를 보여 드려요${records.length===100?" (최근 100개)":""}.${migrationNotice}`,!libraryViewCountReady);
+  renderLibraryRows();
  }catch(e){libraryStatus("라이브러리에 연결하지 못했어요. 네트워크와 Supabase 설정을 확인해 주세요.",true);}
 }
+function renderLibraryRows(){
+ const query=tr($("#librarySearch").value).toLocaleLowerCase("ko-KR");
+ const records=libraryRecords.filter(item=>!query||[item.author_name,item.title,item.description].some(value=>String(value||"").toLocaleLowerCase("ko-KR").includes(query)));
+ $("#libraryList").innerHTML=records.length?records.map(item=>{
+  const date=Date.parse(item.created_at),when=Number.isFinite(date)?new Date(date).toLocaleDateString("ko-KR"):"—";
+  const count=Number.isSafeInteger(item.view_count)?item.view_count:0;
+  return `<tr data-skill-row="${att(item.id)}"><td>${esc(item.author_name)}</td><td class="library-title"><button type="button" class="library-title-link" data-act="viewSkill" data-id="${att(item.id)}" aria-expanded="false">${esc(item.title)}</button></td><td class="library-date">${when}</td><td class="library-count" data-skill-count="${att(item.id)}">${count.toLocaleString("ko-KR")}</td><td><button type="button" class="btn ghost sm library-download" data-act="downloadSkill" data-id="${att(item.id)}">다운로드</button></td></tr><tr class="library-detail" data-skill-detail="${att(item.id)}" hidden><td colspan="5"><p>${esc(item.description)}</p><pre data-skill-body></pre><div class="library-view-error" role="status" hidden></div></td></tr>`;
+ }).join(""):`<tr><td class="library-empty" colspan="5">${query?"검색 결과가 없어요.":"등록된 스킬이 없어요."}</td></tr>`;
+}
+async function fetchLibrarySkill(id){
+ const url=new URL("/rest/v1/skills",LIBRARY_CONFIG.url);
+ url.search=new URLSearchParams({select:"skill_md",id:"eq."+id,limit:"1"}).toString();
+ const res=await fetch(url,{headers:{apikey:LIBRARY_CONFIG.anonKey},cache:"no-store"});
+ if(!res.ok)throw new Error("skill_read_failed");
+ const records=await res.json();
+ if(!Array.isArray(records)||!records.length||typeof records[0].skill_md!=="string")throw new Error("skill_not_found");
+ return records[0].skill_md;
+}
+async function incrementLibraryView(id){
+ const url=new URL("/rest/v1/rpc/increment_skill_view_count",LIBRARY_CONFIG.url);
+ const res=await fetch(url,{method:"POST",headers:{apikey:LIBRARY_CONFIG.anonKey,"Content-Type":"application/json"},body:JSON.stringify({p_skill_id:id}),cache:"no-store"});
+ if(!res.ok)throw new Error("skill_view_count_failed");
+ const count=await res.json();
+ if(!Number.isSafeInteger(count)||count<1)throw new Error("skill_view_count_invalid");
+ const item=libraryRecords.find(record=>record.id===id);
+ if(item)item.view_count=count;
+ document.querySelectorAll("[data-skill-count]").forEach(node=>{if(node.dataset.skillCount===id)node.textContent=count.toLocaleString("ko-KR");});
+}
 async function toggleSkillContent(id,button){
- const card=button.closest(".library-card"),preview=card&&card.querySelector("[data-skill-body]");
- if(!preview)return;
- if(!preview.hidden){preview.hidden=true;button.textContent="SKILL.md 보기";return;}
- if(preview.dataset.loaded==="true"){preview.hidden=false;button.textContent="SKILL.md 숨기기";return;}
- button.disabled=true;button.textContent="불러오는 중…";
+ const row=button.closest("[data-skill-row]"),detail=row&&row.nextElementSibling,preview=detail&&detail.querySelector("[data-skill-body]");
+ if(!detail||!preview)return;
+ if(!detail.hidden){detail.hidden=true;button.setAttribute("aria-expanded","false");return;}
+ detail.hidden=false;button.setAttribute("aria-expanded","true");
+ const error=detail.querySelector(".library-view-error");
+ error.hidden=true;error.textContent="";
+ button.disabled=true;
  try{
-  const url=new URL("/rest/v1/skills",LIBRARY_CONFIG.url);
-  url.search=new URLSearchParams({select:"skill_md",id:"eq."+id,limit:"1"}).toString();
-  const res=await fetch(url,{headers:{apikey:LIBRARY_CONFIG.anonKey},cache:"no-store"});
-  if(!res.ok)throw new Error("skill_read_failed");
-  const records=await res.json();
-  if(!Array.isArray(records)||!records.length)throw new Error("skill_not_found");
-  preview.textContent=records[0].skill_md;
-  preview.dataset.loaded="true";
-  preview.hidden=false;
-  button.textContent="SKILL.md 숨기기";
- }catch(e){preview.textContent="SKILL.md를 불러오지 못했어요. 다시 시도해 주세요.";preview.hidden=false;button.textContent="다시 시도";}
+  if(preview.dataset.loaded!=="true"){preview.textContent=await fetchLibrarySkill(id);preview.dataset.loaded="true";}
+  if(libraryViewCountReady){
+   try{await incrementLibraryView(id);}
+   catch(e){error.textContent="스킬은 열었지만 조회수를 저장하지 못했어요. Supabase 설정을 확인해 주세요.";error.hidden=false;}
+  }else{error.textContent="조회수 집계는 Supabase 마이그레이션 적용 후 사용할 수 있어요.";error.hidden=false;}
+ }catch(e){preview.textContent="SKILL.md를 불러오지 못했어요. 다시 시도해 주세요.";}
  finally{button.disabled=false;}
+}
+async function downloadLibrarySkill(id,button){
+ button.disabled=true;button.textContent="준비 중…";
+ try{
+  const content=await fetchLibrarySkill(id),item=libraryRecords.find(record=>record.id===id);
+  const filename=(item?item.title:"SKILL").replace(/[\\/:*?"<>|]/g,"-").trim()||"SKILL";
+  const link=document.createElement("a"),objectUrl=URL.createObjectURL(new Blob([content],{type:"text/markdown;charset=utf-8"}));
+  link.href=objectUrl;link.download=filename+".md";document.body.appendChild(link);link.click();
+  setTimeout(()=>{URL.revokeObjectURL(objectUrl);link.remove();},500);
+ }catch(e){toast("스킬을 다운로드하지 못했어요. 연결 상태를 확인한 뒤 다시 시도해 주세요.");}
+ finally{button.disabled=false;button.textContent="다운로드";}
 }
 function openLibrary(){const dialog=$("#libraryDialog");dialog.showModal();loadLibrary();}
 function apiMessage(body,status){
@@ -767,6 +828,7 @@ document.addEventListener("click",e=>{const b=e.target.closest("[data-act],[data
  else if(a==="refreshLibrary"){loadLibrary();}
  else if(a==="closeLibrary"){$("#libraryDialog").close();}
  else if(a==="viewSkill"){toggleSkillContent(id,b);}
+ else if(a==="downloadSkill"){downloadLibrarySkill(id,b);}
  else if(a==="publish"){openPublish();}
  else if(a==="closePublish"){$("#publishDialog").close();}
  else if(a==="start"){
@@ -800,6 +862,7 @@ $("#downloadLocal").addEventListener("click",()=>{$("#publishDialog").close();dl
 ["libraryDialog","publishDialog"].forEach(id=>$("#"+id).addEventListener("click",e=>{if(e.target===e.currentTarget)e.currentTarget.close();}));
 function setK(el){const q=el.dataset.k.split("|"),o=D[q[0]].find(x=>x.id===q[1]);if(o)o[q[2]]=el.value;}
 document.addEventListener("input",e=>{const el=e.target;if(el.tagName==="SELECT")return;
+ if(el.id==="librarySearch"){renderLibraryRows();return;}
  if(el.dataset.p)setP(el.dataset.p,el.value);else if(el.dataset.k)setK(el);else return;save();refresh();});
 document.addEventListener("change",e=>{const el=e.target;if(el.tagName!=="SELECT")return;
  if(el.dataset.p)setP(el.dataset.p,el.value);else if(el.dataset.k)setK(el);else return;save();render(true);});

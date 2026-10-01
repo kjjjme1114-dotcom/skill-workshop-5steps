@@ -34,8 +34,7 @@ button{font-family:inherit;cursor:pointer}
 .nd{display:flex;align-items:center;gap:8px;background:none;border:0;padding:5px 12px 5px 5px;border-radius:999px;color:var(--ink3);transition:.2s}
 .nd:hover{background:rgba(255,255,255,.7)}
 .nd .av{width:34px;height:34px;border-radius:50%;box-shadow:0 0 0 2px #fff,0 0 0 3px var(--line);filter:grayscale(.7);opacity:.7;transition:.2s}
-.nd .nt{display:flex;flex-direction:column;align-items:flex-start;line-height:1.25;font-size:12.5px;font-weight:600}
-.nd .nt small{font-size:10.5px;font-weight:500;color:var(--ink3)}
+.nd .nt{display:flex;flex-direction:column;align-items:center;text-align:center;line-height:1.25;font-size:12.5px;font-weight:600}
 .nd.done .av{filter:none;opacity:1;box-shadow:0 0 0 2px #fff,0 0 0 3.5px var(--ok)}
 .nd.cur{background:#fff;box-shadow:var(--sh1);color:var(--ink)}
 .nd.cur .av{filter:none;opacity:1;box-shadow:0 0 0 2px #fff,0 0 0 4px var(--ac)}
@@ -754,7 +753,7 @@ function renderTodo(){const s=ST[D.cur],d=s.todo.filter(t=>t.ok()).length,el=$("
  el.innerHTML=`<h4><span>이번 단계 할 일</span><span>${d}/${s.todo.length}</span></h4><ul>${s.todo.map(t=>`<li class="${t.ok()?"y":""}" data-jump="${D.cur}|${t.f}"><i></i>${esc(t.t)}${t.req?"<em>필수</em>":""}</li>`).join("")}</ul>`;}
 function render(keep){if(!(D.cur>=0&&D.cur<5))D.cur=0;
  const s=ST[D.cur],y=window.scrollY,rs=document.documentElement.style;rs.setProperty("--ac",s.col);rs.setProperty("--ac-soft",s.soft);
- $("#rail").innerHTML=ST.map((x,i)=>`${i?'<span class="lk"></span>':""}<button class="nd${i===D.cur?" cur":""}" data-go="${i}">${ph(x.id,"av",x.name)}<span class="nt">${i+1}. ${x.role}<small>${x.name}</small></span></button>`).join("");
+ $("#rail").innerHTML=ST.map((x,i)=>`${i?'<span class="lk"></span>':""}<button class="nd${i===D.cur?" cur":""}" data-go="${i}">${ph(x.id,"av",x.name)}<span class="nt">${i+1}. ${x.role}</span></button>`).join("");
  $("#me").innerHTML=D.started?`${ph(D.hero||"f","av","나")}${esc(D.who||"참가자")}`:"";
  $("#guide").innerHTML=`<div class="npc">${ph(s.id,"portrait",s.who)}<div class="npc-tag"><small>${D.cur+1}단계 · ${s.role}</small><b>${s.who}</b></div></div><div class="bubble">${s.say(D.who)}</div><div class="todo" id="todo"></div><details class="tips"${D.cur===0?" open":""}><summary>막힐 때 보는 팁</summary><ul>${s.tips.map(t=>`<li>${esc(t)}</li>`).join("")}</ul></details>`;
  $("#work").innerHTML=`<div class="wh"><span class="no">${D.cur+1}</span><div><h2>${s.title}</h2><p>${s.sub}</p></div><span class="time">약 ${s.time}분 · 결과: ${s.out}</span></div><div class="wb">${R[D.cur]()}</div>
